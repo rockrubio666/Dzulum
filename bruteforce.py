@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import requests # Utilizado para las peticiones
 import sys
 from lxml.html import fromstring # Utilizado para los enlaces

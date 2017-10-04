@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import re # Utilizado para regex
 import requests # Utilizado para realizar las peticiones
 import sys

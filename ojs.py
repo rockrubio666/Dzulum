@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import hashlib # Utilizado para obtener los hashes
 import re # Utilizado para las regex
 import sys 

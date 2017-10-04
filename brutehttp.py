@@ -1,5 +1,3 @@
-#!/usr/bin/python
- 
 import re # Utilizado para regex
 import sys
 import time
