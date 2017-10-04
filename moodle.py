@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import getopt
+import argparse
 import socket
 import re
 import sys
@@ -8,7 +8,7 @@ arg = ''
 
 def validateUrl(arg):
 #Aisla dominio y direccion ip
-
+	
 	if 'https' in arg or 'http' in arg:
 		arg  = re.sub('(http|https)://','',arg)
 		arg = re.sub('/(.*)','',arg)	
@@ -35,7 +35,7 @@ def validateUrl(arg):
 		
 		except: # Valida dominio
 			try:
-			
+				print arg
 				site = socket.gethostbyname(arg)
 				print "Ip: " + site
 				print "Sitio: " + arg
@@ -43,34 +43,25 @@ def validateUrl(arg):
 				print "Sitio no valido"
 				return 0
 			
-def help():
-	print('-u, --url URL del sitio a analizar \n'
-		  '-h, ---help Ayuda\n')
-
-
-
 
 def getParams(arg):
-	try:
-		opts, args = getopt.getopt(sys.argv[1:],'u:h', ['url=', 'help'])
-	except getopt.GetoptError:
-		help()
-
-	for opt, arg in opts:	
-		if opt in ('-u','--url'):
-			url = arg
-			validateUrl(url)
 	
-		
-		elif opt in ('-h','--help'):
-			h = arg
-			help()
+	parser = argparse.ArgumentParser(description='Escaner de vulnerabilidades en OJS y Moodle',
+		formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+	parser.add_argument('-u', '--url', help='Direccion URL del sitio')
 					
-		else:
-			print 'opcion no valida'
-			sys.exit(2)
-
-
+	
+	options = parser.parse_args()
+	
+	if len(sys.argv) == 1:
+		print parser.print_help()
+		print sys.argv
+	
+	elif '-u' in sys.argv or '--url':
+		validateUrl(options.url)
+		
+		
 getParams(arg)
 
 
