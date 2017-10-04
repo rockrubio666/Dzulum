@@ -9,7 +9,7 @@ import random
 from banner import *
 from ojs import * 
 from moodle import *
-from crawlerHead import *
+from directoryBforce import *
 from bruteforce import *
 from brutehttp import *
 import smtplib
@@ -35,8 +35,8 @@ def getParams(arg):
 	
  * Cookie: Lets to specify the Session Cookie use it in the requests, e.g.: -k 'My_Cookie','Cuki'
  
- * Crawler with head requests: Look for possible links and javascript in the index page with help of a file, e.g.: -c sitesFile
- 
+ * Path directory bruteforcing: Look for possible links and javascript in the index page with help of a file, e.g.: -c sitesFile
+  
  * Moodle: Searches elements necessaries to get the version and determine the possible vulnerabilities, e.g.: -m https://example.com/moodle/
  
  * Proxy: Sends requests through proxy, e.g.: -p 169.69.69.69,6969
@@ -54,7 +54,7 @@ def getParams(arg):
 	parser.add_argument('-a', '--Agent',metavar='Set User Agent', help='User Agent value')
 	parser.add_argument('-B', '--Bruteforce',metavar='Login,UserField,PassField,User,Password,Message',help='Login = Url Login, User= Value or file, Password= Value o file, Message= Error Message')
 	parser.add_argument('-b', '--bruteFile',metavar='RequestFile,User,Password,Message',help=' , User= Value or file, Password= Value o file, Message= Error Message')
-	parser.add_argument('-c', '--crawlerHead', metavar='File', help = 'File with directories')	
+	parser.add_argument('-d', '--directoryBforce', metavar='File', help = 'File with directories')	
 	parser.add_argument('-k', '--Cookie',metavar='ID Cookie, Cookie Value', help='Cookide ID,Cookie value')
 	parser.add_argument('-m','--moodle', metavar='URL', help = 'URL from Moodle site')
 	parser.add_argument('-o', '--ojs', metavar= 'URL', help = 'URL from OJS site')
@@ -143,11 +143,11 @@ def getParams(arg):
 		pass
 		
 			
-	if options.crawlerHead in sys.argv and options.ojs in sys.argv: # Se manda a llamar la funcion del archivo
-		crawlerHead(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+	if options.directoryBforce in sys.argv and options.ojs in sys.argv: # Se manda a llamar la funcion del archivo
+		directoryBforce(options.ojs,options.directoryBforce,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
 		
-	elif options.crawlerHead in sys.argv and options.moodle in sys.argv:
-		crawlerHead(options.moodle,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+	elif options.directoryBforce in sys.argv and options.moodle in sys.argv:
+		directoryBforce(options.moodle,options.directoryBforce,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
 		
 	if options.Bruteforce in sys.argv and options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
 		for element in options.Bruteforce.split(','):
