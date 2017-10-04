@@ -10,7 +10,6 @@ from banner import *
 from ojs import * 
 from moodle import *
 from crawlerHead import *
-from crawler import *
 from bruteforce import *
 from brutehttp import *
 import smtplib
@@ -36,8 +35,6 @@ def getParams(arg):
 	
  * Cookie: Lets to specify the Session Cookie use it in the requests, e.g.: -k 'My_Cookie','Cuki'
  
- * Crawler: Look for possible links and javascript in the index page, e.g.: -C
- 
  * Crawler with head requests: Look for possible links and javascript in the index page with help of a file, e.g.: -c sitesFile
  
  * Moodle: Searches elements necessaries to get the version and determine the possible vulnerabilities, e.g.: -m https://example.com/moodle/
@@ -58,7 +55,6 @@ def getParams(arg):
 	parser.add_argument('-B', '--Bruteforce',metavar='Login,UserField,PassField,User,Password,Message',help='Login = Url Login, User= Value or file, Password= Value o file, Message= Error Message')
 	parser.add_argument('-b', '--bruteFile',metavar='RequestFile,User,Password,Message',help=' , User= Value or file, Password= Value o file, Message= Error Message')
 	parser.add_argument('-c', '--crawlerHead', metavar='File', help = 'File with directories')	
-	parser.add_argument('-C', '--Crawler', help = 'Crawling site',action='store_true')	
 	parser.add_argument('-k', '--Cookie',metavar='ID Cookie, Cookie Value', help='Cookide ID,Cookie value')
 	parser.add_argument('-m','--moodle', metavar='URL', help = 'URL from Moodle site')
 	parser.add_argument('-o', '--ojs', metavar= 'URL', help = 'URL from OJS site')
@@ -84,11 +80,6 @@ def getParams(arg):
 	if not (options.ojs or options.moodle): # Validacion para que se realice el escaneo 
 		print parser.print_help()
 		print '\n *** Option OJS or Moodle is required ***'
-		sys.exit(2)
-		
-	if options.Crawler == True and options.crawlerHead in sys.argv: # Validacion para solo usar un crawler
-		print parser.print_help()
-		print '\n *** You can only execute one Crawler a time :,v ***'
 		sys.exit(2)
 	
 	if options.Bruteforce in sys.argv and options.bruteFile in sys.argv: # Validacion para solo usar un bruteforce
@@ -151,10 +142,6 @@ def getParams(arg):
 		to = ''
 		pass
 		
-	if options.Crawler == True and options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
-		crawler(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)	
-	elif options.Crawler == True and options.ojs in sys.argv:
-		crawler(options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
 			
 	if options.crawlerHead in sys.argv and options.ojs in sys.argv: # Se manda a llamar la funcion del archivo
 		crawlerHead(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
