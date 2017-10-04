@@ -6,7 +6,7 @@ Also, the tool has the next modules to make its job:
 	
 	* Bruteforce: With this module, the tool tries to get the right credentials from the site.
 	
-	* Crawling: In this module, you can get all links that site contains.
+	* Path directory bruteforcing: In this module, you can obtain the links that are in the site.
 	
 	* Tor: Because everyone needs to be anonymous.
 	
