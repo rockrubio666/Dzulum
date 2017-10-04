@@ -101,23 +101,21 @@ def getParams(arg):
 		print parser.print_help()
 		print '\n You can only use one proxy a time :,v ***'
 		sys.exit(2)	
-		
-	
-	if len(sys.argv) >= 2: # Actualizacion de la herramienta
-		update = raw_input('Do yo want to update the databases? [Y/N] ') or 'N'
-		if 'Y' in update or 'y' in update:
-			cwd = os.getcwd()		
-			g = git.cmd.Git(cwd)
-			g.pull()
-			print 'Databases Updated :D'
-		else:
-			print 'No updated :('
-			pass
 	
 	if len(sys.argv) >= 3:
 			numMeme = random.randint(0,5)
 			numColor = random.randint(0,6)
 			ban(numMeme,numColor)
+			# Actualizacion de la herramienta
+			update = raw_input('Do yo want to update the databases? [y/N] ') or 'N'
+			if 'Y' in update or 'y' in update:
+				cwd = os.getcwd()		
+				g = git.cmd.Git(cwd)
+				g.pull()
+				print 'Databases Updated :D'
+			else:
+				print 'No updated :('
+				pass
 	
 	if options.proxy in sys.argv: # Se separa la dir ip y el puerto
 		for element in options.proxy.split(','):
