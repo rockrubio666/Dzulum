@@ -1,71 +1,70 @@
-import requests
-import socket
-import sys
+#!/usr/bin/python
 import getopt
-import urllib2
+import socket
 import re
+import sys
 
-ip = ''
-site = ''
 arg = ''
 
+def validateUrl(arg):
+#Aisla dominio y direccion ip
+
+	if 'https' in arg or 'http' in arg:
+		arg  = re.sub('(http|https)://','',arg)
+		arg = re.sub('/(.*)','',arg)	
+		validateUrl(arg)
+		
+	else:
+		ip = re.compile(r'([0-9]{1,}\.){3}([0-9]{1,})') # Determina si es ip
+		match = ip.search(arg)
+		try:
+			if match.group():
+				try: #Valida ip
+					socket.inet_aton(arg)
+					print "Ip: " + arg
+				except:
+					print "ip no valida"
+					return 0
+		
+				try:
+					site = socket.gethostbyaddr(arg)
+					print "Sitio: " + site[0]
+				except:
+					print "no se puede determinar el sitio"
+					return 0
+		
+		except: # Valida dominio
+			try:
+			
+				site = socket.gethostbyname(arg)
+				print "Ip: " + site
+				print "Sitio: " + arg
+			except:
+				print "Sitio no valido"
+				return 0
+			
 def help():
-	print('-p, --ip Direccion IP del sitio \n'
-		  '-s, --site Direccion URL del sitio\n'
+	print('-u, --url URL del sitio a analizar \n'
 		  '-h, ---help Ayuda\n')
 
-def ojsMoodleOther(arg):
-	response = urllib2.urlopen(arg)
-	page_source = response.read()
-	regex = re.compile(r'(.*)name="keywords" content="moodle(.*)')
-	match = regex.search(page_source)
-	if match.group():
-		print "Es un moodle"
-	else:
-		print "No es moodle"
 
 
 
-def validateIP(ip):
-	try:
-		test = ip.split('/')
-		#print test
-		socket.inet_aton(test[0])
-		site = socket.gethostbyaddr(test[0])
-		print "Direccion IP del sitio: " + test[0]
-		print "Direccion URL del sitio: " + site[0]
-		ojsMoodleOther(ip)
-	except socket.error:
-		print "ip no valida"
-		
-def validateSite(site):
-	try:
-		test = site.split('/')
-		#print test
-		print "Direccion IP del sitio: " + socket.gethostbyname(test[2])
-		print "Direccion URL del sitio: " + site		
-		ojsMoodleOther(site)
-	except:
-		print 'sitio no valido'
-	
-	
 def getParams(arg):
 	try:
-		opts, args = getopt.getopt(sys.argv[1:],'i:s:h', ['ip=', 'site=','help'])
+		opts, args = getopt.getopt(sys.argv[1:],'u:h', ['url=', 'help'])
 	except getopt.GetoptError:
 		help()
 
 	for opt, arg in opts:	
-		if opt in ('-i','--ip'):
-			ip = arg
-			validateIP(ip)
+		if opt in ('-u','--url'):
+			url = arg
+			validateUrl(url)
 	
-		elif opt in ('-s', '--site'):
-			site = arg
-			validateSite(site)
 		
 		elif opt in ('-h','--help'):
 			h = arg
+			help()
 					
 		else:
 			print 'opcion no valida'
@@ -75,6 +74,14 @@ def getParams(arg):
 getParams(arg)
 
 
-
-
-
+'''
+def ojsMoodleOther(arg):
+	response = urllib2.urlopen(arg)
+	page_source = response.read()
+	regex = re.compile(r'(.*)name="keywords" content="moodle(.*)')
+	match = regex.search(page_source)
+	if match.group():
+		print "Es un moodle"
+	else:
+		print "No es moodle"
+'''
