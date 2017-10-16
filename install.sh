@@ -1,6 +1,6 @@
 #!/bin/sh
 apt-get update
-apt-get install git python-pip python-argparse libxml2-dev libxslt-dev python-dev tor privoxy-y
+apt-get install git python-pip python-argparse libxml2-dev libxslt-dev python-dev tor privoxy -y
 pip install requests lxml stem
 
 sed -i 's/^#\(.*\)ControlPort/ControlPort/g' /etc/tor/torrc
