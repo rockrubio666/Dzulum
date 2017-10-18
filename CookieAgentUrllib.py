@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
 import urllib2
-
-import requests
 import argparse
 import sys
 
