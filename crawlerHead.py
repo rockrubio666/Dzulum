@@ -13,6 +13,7 @@ url = ''
 def crawlerHead(url,f):
 	
 	resources = []
+	sites = []
 	
 	if os.path.exists(f):
 		fo = open(f, 'r')
@@ -23,18 +24,39 @@ def crawlerHead(url,f):
 	else:
 		print "No se encontro el archivo"
 
-
+	sites.append(url)
+	
 	for element in resources:
 		other  = element.rstrip()
-		res = requests.head(other)
-	
-		regex = re.compile(r'20[0-6]|30[0-7]')
+		res = requests.head(other, allow_redirects=False)
+		
+		
+		regex = re.compile(r'20[0-6]')
 		match = regex.search(str(res.status_code))
 		try:
 			if match.group():
-				print "Existe el recurso: " + element
+				if element not in sites:
+					sites.append(element)
+					print "Existe el recurso: " + element
+				else:
+					continue
 		except:
-			continue
+			regex = re.compile(r'30[0-7]')
+			match = regex.search(str(res.status_code))
+			try:
+				if match.group():
+					if element not in sites:
+						sites.append(element)
+						print 'Posible sitio: ' + element
+			except:
+				continue
+		
+			
+			
+	
+	
+		
+		
 		
 
 def getParams(arg):

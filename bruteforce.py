@@ -157,3 +157,49 @@ def getParams(arg):
 		
 getParams(arg)
 
+
+
+'''
+import re
+import requests
+import argparse
+import sys
+from lxml.html import fromstring
+import os.path
+
+arg = ''
+url = 'https://aula.cert.unam.mx'
+#url = 'https://www.seguridad.unam.mx'
+userField = 'username'
+passField = 'password'
+user = 'cristian.monroy@bec.seguridad.unam.mx'
+pwd = 'NeiNaruto27..'
+userFile = ''
+pwdFile = ''
+message = ''
+	
+
+r = requests.post(url)
+salida = []
+af = []
+res = r.headers
+
+for key, value in res.iteritems():
+	salida.append(value)
+
+var = salida[0]
+print var
+
+
+payload = { userField : user, passField: pwd}
+r = requests.post(url, data= payload)
+after =  r.headers
+
+for key, value in after.iteritems():
+	af.append(value)
+	
+var1 = af[0]
+print var1
+
+'''
+	
