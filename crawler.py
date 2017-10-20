@@ -12,7 +12,7 @@ def crawler(arg):
 	
 	if 'http://' in arg or 'https://' in arg: # Valida si tiene http(s)
 		# Lista para encontrar elementos
-		listFind = [ '//a/@href',  '//img/@src', '//script/@src', ('//head/link[@rel="stylesheet"]/@href')]
+		listFind = [ '//a/@href',  '//script/@src','//link[@rel="short icon"]/@href']
 		listLinks = []
 		
 		# Peticiones
@@ -27,47 +27,56 @@ def crawler(arg):
 		
 		# Extrae los elementos de la pagina principal
 		i = 0
+		site =  re.sub(r'(http|https)://','',arg)
+		
+		
 		for i in range(0,len(listFind)):
 			for link in webpage.xpath(listFind[i]):
-				if link not in listLinks and '/' in link:
-					listLinks.append(link)
+				if site in link: # Valida que sea del dominio que se pasa como argumento
+					regex = re.compile(r'(.*)\?(.*)') # Quita las variables despues de ?
+					match = regex.search(link)
+					try:
+						if match.group():
+							if match.group(1) not in listLinks:
+								listLinks.append(match.group(1))
+					except:
+						if link not in listLinks:
+							listLinks.append(link)
+				else:
+					regex = re.compile(r'^\/(.*)')
+					match = regex.search(link)
+					try:
+						if match.group():
+							complete =  arg + link
+							if complete not in listLinks:
+								listLinks.append(complete)
+					except:
+						continue
 			i + 1	
 		
-			# De los elementos encontrados trae sus recursos
-		try:
-			element = 0
-			i = 0
-			for element in range(0,2):
-				res = requests.post(listLinks[element])
-				page_source = res.text
-				webpage = html.fromstring(res.content)
-				
-				for i in range(0,len(listFind)):
-					for link in webpage.xpath(listFind[i]):
-						if link not in listLinks and '/' in link:
-							listLinks.append(link)
-				
-						i + 1
-					element + 1
-		except:
-			print "Total de enlaces:"
-			for l in range(len(listLinks)):
-				print listLinks[l]	
-			print "Error en algun enlace del subsitio"
-			sys.exit(2)
 		
-		
-			
 	else: # Si no tiene http
 			http =  re.sub(r'(^)','http://',arg)
 			crawler(http)
 			exit(2)
-
+	
+	#Archivos con extension .php,.js
+	for element in listLinks:
+		regex = re.compile(r'(.*)(\..*$)')
+		match = regex.search(element)
+		try:
+			if match.group():
+				if match.group() not in listLinks:
+					listLinks.append(match.group())
+		except:
+			continue
+	
+	
 	print "Total de enlaces:"
 	for l in range(len(listLinks)):
 		print listLinks[l]	
 	sys.exit(2)
-					
+	
 		
 crawler(arg)
 
