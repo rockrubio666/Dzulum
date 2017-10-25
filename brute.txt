@@ -1,7 +1,13 @@
-user
-pepe
-algo
-12345
-1234
-admin
-hola123,
+POST /login/index.php HTTP/1.1
+Host: tuaulavirtual.educatic.unam.mx
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: https://tuaulavirtual.educatic.unam.mx/login/index.php
+Cookie: __utma=11439665.1723126940.1508900615.1508900615.1508904646.2; __utmz=11439665.1508900615.1.1.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _ga=GA1.2.1234339282.1508900692; _gid=GA1.2.231333336.1508900692; __utmb=11439665.12.10.1508904646; __utmt=1; MoodleSessiontuaulavirtual=2oblao16k482fiuec6rc4dgk04; __utmc=11439665
+Connection: close
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 37
+
+username=pepe&password=pepepe&anchor=
