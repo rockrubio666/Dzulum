@@ -9,6 +9,8 @@ from lxml import etree
 from lxml import html
 import wget
 import os
+from collections import Counter
+import operator
 
 readme = ''
 arg = ''
@@ -57,6 +59,7 @@ def files(arg,readme):
 	
 	m = hashlib.md5()
 	elements = []
+	average = []
 	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
 	versions = {  
 		
@@ -275,9 +278,10 @@ def files(arg,readme):
 		for link in webpage.xpath(listFind[i]):
 			if domain in link:
 				req = requests.post(link)
+				print link
 				if req.status_code == 200 and i in range(2,3):
 					try:
-						filename = wget.download(link)
+						filename = wget.download(link, bar=None)
 						m.update(filename)
 						hs = m.hexdigest()
 						elements.append(hs)
@@ -297,9 +301,10 @@ def files(arg,readme):
 	for element in elements:
 		for key,value in versions.iteritems():
 			if element in value:
-				print '\nVersion: ' + key
+				average.append(key)
 	
-
+	cnt = Counter(average)
+	print '\nLa version es: ' + max(cnt.iteritems(),key=operator.itemgetter(1))[0]
 
 
 def getParams(arg):
