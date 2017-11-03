@@ -12,27 +12,27 @@ from collections import Counter
 import operator
 
 arg = sys.argv[1]
-log = ''
 
 
 def ojs(arg):
 	req = requests.post(arg)
 	page_source =  req.text
-	
-	
+		
 	regex = re.compile(r'(.*)(name="generator") content="(.*)"')
 	match = regex.search(page_source)
 	try:
 		if match.group():	
 			print "La version del sitio: " + arg + " es: " + match.group(3)
+			files(arg)
 	except:
-		files(arg)
+		version(arg)
 
-def files(arg):
+def version(arg):
 	m = hashlib.md5()
 	elements = []
 	average = []
 	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
+	
 	versions = {  
 		"2.3.5" : ['384772142d1907d7d3aea3ac11fad9d0',
 					'7d640303ec1bd0a376999f6e75f63c8d',
@@ -364,8 +364,6 @@ def files(arg):
 				   '293231fd3b3a687dc6dd6be0fdddca59']}
 				
 					
-	
-	
 	res = requests.post(arg)
 	page_source = res.text
 	webpage = html.fromstring(res.content)
@@ -380,11 +378,9 @@ def files(arg):
 	for i in range(0,len(listFind)):
 		for link in webpage.xpath(listFind[i]):
 			if domain in link:
-			#if 'localhost' in link:
 				req = requests.post(link)
 				if req.status_code == 200 and i in range(2,3):
 					try:
-						print link 
 						filename = wget.download(link, bar=None)
 						m.update(filename)
 						hs = m.hexdigest()
@@ -395,12 +391,16 @@ def files(arg):
 				
 				else:
 					try:
-						print link
 						m.update(req.text)
 						hs =  m.hexdigest()
 						elements.append(hs)
 					except:
 						continue
+					if '/js/' in link or '/plugins/' in link:
+						print 'Es un plugin: ' + link
+					elif '/styles/' in link or '/templates/' in link:
+						print 'Temas: ' + link
+					
 				
 	for element in elements:
 		for key,value in versions.iteritems():
@@ -409,10 +409,18 @@ def files(arg):
 				
 	cnt = Counter(average)
 	print '\nLa version es: ' + max(cnt.iteritems(),key=operator.itemgetter(1))[0]
+	files(arg)
 	
 	
+def files(arg):
+	confFiles = ['/cache','/classes','/config.inc.php','/config.TEMPLATE.inc.php',
+	'/controllers','/dbscripts','/docs','/favicon.ico','/help','/index.php','/js','/lib',
+	'/locale','/pages','/plugins','/public','/registry','/robots.txt','/rt','/styles','/templates','/tools']
 	
-
-
+	for cf in confFiles:
+		req = requests.post(arg + cf, verify=False)
+		if req.status_code == 200:
+			print 'Archivo de configuracion encontrado: ' + arg + cf
+		
+		
 ojs(arg)
-
