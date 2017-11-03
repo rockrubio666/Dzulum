@@ -8,7 +8,8 @@ from lxml import etree
 from lxml import html
 import wget
 import os
-
+from collections import Counter
+import operator
 
 arg = sys.argv[1]
 log = ''
@@ -17,20 +18,20 @@ log = ''
 def ojs(arg):
 	req = requests.post(arg)
 	page_source =  req.text
-	regex = re.compile(r'(.*)(name="generator" content="Open Journal System (.*)")')
+	
+	
+	regex = re.compile(r'(.*)(name="generator") content="(.*)"')
 	match = regex.search(page_source)
 	try:
-		if match.group():
+		if match.group():	
 			print "La version del sitio: " + arg + " es: " + match.group(3)
 	except:
 		files(arg)
-	
-
 
 def files(arg):
-	print 'entra hash'
 	m = hashlib.md5()
 	elements = []
+	average = []
 	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
 	versions = {  
 		"2.3.5" : ['384772142d1907d7d3aea3ac11fad9d0',
@@ -384,7 +385,7 @@ def files(arg):
 				if req.status_code == 200 and i in range(2,3):
 					try:
 						print link 
-						filename = wget.download(link)
+						filename = wget.download(link, bar=None)
 						m.update(filename)
 						hs = m.hexdigest()
 						elements.append(hs)
@@ -404,9 +405,14 @@ def files(arg):
 	for element in elements:
 		for key,value in versions.iteritems():
 			if element in value:
-				print key
+				average.append(key)
+				
+	cnt = Counter(average)
+	print '\nLa version es: ' + max(cnt.iteritems(),key=operator.itemgetter(1))[0]
+	
+	
 	
 
-#files(arg)
+
 ojs(arg)
 
