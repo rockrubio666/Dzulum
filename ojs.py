@@ -15,7 +15,7 @@ arg = sys.argv[1]
 
 
 def ojs(arg):
-	req = requests.post(arg)
+	req = requests.post(arg, verify=False)
 	page_source =  req.text
 		
 	regex = re.compile(r'(.*)(name="generator") content="(.*)"')
@@ -413,14 +413,78 @@ def version(arg):
 	
 	
 def files(arg):
-	confFiles = ['/cache','/classes','/config.inc.php','/config.TEMPLATE.inc.php',
-	'/controllers','/dbscripts','/docs','/favicon.ico','/help','/index.php','/js','/lib',
-	'/locale','/pages','/plugins','/public','/registry','/robots.txt','/rt','/styles','/templates','/tools']
+	confFiles = {'auth' : 'ldap',
 	
-	for cf in confFiles:
-		req = requests.post(arg + cf, verify=False)
+				'blocks' : ['authorBios', 'developedBy', 'donation', 'fontSize', 'help',
+				'information', 'keywordCloud', 'languageToggle', 'navigation', 'notification',
+				'readingTools', 'recentArticles', 'relatedItems', 'role', 'subscription', 'user'],
+				
+				'citationFormats' : ['abnt','apa','bibtex','cbe','endNote','mla','proCite','refMan','refWorks','turabian'],
+				
+				'citationLookup' : ['crossref', 'isbndb','pubmed','worldcat'],
+				
+				'citationOutput' : ['abnt','apa','mla','vancouver'],
+				
+				'citationParser' : ['freecite','paracite','parscit','regex'],
+				
+				'gateways' : ['metsGateway', 'resolver'],
+				
+				'generic' : ['acron', 'alm', 'anouncementFeed', 'backup', 'booksForReview',
+						'browse', 'category', 'coins', 'counter', 'customLocale', 'dataverse',
+						'driver', 'externalFeed', 'googleAnalytics', 'googleViewer', 'jquery',
+						'lucene', 'objectsForReview', 'openAds', 'openAIRE', 'phpMyVisites', 'piwik',
+						'pln', 'referral', 'relatedVideos', 'roundedCorners', 'sehl', 'staticPages',
+						'stopForumSpam', 'sword', 'thesis', 'thesisFeed', 'timedView', 'tinymce', 'traslator',
+						'usageEvent', 'usageStats', 'webFeed', 'xmlGalley'],
+						
+				'implicitAuth' : 'shibboleth',
+				
+				'importexport' : ['crossref', 'doaj', 'datacite', 'erudit', 'medra', 'mets', 'native', 
+								'pubIds', 'pubmed', 'quickSubmit', 'sample', 'users'],
+								
+				'metadata' : ['dc11','mods34','nlm30','openurl10'],
+				
+				'oaiMetadataFormats' : ['dc','marc','marcxml','nlm','README', 'rfc1807'],
+				
+				'paymethod' : ['manual', 'moneris', 'paypal'],
+				
+				'pubIds' : ['doi', 'urn'],
+				
+				'reports' : ['articles','counter','reviews','subscriptions','timedView','views']}
+	
+	theme = ['blueSteel', 'classicBlue', 'classicBrown', 'classicGreen', 'classicNavy','classicRed', 'custom', 'desert', 'lilac', 'night', 'redbar', 'steel', 'uncommon', 'vanilla', 'default']
+	
+	
+	
+	for key,value in confFiles.items():
+		for element in value:
+			version =  arg + '/plugins/' + key + '/' + element + '/version.xml'
+			req = requests.post(version, verify=False)
+			if req.status_code == 200:
+				plug = re.compile(r'<application>(.*)<\/application>')
+				matchp = plug.search(str(req.text))
+				plugVer = re.compile(r'<release>(.*)<\/release>')
+				matchv = plugVer.search(str(req.text))	
+				try:
+					if matchp.group() and matchv.group():	
+						print 'Plugin: ' + matchp.group(1) + ' Version: ' + matchv.group(1)
+				except:
+					continue
+	
+	for element in theme:
+		version = arg + '/plugins/themes/' + element + '/version.xml'
+		req = requests.post(version, verify=False)
 		if req.status_code == 200:
-			print 'Archivo de configuracion encontrado: ' + arg + cf
-		
-		
+			th = re.compile(r'<application>(.*)<\/application>')
+			matcht = th.search(str(req.text))
+			thVer = re.compile(r'<release>(.*)<\/release>')
+			matchv = thVer.search(str(req.text))	
+			try:
+				if matcht.group() and matchv.group():	
+					print 'Theme: ' + matcht.group(1) + ' Version: ' + matchv.group(1)
+			except:
+				continue
+
+
 ojs(arg)
+
