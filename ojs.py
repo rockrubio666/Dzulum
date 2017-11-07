@@ -13,27 +13,17 @@ import operator
 
 arg = sys.argv[1]
 
-
-def ojs(arg):
-	req = requests.post(arg, verify=False)
-	page_source =  req.text
+versions = {  
 		
-	regex = re.compile(r'(.*)(name="generator") content="(.*)"')
-	match = regex.search(page_source)
-	try:
-		if match.group():	
-			print "La version del sitio: " + arg + " es: " + match.group(3)
-			files(arg)
-	except:
-		version(arg)
-
-def version(arg):
-	m = hashlib.md5()
-	elements = []
-	average = []
-	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
-	
-	versions = {  
+		"2.0.1"	: '',
+		"2.0.2" : '',
+		"2.1" : '',
+		"2.2" : '',
+		"2.3.0" : '',
+		"2.3.1" : '',
+		"2.3.2" : '',
+		"2.3.3" : '',
+		"2.3.4" : '',
 		"2.3.5" : ['384772142d1907d7d3aea3ac11fad9d0',
 					'7d640303ec1bd0a376999f6e75f63c8d',
 					'65501be7c096bbe4646d5d3e9e345e62',
@@ -362,8 +352,26 @@ def version(arg):
 				   'bb87d41d15fe27b500a4bfcde01bb0e',
 				   '4e3706431052055bcd3aed2a06479b0',
 				   '293231fd3b3a687dc6dd6be0fdddca59']}
-				
-					
+	
+def ojs(arg):
+	req = requests.post(arg, verify=False)
+	page_source =  req.text
+		
+	regex = re.compile(r'(.*)(name="generator") content="(.*)"')
+	match = regex.search(page_source)
+	try:
+		if match.group():	
+			print "La version del sitio: " + arg + " es: " + match.group(3)
+			files(arg)
+	except:
+		version(arg)
+
+def version(arg):
+	m = hashlib.md5()
+	elements = []
+	average = []
+	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
+						
 	res = requests.post(arg)
 	page_source = res.text
 	webpage = html.fromstring(res.content)
@@ -378,6 +386,7 @@ def version(arg):
 	for i in range(0,len(listFind)):
 		for link in webpage.xpath(listFind[i]):
 			if domain in link:
+			#if 'localhost'	in link:
 				req = requests.post(link)
 				if req.status_code == 200 and i in range(2,3):
 					try:
@@ -396,10 +405,6 @@ def version(arg):
 						elements.append(hs)
 					except:
 						continue
-					if '/js/' in link or '/plugins/' in link:
-						print 'Es un plugin: ' + link
-					elif '/styles/' in link or '/templates/' in link:
-						print 'Temas: ' + link
 					
 				
 	for element in elements:
@@ -467,7 +472,7 @@ def files(arg):
 				matchv = plugVer.search(str(req.text))	
 				try:
 					if matchp.group() and matchv.group():	
-						print 'Plugin: ' + matchp.group(1) + ' Version: ' + matchv.group(1)
+						print 'Plugin: ' + matchp.group(1) + ', Version: ' + matchv.group(1)
 				except:
 					continue
 	
@@ -484,7 +489,26 @@ def files(arg):
 					print 'Theme: ' + matcht.group(1) + ' Version: ' + matchv.group(1)
 			except:
 				continue
+				
+	for key in versions:
+		readme = arg + '/docs/release-notes/README-' + key
+		changeLog = arg + '/docs/release-notes/ChangeLog-' + key
+		reqReadme = requests.post(readme,verify=False)
+		reqChange = requests.post(changeLog, verify=False)
+		if reqReadme.status_code == 200:
+			print 'Archivo de configuracion encontrado en: ' + readme
+		else:
+			continue
+		if reqChange.status_code == 200:
+			print 'Archivo de configuracion encontrado en: ' + changeLog
+		else:
+			continue
 
+def other(arg):
+	req = requests.post(arg)
+	print req.headers
 
-ojs(arg)
+other(arg)
+#version(arg)
+#ojs(arg)
 
