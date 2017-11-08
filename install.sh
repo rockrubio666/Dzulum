@@ -1,7 +1,7 @@
 #!/bin/sh
 apt-get update
 apt-get install git python-pip python-argparse libxml2-dev libxslt-dev python-dev tor privoxy -y
-pip install requests lxml stem wget
+pip install requests lxml stem wget termcolor
 
 sed -i 's/^#\(.*\)ControlPort/ControlPort/g' /etc/tor/torrc
 sed -i 's/^#\(.*\)CookieAuthenticacion/CookieAuthenticacion/g' /etc/tor/torrc
