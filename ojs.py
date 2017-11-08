@@ -506,7 +506,7 @@ def files(arg):
 
 def other(arg):
 	req = requests.post(arg)
-	print req.headers
+	print type(req.headers)
 
 other(arg)
 #version(arg)
