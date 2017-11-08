@@ -11,57 +11,27 @@ import wget
 import os
 from collections import Counter
 import operator
+from termcolor import colored
 
 readme = ''
 arg = ''
 
-def moodle(arg):
-# Si el argumento tiene http(s)
-	m = hashlib.md5()
-	
-	if 'http://' in arg or 'https://' in arg:
-		req = requests.post(arg)
-		webpage = html.fromstring(req.content)
-		fav = webpage.xpath('//link[@rel="shortcut icon"]/@href')
-		
-		mod = re.sub(r'(\/theme\/(.*))','',fav[0])
-		readme = requests.post(mod + '/README.txt')
-		upgrade = requests.post(mod + '/lib/upgrade.txt')
-		
-		if upgrade.status_code == 200:
-			regex = re.compile(r'===(.*)===')
-			match = regex.search(str(upgrade.text))
-			try:
-				if match.group():
-					print "La version del sitio: " + arg + " es: " + match.group(1)
-					sys.exit
-			except:
-				files(arg)
-			sys.exit
-			
-		else:
-			if readme.status_code == 200:
-				m.update(readme.text)
-				hs =  m.hexdigest()
-				files(arg,hs)
-			else:
-				files(arg,'')
+readmeFiles = ['/auth/README.txt',  '/cache/README.md', '/enrol/README.txt',  '/install/README.txt',
+				'/install/stringnames.txt', '/iplookup/README.txt', '/local/readme.txt',
+				'/mod/README.txt', 	'/repository/README.txt',  '/lib/tcpdf/README.TXT']
 
-# Si no tiene http(s) se pega a la direccion
-	else:
-		http =  re.sub(r'(^)','http://',arg)
-		moodle(http)
-		exit(2)
-		
+changeFiles = ['/lib/tcpdf/CHANGELOG.TXT', '/lib/tcpdf/fonts/freefont-20120503/ChangeLog']
 
 
-def files(arg,readme):
-	
-	m = hashlib.md5()
-	elements = []
-	average = []
-	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
-	versions = {  
+plugGroup = ['/auth/upgrade.txt', '/availability/upgrade.txt', '/backup/upgrade.txt',
+				'/badges/upgrade.txt', '/blocks/upgrade.txt', '/cache/upgrade.txt',
+				'/calendar/upgrade.txt', '/cohort/upgrade.txt' '/completion/upgrade.txt', '/enrol/upgrade.txt',
+				'/files/upgrade.txt', '/filter/upgrade.txt','/lib/upgrade.txt', '/local/upgrade.txt','/message/upgrade.txt',
+				'/mod/upgrade.txt','/portfolio/upgrade.txt', '/question/upgrade.txt','/report/upgrade.txt', '/tag/upgrade.txt',
+				'/theme/upgrade.txt','/webservice/upgrade.txt', '/repository/upgrade.txt']
+
+plugins = ['']
+versions = {  
 		
 		"3.3" : ['84979523ed75adbc1556f1977139cae2',
 				'258e27081e3b0c7be0b3b71dabc2b849',
@@ -262,21 +232,64 @@ def files(arg,readme):
 				'd048aaf7d5372c0345b7dfdc44390b6',
 				'01516700e48e32b82d585c4ed81b80d',
 				'b21876108801757cdfc3437629d18187']} #README
+
+def moodle(arg):
+# Si el argumento tiene http(s)
+	m = hashlib.md5()
+	
+	if 'http://' in arg or 'https://' in arg:
+		requests.packages.urllib3.disable_warnings()					
+		readme = requests.post(arg + '/README.txt', verify=False)
+		upgrade = requests.post(arg + '/lib/upgrade.txt', verify=False)
+		
+		if upgrade.status_code == 200:
+			regex = re.compile(r'===(.*)===')
+			match = regex.search(str(upgrade.text))
+			try:
+				if match.group():
+					
+					print "La version del sitio: " + colored(arg,'green') + " es: " + colored(match.group(1),'green')
+					print "Version del sitio encontrada en: " + colored(upgrade.url,'green')
+					files(arg)
+					sys.exit
+			
+			except:
+				version(arg,readme)
+			sys.exit
+			
+		else:
+			if readme.status_code == 200:
+				m.update(readme.text)
+				hs =  m.hexdigest()
+				files(arg,hs)
+			else:
+				version(arg,'')
+
+# Si no tiene http(s) se pega a la direccion
+	else:
+		http =  re.sub(r'(^)','http://',arg)
+		moodle(http)
+		exit(2)
+		
+
+
+def version(arg,readme):
+	
+	m = hashlib.md5()
+	elements = []
+	average = []
+	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
 	
 	elements.append(readme)			
-	res = requests.post(arg)
+	requests.packages.urllib3.disable_warnings()					
+	res = requests.post(arg,verify=False)
 	webpage = html.fromstring(res.content)
 
-	i = 0
-	site =  re.sub(r'(http|https)://','',arg)
-	site = re.sub(r'/(.*)','',site)
-	dom  = site.split('.') # Extrae el dominio
-	dom.pop(0)
-	domain =  '.'.join(dom)
+	dom = re.sub(r'(http|https)://','',arg)
 
 	for i in range(0,len(listFind)):
 		for link in webpage.xpath(listFind[i]):
-			if domain in link:
+			if dom in link:
 				req = requests.post(link)
 				print link
 				if req.status_code == 200 and i in range(2,3):
@@ -304,9 +317,47 @@ def files(arg,readme):
 				average.append(key)
 	
 	cnt = Counter(average)
-	print '\nLa version es: ' + max(cnt.iteritems(),key=operator.itemgetter(1))[0]
+	print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(max(cnt.iteritems(),key=operator.itemgetter(1))[0], 'green')
+	files(arg)
 
 
+def files(arg):
+	
+	
+	for element in readmeFiles:
+		readme = arg + element
+		req = requests.post(readme, verify=False)
+		if req.status_code == 200:
+			print 'README file: ' + colored(readme, 'green')
+		else:
+			continue
+	
+	for element in changeFiles:
+		changeLog = arg +  element
+		req = requests.post(changeLog, verify= False)
+		if req.status_code == 200:
+			print 'ChangeLog: ' + colored(changeLog,'green')
+		else:
+			continue
+			
+	for element in plugGroup:
+		plugin = arg + element
+		req = requests.post(plugin, verify=False)
+		if req.status_code == 200:
+			up = re.sub(r'\/upgrade.txt','',element)
+			begin = re.sub(r'^\/','',up)
+			regex = re.compile(r'===(.*)===')
+			match = regex.search(req.text)
+			try:
+				if match.group():
+					path = re.sub(r'upgrade.txt','',plugin)
+					print "Plugin Name: " + colored(begin, 'green') + ',Version:' + colored(match.group(1),'blue') + ' Plugin Path: ' + colored(path, 'green')
+			
+			except:
+				continue
+		else:
+			continue
+	
 def getParams(arg):
 	
 	parser = argparse.ArgumentParser(description='Escaner de vulnerabilidades en OJS y Moodle',
