@@ -10,20 +10,27 @@ import wget
 import os
 from collections import Counter
 import operator
+from termcolor import colored,cprint
 
 arg = sys.argv[1]
 
+readmeFiles = ['2.0.1','2.0.2','2.1.0','2.1.1','2.2.0','2.2.1','2.2.3','2.3.0','2.3.1','2.3.2','2.3.4','2.3.5',
+			'2.3.6', '2.3.7','2.4.0','2.4.1','2.4.2','2.4.3','2.4.4','2.4.5','2.4.6','2.4.7','2.4.8',
+			'3.0', '3.0b', '3.0.1', '3.0.2','BEACON']
+
+changeFiles = ['2.0.1', '2.0.2', '2.1', '2.1.1', '2.2', '2.2.1', '2.3.0', '2.3.3', '2.3.4', '2.3.5', '2.3.6'
+				'2.3.7', '2.3.8', '2.4.0', '2.4.1', '2.4.2', '2.4.3', '2.4.4', '2.4.5']
+
+pluginDefault = ['/generic/lucene/README' , '/gateways/resolver/README', '/reports/subscriptions/README', 
+				'/generic/counter/README', '/generic/openAds/README','/generic/tinymce/README',
+				'/generic/staticPages/README', '/generic/customBlockManager/README', '/implicitAuth/shibboleth/README-Shibboleth',
+				'/generic/pdfJsViewer/README', '/generic/googleAnalytics/README.md', '/importexport/crossref/README',
+				'/importexport/datacite/README', '/importexport/medra/README', '/importexport/pubmed/README',
+				'/generic/orcidProfile/README.md', '/generic/webFeed/README', '/generic/addThis-master/README.md',
+				'/generic/piwik-master/README.md', '/generic/ojs3-markup-master/README.md', '/generic/defaultTranslation-ojs-dev-2_4/README',
+				'/generic/translator-master/README', '/generic/makeSubmission-master/readme.md', '/generic/reviewReport-master/README.md',
+				'/generic/citationStyleLanguage-master/readme.md', '/generic/coins-master/README.md', '/generic/ojs-markup-master/README.md']
 versions = {  
-		
-		"2.0.1"	: '',
-		"2.0.2" : '',
-		"2.1" : '',
-		"2.2" : '',
-		"2.3.0" : '',
-		"2.3.1" : '',
-		"2.3.2" : '',
-		"2.3.3" : '',
-		"2.3.4" : '',
 		"2.3.5" : ['384772142d1907d7d3aea3ac11fad9d0',
 					'7d640303ec1bd0a376999f6e75f63c8d',
 					'65501be7c096bbe4646d5d3e9e345e62',
@@ -354,15 +361,18 @@ versions = {
 				   '293231fd3b3a687dc6dd6be0fdddca59']}
 	
 def ojs(arg):
+	requests.packages.urllib3.disable_warnings()
 	req = requests.post(arg, verify=False)
 	page_source =  req.text
 		
-	regex = re.compile(r'(.*)(name="generator") content="(.*)"')
+	regex = re.compile(r'(.*)(name="generator") content="(.*)"(.*)')
 	match = regex.search(page_source)
 	try:
 		if match.group():	
-			print "La version del sitio: " + arg + " es: " + match.group(3)
+			print "La version del sitio: " + colored(arg, 'green') + " es: " + colored(match.group(3),'green')
+			print "Version del sitio encontrada en:" + colored(match.group(),'green')
 			files(arg)
+		exit
 	except:
 		version(arg)
 
@@ -371,22 +381,17 @@ def version(arg):
 	elements = []
 	average = []
 	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
-						
-	res = requests.post(arg)
+	
+	requests.packages.urllib3.disable_warnings()					
+	res = requests.post(arg, verify=False)
 	page_source = res.text
 	webpage = html.fromstring(res.content)
-
-	i = 0
-	site =  re.sub(r'(http|https)://','',arg)
-	site = re.sub(r'/(.*)','',site)
-	dom  = site.split('.') # Extrae el dominio
-	dom.pop(0)
-	domain =  '.'.join(dom)
 	
+	dom = re.sub(r'(http|https)://','',arg)
+
 	for i in range(0,len(listFind)):
 		for link in webpage.xpath(listFind[i]):
-			if domain in link:
-			#if 'localhost'	in link:
+			if dom in link:
 				req = requests.post(link)
 				if req.status_code == 200 and i in range(2,3):
 					try:
@@ -413,102 +418,64 @@ def version(arg):
 				average.append(key)
 				
 	cnt = Counter(average)
-	print '\nLa version es: ' + max(cnt.iteritems(),key=operator.itemgetter(1))[0]
+	print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(max(cnt.iteritems(),key=operator.itemgetter(1))[0], 'green')
 	files(arg)
 	
 	
 def files(arg):
-	confFiles = {'auth' : 'ldap',
-	
-				'blocks' : ['authorBios', 'developedBy', 'donation', 'fontSize', 'help',
-				'information', 'keywordCloud', 'languageToggle', 'navigation', 'notification',
-				'readingTools', 'recentArticles', 'relatedItems', 'role', 'subscription', 'user'],
-				
-				'citationFormats' : ['abnt','apa','bibtex','cbe','endNote','mla','proCite','refMan','refWorks','turabian'],
-				
-				'citationLookup' : ['crossref', 'isbndb','pubmed','worldcat'],
-				
-				'citationOutput' : ['abnt','apa','mla','vancouver'],
-				
-				'citationParser' : ['freecite','paracite','parscit','regex'],
-				
-				'gateways' : ['metsGateway', 'resolver'],
-				
-				'generic' : ['acron', 'alm', 'anouncementFeed', 'backup', 'booksForReview',
-						'browse', 'category', 'coins', 'counter', 'customLocale', 'dataverse',
-						'driver', 'externalFeed', 'googleAnalytics', 'googleViewer', 'jquery',
-						'lucene', 'objectsForReview', 'openAds', 'openAIRE', 'phpMyVisites', 'piwik',
-						'pln', 'referral', 'relatedVideos', 'roundedCorners', 'sehl', 'staticPages',
-						'stopForumSpam', 'sword', 'thesis', 'thesisFeed', 'timedView', 'tinymce', 'traslator',
-						'usageEvent', 'usageStats', 'webFeed', 'xmlGalley'],
-						
-				'implicitAuth' : 'shibboleth',
-				
-				'importexport' : ['crossref', 'doaj', 'datacite', 'erudit', 'medra', 'mets', 'native', 
-								'pubIds', 'pubmed', 'quickSubmit', 'sample', 'users'],
-								
-				'metadata' : ['dc11','mods34','nlm30','openurl10'],
-				
-				'oaiMetadataFormats' : ['dc','marc','marcxml','nlm','README', 'rfc1807'],
-				
-				'paymethod' : ['manual', 'moneris', 'paypal'],
-				
-				'pubIds' : ['doi', 'urn'],
-				
-				'reports' : ['articles','counter','reviews','subscriptions','timedView','views']}
-	
-	theme = ['blueSteel', 'classicBlue', 'classicBrown', 'classicGreen', 'classicNavy','classicRed', 'custom', 'desert', 'lilac', 'night', 'redbar', 'steel', 'uncommon', 'vanilla', 'default']
-	
-	
-	
-	for key,value in confFiles.items():
-		for element in value:
-			version =  arg + '/plugins/' + key + '/' + element + '/version.xml'
-			req = requests.post(version, verify=False)
-			if req.status_code == 200:
-				plug = re.compile(r'<application>(.*)<\/application>')
-				matchp = plug.search(str(req.text))
-				plugVer = re.compile(r'<release>(.*)<\/release>')
-				matchv = plugVer.search(str(req.text))	
+	for element in pluginDefault:
+		plugin = arg + '/plugins' + element
+		req = requests.post(plugin, verify=False)
+		if req.status_code == 200:
+			
+			plugName = re.compile(r'=== (.*)')
+			match = plugName.search(req.text)
+			try:
+				if match.group():	
+					print "Plugin Name: " + colored(match.group(1), 'green') + ' Plugin Path: ' + colored(plugin, 'green')
+			except:
+				regex = re.compile(r'(.*)\/(.*)\/README(.*)')
+				match = regex.search(plugin)
 				try:
-					if matchp.group() and matchv.group():	
-						print 'Plugin: ' + matchp.group(1) + ', Version: ' + matchv.group(1)
+					if match.group():
+						print "Plugin Name: " + colored(match.group(2), 'green') + ' Plugin Path: ' + colored(plugin, 'green')
 				except:
 					continue
-	
-	for element in theme:
-		version = arg + '/plugins/themes/' + element + '/version.xml'
-		req = requests.post(version, verify=False)
-		if req.status_code == 200:
-			th = re.compile(r'<application>(.*)<\/application>')
-			matcht = th.search(str(req.text))
-			thVer = re.compile(r'<release>(.*)<\/release>')
-			matchv = thVer.search(str(req.text))	
+				
+			plugVers = re.compile(r'(===) (Version(.*))')
+			match = plugVers.search(req.text)
 			try:
-				if matcht.group() and matchv.group():	
-					print 'Theme: ' + matcht.group(1) + ' Version: ' + matchv.group(1)
+				if match.group():
+					print colored( "Plugin " + match.group(2),'blue')
 			except:
 				continue
 				
-	for key in versions:
-		readme = arg + '/docs/release-notes/README-' + key
-		changeLog = arg + '/docs/release-notes/ChangeLog-' + key
-		reqReadme = requests.post(readme,verify=False)
-		reqChange = requests.post(changeLog, verify=False)
-		if reqReadme.status_code == 200:
-			print 'Archivo de configuracion encontrado en: ' + readme
 		else:
 			continue
-		if reqChange.status_code == 200:
-			print 'Archivo de configuracion encontrado en: ' + changeLog
+	
+	
+	
+	for element in readmeFiles:
+		readme = arg + '/docs/release-notes/README-' + element
+		req = requests.post(readme, verify=False)
+		if req.status_code == 200:
+			print 'README file: ' + colored(readme, 'green')
 		else:
 			continue
+			
+	for element in changeFiles:
+		changeLog = arg + '/docs/release-notes/ChangeLog-' + element
+		req = requests.post(changeLog, verify= False)
+		if req.status_code == 200:
+			print 'ChangeLog: ' + colored(changeLog,'green')
+		else:
+			continue
+	
+	req = requests.post(arg + '/robots.txt', verify=False)
+	if req.status_code == 200:
+		print 'Robots file: ' + colored(req.url, 'green')
 
-def other(arg):
-	req = requests.post(arg)
-	print type(req.headers)
 
-other(arg)
-#version(arg)
-#ojs(arg)
+ojs(arg)
+
 
