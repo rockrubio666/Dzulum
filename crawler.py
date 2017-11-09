@@ -5,6 +5,7 @@ import sys
 import argparse
 from lxml import etree
 from lxml import html
+from termcolor import colored
 
 arg = sys.argv[1]
 visited = []
@@ -12,14 +13,15 @@ toVisit = []
 
 
 def crawler(arg):
-	print 'Consulta del sitio: ' + arg
+	print colored('Consulta del sitio: ','white') + colored(arg, 'green')
 	if 'http://' in arg or 'https://' in arg: # Valida si tiene http(s)
 		# Lista para encontrar elementos
 		listFind = [ '//a/@href',  '//script/@src']
 		
 		# Peticiones
 		try:
-			res = requests.post(arg)
+			requests.packages.urllib3.disable_warnings()					
+			res = requests.post(arg, verify=False)
 			page_source = res.text
 			webpage = html.fromstring(res.content)
 			
@@ -31,19 +33,15 @@ def crawler(arg):
 		# Extrae los elementos de la pagina principal
 		i = 0
 		site =  re.sub(r'(http|https)://','',arg)
-		dom  = site.split('.') # Extrae el dominio
-		dom.pop(0)
-		domain =  '.'.join(dom)
-	
 		
 		for i in range(0,len(listFind)):
 			for link in webpage.xpath(listFind[i]):
-				if domain in link: # Para los enlaces que contienen el nombre de dominio
+				if site in link: # Para los enlaces que contienen el nombre de dominio
 					regex = re.compile(r'(.*)\.js') #Si el enlace contiene js se agrega a una lista que no se consulta
 					js = regex.search(link)
 					try:
 						if js.group() not in visited:
-							print js.group()
+							print colored('Link: ', 'white') + colored(js.group(),'blue')
 							visited.append(link)
 					except:
 						regex = re.compile(r'(.*)\?(.*)') # Quita las variables despues de ?
@@ -51,11 +49,11 @@ def crawler(arg):
 						try:
 							if match.group():
 								if match.group(1) not in toVisit and match.group(1) not in visited:
-									print match.group(1)
+									print colored('Link: ', 'white') + colored(match.group(1),'blue')
 									toVisit.append(match.group(1))
 						except:
 							if link not in toVisit and link not in visited: #Si el enlace no tiene variables
-								print link
+								print colored('Link: ', 'white') + colored(link,'blue')
 								toVisit.append(link)
 					
 				else: #Otros enlaces Ej:'/'
@@ -70,7 +68,7 @@ def crawler(arg):
 							try:
 								if status.group():
 									if complete not in toVisit and complete not in visited:
-										print complete
+										print colored('Link: ', 'white') + colored(complete,'blue')
 										toVisit.append(complete)
 							except:
 								continue
@@ -91,8 +89,7 @@ def crawler(arg):
 		
 		crawler(toVisit[element])
 	
-	print visited
-	print toVisit
+	
 
 crawler(arg)
 
