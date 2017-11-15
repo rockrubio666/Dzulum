@@ -29,7 +29,8 @@ pluginDefault = ['/generic/lucene/README' , '/gateways/resolver/README', '/repor
 				'/generic/orcidProfile/README.md', '/generic/webFeed/README', '/generic/addThis-master/README.md',
 				'/generic/piwik-master/README.md', '/generic/ojs3-markup-master/README.md', '/generic/defaultTranslation-ojs-dev-2_4/README',
 				'/generic/translator-master/README', '/generic/makeSubmission-master/readme.md', '/generic/reviewReport-master/README.md',
-				'/generic/citationStyleLanguage-master/readme.md', '/generic/coins-master/README.md', '/generic/ojs-markup-master/README.md']
+				'/generic/citationStyleLanguage-master/readme.md', '/generic/coins-master/README.md', '/generic/ojs-markup-master/README.md',
+				'/generic/ojs-plum-plugin-master/README.md']
 versions = {  
 		"2.3.5" : ['384772142d1907d7d3aea3ac11fad9d0',
 					'7d640303ec1bd0a376999f6e75f63c8d',
@@ -427,28 +428,30 @@ def files(arg):
 		plugin = arg + '/plugins' + element
 		req = requests.post(plugin, verify=False)
 		if req.status_code == 200:
-			
 			plugName = re.compile(r'=== (.*)')
-			match = plugName.search(req.text)
-			try:
-				if match.group():	
-					print "Plugin Name: " + colored(match.group(1), 'green') + ' Plugin Path: ' + colored(plugin, 'green')
-			except:
-				regex = re.compile(r'(.*)\/(.*)\/README(.*)')
-				match = regex.search(plugin)
-				try:
-					if match.group():
-						print "Plugin Name: " + colored(match.group(2), 'green') + ' Plugin Path: ' + colored(plugin, 'green')
-				except:
-					continue
-				
+			pN = plugName.search(req.text)
 			plugVers = re.compile(r'(===) (Version(.*))')
-			match = plugVers.search(req.text)
+			pV = plugVers.search(req.text)
 			try:
-				if match.group():
-					print colored( "Plugin " + match.group(2),'blue')
+				if pN.group():	
+					try:
+						if pV.group():
+							print "Plugin, Name: " + colored(pN.group(1), 'green') + ' ,Path: ' + colored(plugin, 'green') + " " + colored(pV.group(2), 'blue')
+					except:
+						print "Plugin, Name: " + colored(pN.group(1), 'green') + ' ,Path: ' + colored(plugin, 'green')
+				
 			except:
 				continue
+					
+			regex = re.compile(r'(.*)\/(.*)\/README(.*)')
+			match = regex.search(plugin)
+			try:
+				if match.group():
+					print "Plugin, Name: " + colored(match.group(2), 'green') + ' ,Path: ' + colored(plugin, 'green')
+			except:
+				continue
+				
+			
 				
 		else:
 			continue
