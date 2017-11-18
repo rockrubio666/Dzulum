@@ -385,9 +385,8 @@ def version(arg):
 	
 	requests.packages.urllib3.disable_warnings()					
 	res = requests.post(arg, verify=False)
-	page_source = res.text
-	webpage = html.fromstring(res.content)
 	
+	webpage = html.fromstring(res.content)
 	dom = re.sub(r'(http|https)://','',arg)
 
 	for i in range(0,len(listFind)):
@@ -424,6 +423,9 @@ def version(arg):
 	
 	
 def files(arg):
+	listThemes = ['//script/@src', '//@href']
+	tmp = []
+	requests.packages.urllib3.disable_warnings()					
 	for element in pluginDefault:
 		plugin = arg + '/plugins' + element
 		req = requests.post(plugin, verify=False)
@@ -451,11 +453,8 @@ def files(arg):
 			except:
 				continue
 				
-			
-				
 		else:
 			continue
-	
 	
 	
 	for element in readmeFiles:
@@ -477,7 +476,50 @@ def files(arg):
 	req = requests.post(arg + '/robots.txt', verify=False)
 	if req.status_code == 200:
 		print 'Robots file: ' + colored(req.url, 'green')
-
+	
+	
+	res = requests.post(arg, verify=False)
+	webpage = html.fromstring(res.content)
+	for i in range(0,len(listThemes)):
+		for link in webpage.xpath(listThemes[i]):
+			if 'theme' in link or 'journals' in link or 'themes' in link:
+				tmp.append(link)
+			else:
+				continue
+				
+	for element in range(0,len(tmp)):
+		if 'default' in tmp[element]:
+			print colored( 'Default Theme', 'green') + ' Path: ' + colored(tmp[element], 'green')
+			element + i
+		elif 'journals' in tmp[element]:
+			regex = re.compile(r'(.*)\/(.*)\.css')
+			match = regex.search(tmp[element])
+			try:
+				if match.group():	
+					print 'Customize Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
+					element + 1
+			except:
+				pass
+		elif 'theme' in tmp[element]:
+			regex = re.compile(r'(.*)\/(.*)\.css')
+			match = regex.search(tmp[element])
+			try:
+				if match.group():	
+					print 'Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
+			except:
+				pass	
+		elif 'bootstrap' in tmp[element]:
+			regex = re.compile(r'(.*)\/(.*)\.css')
+			match = regex.search(tmp[element])
+			try:
+				if match.group():	
+					print 'Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
+			except:
+				pass	
+		else:
+			sys.exit
+		
+			
 
 ojs(arg)
 
