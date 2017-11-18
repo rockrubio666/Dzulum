@@ -116,9 +116,7 @@ def getParams(arg):
 	
 	if len(sys.argv) >= 3:
 			numMeme = random.randint(0,5)
-			print numMeme
 			numColor = random.randint(0,6)
-			print numColor
 			ban(numMeme,numColor)
 	
 	if options.proxy in sys.argv: # Se separa la dir ip y el puerto
