@@ -1,4 +1,5 @@
 #!/usr/bin/python
+
 import argparse
 import socket
 import re
@@ -13,10 +14,9 @@ from collections import Counter
 import operator
 from termcolor import colored
 
-readme = ''
 arg = ''
 
-readmeFiles = ['/auth/README.txt',  '/cache/README.md', '/enrol/README.txt',  '/install/README.txt',
+readmeFiles = ['/README.txt','/auth/README.txt',  '/cache/README.md', '/enrol/README.txt',  '/install/README.txt',
 				'/install/stringnames.txt', '/iplookup/README.txt', '/local/readme.txt',
 				'/mod/README.txt', 	'/repository/README.txt',  '/lib/tcpdf/README.TXT']
 
@@ -42,7 +42,23 @@ versions = {
 				'43e4b947ad5155701cbb41bd94793405',
 				'0b088cdd96bb785fb0e311b7a81ce3d4',
 				'3d1254d6baf1b3395111efd1ed8fc5df', #README
-				'4807e45c357cc33d41b1c3cce527870c'], #/lib/upgrade.txt
+				'4807e45c357cc33d41b1c3cce527870c', #/lib/upgrade.txt
+				'8039fd714b58260199b364107c92bff6',
+				'29454f5ec24631650a7a7ed7ad79463b',
+				'90dd07be382480b22194e460b91f7def',
+				'd6a5dd0947f0a2868c2fedb0303a52ef',
+				'874494283d39c6407a33aeae46435432',
+				'36ab779c70b94b59159c1ab624d64b09',
+				'c093dca6cbd009358598e75a84135239',
+				'ef8aa13daac904de774532acb43eae52',
+				'8039fd714b58260199b364107c92bff6',
+				'29454f5ec24631650a7a7ed7ad79463b',
+				'90dd07be382480b22194e460b91f7def',
+				'd6a5dd0947f0a2868c2fedb0303a52ef',
+				'874494283d39c6407a33aeae46435432',
+				'36ab779c70b94b59159c1ab624d64b09',
+				'c093dca6cbd009358598e75a84135239',
+				'ef8aa13daac904de774532acb43eae52'], 
 		
 		"3.2" : ['827f6ccc7f5f1c980a58717911372000',
 				'0fbac5f5d051f4a173095af9c17f2dea',
@@ -51,7 +67,11 @@ versions = {
 				'19557f056a188921ce40d89cab73a12',
 				'688e64dad15173cac9837708e090f20',
 				'3d1254d6baf1b3395111efd1ed8fc5df', #README
-				'f2b4fe132564f4088cfa4e5be0d3347d'], #/lib/upgrade.txt
+				'f2b4fe132564f4088cfa4e5be0d3347d', #/lib/upgrade.txt
+				'874494283d39c6407a33aeae46435432',
+				'36ab779c70b94b59159c1ab624d64b09',
+				'c093dca6cbd009358598e75a84135239',
+				'ef8aa13daac904de774532acb43eae52'], 
 		
 		"3.1" : ['827f6ccc7f5f1c980a58717911372000',
 				'eb574c401659603b9e4bcec0b584ad7f',
@@ -234,37 +254,37 @@ versions = {
 				'b21876108801757cdfc3437629d18187']} #README
 
 def moodle(arg):
+	
 # Si el argumento tiene http(s)
 	m = hashlib.md5()
 	
 	if 'http://' in arg or 'https://' in arg:
 		requests.packages.urllib3.disable_warnings()					
-		readme = requests.post(arg + '/README.txt', verify=False)
 		upgrade = requests.post(arg + '/lib/upgrade.txt', verify=False)
 		
-		if upgrade.status_code == 200:
+		if upgrade.status_code == 200: #Si tiene el archivp upgrade
 			regex = re.compile(r'===(.*)===')
-			match = regex.search(str(upgrade.text))
+			match = regex.search(upgrade.text)
 			try:
-				if match.group():
+				if match.group(): #Si es un numero de version
+					try:
+						if complex(match.group(1)):
+							print "La version del sitio: " + colored(arg,'green') + " es: " + colored(match.group(1),'green')
+							print "Version del sitio encontrada en: " + colored(upgrade.url,'green')
+							files(arg)
+							sys.exit	
+					except:	
+						version(arg)
+						sys.exit
 					
-					print "La version del sitio: " + colored(arg,'green') + " es: " + colored(match.group(1),'green')
-					print "Version del sitio encontrada en: " + colored(upgrade.url,'green')
-					files(arg)
-					sys.exit
-			
 			except:
-				version(arg,readme)
+				version(arg)
+				sys.exit
+		
+		else: #Si no lo tiene
+			version(arg)
 			sys.exit
 			
-		else:
-			if readme.status_code == 200:
-				m.update(readme.text)
-				hs =  m.hexdigest()
-				files(arg,hs)
-			else:
-				version(arg,'')
-
 # Si no tiene http(s) se pega a la direccion
 	else:
 		http =  re.sub(r'(^)','http://',arg)
@@ -272,45 +292,57 @@ def moodle(arg):
 		exit(2)
 		
 
-
-def version(arg,readme):
-	
+def version(arg):	
 	m = hashlib.md5()
 	elements = []
 	average = []
 	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
 	
-	elements.append(readme)			
 	requests.packages.urllib3.disable_warnings()					
+	
 	res = requests.post(arg,verify=False)
+	
+		
 	webpage = html.fromstring(res.content)
-
 	dom = re.sub(r'(http|https)://','',arg)
 
 	for i in range(0,len(listFind)):
 		for link in webpage.xpath(listFind[i]):
 			if dom in link:
-				req = requests.post(link)
-				print link
-				if req.status_code == 200 and i in range(2,3):
-					try:
-						filename = wget.download(link, bar=None)
-						m.update(filename)
-						hs = m.hexdigest()
-						elements.append(hs)
-						os.remove(filename)
-					except:
-						continue
+				if link.startswith('http'):	
+					req = requests.post(link)
+					print link
+					if req.status_code == 200 and i in range(2,3):
+						try:
+							filename = wget.download(link, bar=None)
+							m.update(filename)
+							hs = m.hexdigest()
+							elements.append(hs)
+							os.remove(filename)
+						except:
+							continue
 				
-				else:
-					try:
-						m.update(req.text)
-						hs =  m.hexdigest()
-						elements.append(hs)
-					except:
-						continue
+					else:
+						try:
+							m.update(req.text)
+							hs =  m.hexdigest()
+							elements.append(hs)
+						except:
+							continue
+	
+	readme = requests.post(arg + '/README.txt', verify=False)
+	if readme.status_code == 200:
+		try:
+			m.update(readme.text)
+			hs = m.hexdigest()
+			elements.append(hs)
+		except:
+			pass
+		
 	
 	
+			
+			
 	for element in elements:
 		for key,value in versions.iteritems():
 			if element in value:
@@ -323,12 +355,13 @@ def version(arg,readme):
 
 def files(arg):
 	
-	
 	for element in readmeFiles:
 		readme = arg + element
 		req = requests.post(readme, verify=False)
 		if req.status_code == 200:
 			print 'README file: ' + colored(readme, 'green')
+		elif req.status_code == 403:
+			print 'Forbidden README: ' + colored(readme, 'green')
 		else:
 			continue
 	
@@ -337,6 +370,8 @@ def files(arg):
 		req = requests.post(changeLog, verify= False)
 		if req.status_code == 200:
 			print 'ChangeLog: ' + colored(changeLog,'green')
+		elif req.status_code == 403:
+			print 'Forbidden ChangeLog: ' + colored(changeLog,'green')
 		else:
 			continue
 			
@@ -346,17 +381,29 @@ def files(arg):
 		if req.status_code == 200:
 			up = re.sub(r'\/upgrade.txt','',element)
 			begin = re.sub(r'^\/','',up)
-			regex = re.compile(r'===(.*)===')
+			regex = re.compile(r'(===)(.*)(===)')
 			match = regex.search(req.text)
 			try:
 				if match.group():
 					path = re.sub(r'upgrade.txt','',plugin)
-					print "Plugin Name: " + colored(begin, 'green') + ',Version:' + colored(match.group(1),'blue') + ' Plugin Path: ' + colored(path, 'green')
-			
+					try:
+						if complex(match.group(2)):
+							print "Plugin Name: " + colored(begin, 'green') + ', Version:' + colored(match.group(2),'blue') + ', Path: ' + colored(path, 'green')
+					except:
+						print "Plugin Name: " + colored(begin, 'yellow') + ', Path: ' + colored(path, 'green')
 			except:
 				continue
+		
+		elif req.status_code == 403:
+			path = re.sub(r'upgrade.txt','',plugin)
+			one = re.sub(r'^\/','',element)
+			plug = re.sub(r'/upgrade.txt','',one)
+			print "Forbidden Plugin,  Name: " + colored(plug, 'yellow') + ', Path: ' + colored(path, 'green')
+			continue
+		
 		else:
 			continue
+				
 	
 def getParams(arg):
 	
