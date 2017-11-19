@@ -311,7 +311,6 @@ def version(arg):
 			if dom in link:
 				if link.startswith('http'):	
 					req = requests.post(link)
-					print link
 					if req.status_code == 200 and i in range(2,3):
 						try:
 							filename = wget.download(link, bar=None)
@@ -403,6 +402,29 @@ def files(arg):
 		
 		else:
 			continue
+			
+	res = requests.post(arg,verify=False)
+	webpage = html.fromstring(res.text)
+	theme =  webpage.xpath('//link[@rel="shortcut icon"]/@href')
+	
+	for element in theme:
+		if '=' in element:
+			regex = re.compile(r'(.*)(theme=)(.*)(\&image=(.*))')
+			match = regex.search(element)
+			try:
+				if match.group():
+					print "Theme Name: " + colored(match.group(3), 'green') + ', Path: ' + colored(element, 'green')
+			except:
+				pass
+		else:
+			regex = re.compile(r'(.*)\/(.*)\/theme\/(.*)')
+			match = regex.search(element)
+			try:
+				if match.group():
+					print "Theme Name: " + colored(match.group(2), 'green') + ', Path: ' + colored(match.group(1) + '/' + match.group(2), 'green')
+			except:
+				print "Theme Name: " + colored(match.group(2), 'green')
+		
 				
 	
 def getParams(arg):
