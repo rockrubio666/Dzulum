@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-import argparse
 import socket
 import re
 import sys
@@ -425,26 +424,3 @@ def files(arg):
 			except:
 				print "Theme Name: " + colored(match.group(2), 'green')
 		
-				
-	
-def getParams(arg):
-	
-	parser = argparse.ArgumentParser(description='Escaner de vulnerabilidades en OJS y Moodle',
-		formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-
-	parser.add_argument('-u', '--url', help='Direccion URL del sitio')
-					
-	
-	options = parser.parse_args()
-	
-	if len(sys.argv) == 1:
-		print parser.print_help()
-		
-	
-	elif '-u' in sys.argv or '--url':
-		moodle(options.url)
-		
-		
-getParams(arg)
-
-
