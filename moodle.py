@@ -13,7 +13,6 @@ from collections import Counter
 import operator
 from termcolor import colored
 
-arg = ''
 
 readmeFiles = ['/README.txt','/auth/README.txt',  '/cache/README.md', '/enrol/README.txt',  '/install/README.txt',
 				'/install/stringnames.txt', '/iplookup/README.txt', '/local/readme.txt',
@@ -252,7 +251,7 @@ versions = {
 				'01516700e48e32b82d585c4ed81b80d',
 				'b21876108801757cdfc3437629d18187']} #README
 
-def moodle(arg):
+def moodle(arg, verbose):
 	
 # Si el argumento tiene http(s)
 	m = hashlib.md5()
@@ -268,20 +267,24 @@ def moodle(arg):
 				if match.group(): #Si es un numero de version
 					try:
 						if complex(match.group(1)):
-							print "La version del sitio: " + colored(arg,'green') + " es: " + colored(match.group(1),'green')
-							print "Version del sitio encontrada en: " + colored(upgrade.url,'green')
-							files(arg)
+							if int(verbose) == 1:
+								print 'Version del sitio: ' + colored(match.group(1),'green')
+							elif int(verbose) == 2:
+								print "La version del sitio: " + colored(arg,'green') + " es: " + colored(match.group(1),'green')
+							elif int(verbose) == 3:
+								print "Version del sitio encontrada en: " + colored(upgrade.url,'green')
+							files(arg,verbose)
 							sys.exit	
 					except:	
-						version(arg)
+						version(arg,verbose)
 						sys.exit
 					
 			except:
-				version(arg)
+				version(arg,verbose)
 				sys.exit
 		
 		else: #Si no lo tiene
-			version(arg)
+			version(arg,verbose)
 			sys.exit
 			
 # Si no tiene http(s) se pega a la direccion
@@ -291,7 +294,7 @@ def moodle(arg):
 		exit(2)
 		
 
-def version(arg):	
+def version(arg,verbose):	
 	m = hashlib.md5()
 	elements = []
 	average = []
@@ -347,18 +350,19 @@ def version(arg):
 				average.append(key)
 	
 	cnt = Counter(average)
-	print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(max(cnt.iteritems(),key=operator.itemgetter(1))[0], 'green')
-	files(arg)
+	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
+		print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(max(cnt.iteritems(),key=operator.itemgetter(1))[0], 'green')
+	files(arg,verbose)
 
 
-def files(arg):
+def files(arg, verbose):
 	
 	for element in readmeFiles:
 		readme = arg + element
 		req = requests.post(readme, verify=False)
-		if req.status_code == 200:
+		if req.status_code == 200 and int(verbose) == 3:
 			print 'README file: ' + colored(readme, 'green')
-		elif req.status_code == 403:
+		elif req.status_code == 403 and int(verbose) == 3:
 			print 'Forbidden README: ' + colored(readme, 'green')
 		else:
 			continue
@@ -366,9 +370,9 @@ def files(arg):
 	for element in changeFiles:
 		changeLog = arg +  element
 		req = requests.post(changeLog, verify= False)
-		if req.status_code == 200:
+		if req.status_code == 200 and int(verbose) == 3:
 			print 'ChangeLog: ' + colored(changeLog,'green')
-		elif req.status_code == 403:
+		elif req.status_code == 403 and int (verbose) == 3:
 			print 'Forbidden ChangeLog: ' + colored(changeLog,'green')
 		else:
 			continue
@@ -386,9 +390,17 @@ def files(arg):
 					path = re.sub(r'upgrade.txt','',plugin)
 					try:
 						if complex(match.group(2)):
-							print "Plugin Name: " + colored(begin, 'green') + ', Version:' + colored(match.group(2),'blue') + ', Path: ' + colored(path, 'green')
+							if int(verbose) == 1:
+								print "Plugin Name: " + colored(begin, 'green')
+							elif int(verbose) == 2:
+								print "Plugin Name: " + colored(begin, 'green') + ', Path: ' + colored(path,'green')
+							elif int(verbose) == 3:
+								print "Plugin Name: " + colored(begin, 'green') + ', Path: ' + colored(path, 'green') + ' ,Version: ' + colored(match.group(2),'blue')
 					except:
-						print "Plugin Name: " + colored(begin, 'yellow') + ', Path: ' + colored(path, 'green')
+						if int(verbose) == 1:
+							print "Plugin Name: " + colored(begin, 'green')
+						elif int(verbose) == 2 or int(verbose) == 3:
+							print "Plugin Name: " + colored(begin, 'green') + ', Path: ' + colored(path, 'green')
 			except:
 				continue
 		
@@ -396,7 +408,8 @@ def files(arg):
 			path = re.sub(r'upgrade.txt','',plugin)
 			one = re.sub(r'^\/','',element)
 			plug = re.sub(r'/upgrade.txt','',one)
-			print "Forbidden Plugin,  Name: " + colored(plug, 'yellow') + ', Path: ' + colored(path, 'green')
+			if int(verbose) == 3:
+				print "Forbidden Plugin,  Name: " + colored(plug, 'yellow') + ', Path: ' + colored(path, 'green')
 			continue
 		
 		else:
@@ -412,7 +425,10 @@ def files(arg):
 			match = regex.search(element)
 			try:
 				if match.group():
-					print "Theme Name: " + colored(match.group(3), 'green') + ', Path: ' + colored(element, 'green')
+					if int(verbose) == 1:
+						print "Theme Name: " + colored(match.group(3), 'green')
+					elif int(verbose) == 2 or int(verbose) == 3:
+						print "Theme Name: " + colored(match.group(3), 'green') + ', Path: ' + colored(element, 'green')
 			except:
 				pass
 		else:
@@ -420,7 +436,11 @@ def files(arg):
 			match = regex.search(element)
 			try:
 				if match.group():
-					print "Theme Name: " + colored(match.group(2), 'green') + ', Path: ' + colored(match.group(1) + '/' + match.group(2), 'green')
+					if int(verbose) == 1:
+						print "Theme Name: " + colored(match.group(2),'green')
+					elif int(verbose) == 2 or int(verbose) == 3:
+						print "Theme Name: " + colored(match.group(2), 'green') + ', Path: ' + colored(match.group(1) + '/' + match.group(2), 'green')
 			except:
-				print "Theme Name: " + colored(match.group(2), 'green')
+				if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
+					print "Theme Name: " + colored(match.group(2), 'green')
 		
