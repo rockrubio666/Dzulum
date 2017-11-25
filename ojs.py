@@ -359,23 +359,29 @@ versions = {
 				   '4e3706431052055bcd3aed2a06479b0',
 				   '293231fd3b3a687dc6dd6be0fdddca59']}
 	
-def ojs(arg):
+def ojs(arg,verbose):
 	requests.packages.urllib3.disable_warnings()
 	req = requests.post(arg, verify=False)
 	page_source =  req.text
-		
+
 	regex = re.compile(r'(.*)(name="generator") content="(.*)"(.*)')
 	match = regex.search(page_source)
+
 	try:
 		if match.group():	
-			print "La version del sitio: " + colored(arg, 'green') + " es: " + colored(match.group(3),'green')
-			print "Version del sitio encontrada en:" + colored(match.group(),'green')
-			files(arg)
+			if int(verbose) == 1:
+				print "la version del sitio es: " + colored(match.group(3),'green')
+			elif int(verbose) == 2:
+				print "La version del sitio: " + colored(arg, 'green') + " es: " + colored(match.group(3),'green')
+			elif int(verbose) == 3:
+				print "La version del sitio: " + colored(arg, 'green') + " es: " + colored(match.group(3),'green')
+				print "Version del sitio encontrada en:" + colored(match.group(),'green')
+			files(arg,verbose)
 		exit
 	except:
-		version(arg)
+		version(arg,verbose)
 
-def version(arg):
+def version(arg,verbose):
 	m = hashlib.md5()
 	elements = []
 	average = []
@@ -416,11 +422,12 @@ def version(arg):
 				average.append(key)
 				
 	cnt = Counter(average)
-	print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(max(cnt.iteritems(),key=operator.itemgetter(1))[0], 'green')
-	files(arg)
+	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
+		print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(max(cnt.iteritems(),key=operator.itemgetter(1))[0], 'green')
+	files(arg,verbose)
 	
 	
-def files(arg):
+def files(arg,verbose):
 	listThemes = ['//script/@src', '//@href']
 	tmp = []
 	requests.packages.urllib3.disable_warnings()					
@@ -436,9 +443,17 @@ def files(arg):
 				if pN.group():	
 					try:
 						if pV.group():
-							print "Plugin, Name: " + colored(pN.group(1), 'green') + ' ,Path: ' + colored(plugin, 'green') + " " + colored(pV.group(2), 'blue')
+							if int(verbose) == 1:
+								print "Plugin Name: " + colored(pN.group(1),'green')
+							elif int(verbose) == 2:
+								print "Plugin, Name: " + colored(pN.group(1),'green') + ' ,Path: ' + colored(plugin, 'green')
+							elif int(verbose) == 3:
+								print "Plugin, Name: " + colored(pN.group(1), 'green') + ' ,Path: ' + colored(plugin, 'green') + " " + colored(pV.group(2), 'blue')
 					except:
-						print "Plugin, Name: " + colored(pN.group(1), 'green') + ' ,Path: ' + colored(plugin, 'green')
+						if int(verbose) == 1:
+							print "Plugin Name: " + colored(pN.group(1), 'green') 
+						elif int(verbose) == 2 or int(verbose) == 3:
+							print "Plugin, Name: " + colored(pN.group(1), 'green') + ' ,Path: ' + colored(plugin, 'green')
 				
 			except:
 				continue
@@ -447,7 +462,10 @@ def files(arg):
 			match = regex.search(plugin)
 			try:
 				if match.group():
-					print "Plugin, Name: " + colored(match.group(2), 'green') + ' ,Path: ' + colored(plugin, 'green')
+					if int(verbose) == 1:
+						print "Plugin Name: " + colored(match.group(2),'green')
+					elif int(verbose) == 2 or int(verbose) == 3:
+						print "Plugin, Name: " + colored(match.group(2), 'green') + ' ,Path: ' + colored(plugin, 'green')
 			except:
 				continue
 				
@@ -458,7 +476,7 @@ def files(arg):
 	for element in readmeFiles:
 		readme = arg + '/docs/release-notes/README-' + element
 		req = requests.post(readme, verify=False)
-		if req.status_code == 200:
+		if req.status_code == 200 and int(verbose) == 3:
 			print 'README file: ' + colored(readme, 'green')
 		else:
 			continue
@@ -466,13 +484,13 @@ def files(arg):
 	for element in changeFiles:
 		changeLog = arg + '/docs/release-notes/ChangeLog-' + element
 		req = requests.post(changeLog, verify= False)
-		if req.status_code == 200:
+		if req.status_code == 200 and int(verbose) == 3:
 			print 'ChangeLog: ' + colored(changeLog,'green')
 		else:
 			continue
 	
 	req = requests.post(arg + '/robots.txt', verify=False)
-	if req.status_code == 200:
+	if req.status_code == 200 and int(verbose) == 3:
 		print 'Robots file: ' + colored(req.url, 'green')
 	
 	
@@ -487,14 +505,22 @@ def files(arg):
 				
 	for element in range(0,len(tmp)):
 		if 'default' in tmp[element]:
-			print colored( 'Default Theme', 'green') + ' Path: ' + colored(tmp[element], 'green')
+			if int(verbose) == 1:
+				print colored('Default Theme', 'green')
+			elif int(verbose) == 2 or int(verbose) == 3:
+				print colored( 'Default Theme', 'green') + ' Path: ' + colored(tmp[element], 'green')
 			element + i
 		elif 'journals' in tmp[element]:
 			regex = re.compile(r'(.*)\/(.*)\.css')
 			match = regex.search(tmp[element])
 			try:
-				if match.group():	
-					print 'Customize Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
+				if match.group():
+					if int(verbose) == 1:
+						print colored('Customize Theme ', 'green')
+					elif int(verbose) == 2:
+						print colored('Customize Theme, Name: ' + match.group(2), 'green')
+					elif int(verbose) == 3:	
+						print 'Customize Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
 					element + 1
 			except:
 				pass
@@ -502,8 +528,11 @@ def files(arg):
 			regex = re.compile(r'(.*)\/(.*)\.css')
 			match = regex.search(tmp[element])
 			try:
-				if match.group():	
-					print 'Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
+				if match.group():
+					if int(verbose) == 1:
+						print 'Theme, Name: ' + colored(match.group(2),'green')
+					elif int(verbose) == 2 or int(verbose) == 3:	
+						print 'Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
 			except:
 				pass	
 		elif 'bootstrap' in tmp[element]:
@@ -511,7 +540,10 @@ def files(arg):
 			match = regex.search(tmp[element])
 			try:
 				if match.group():	
-					print 'Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
+					if int(verbose) == 1:
+						print 'Theme, Name: ' + colored(match.group(2))
+					elif int(verbose) == 2 or int(verbose) == 3:
+						print 'Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
 			except:
 				pass	
 		else:
