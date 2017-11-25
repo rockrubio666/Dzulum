@@ -7,13 +7,13 @@ from lxml import etree
 from lxml import html
 from termcolor import colored
 
-#arg = sys.argv[1]
 visited = []
 toVisit = []
 
 
-def crawler(arg):
-	print colored('Consulta del sitio: ','white') + colored(arg, 'green')
+def crawler(arg,verbose):
+	print colored("Beginning Crawling", 'blue')
+	print 'Consulta del sitio: ' + colored(arg, 'green')
 	if 'http://' in arg or 'https://' in arg: # Valida si tiene http(s)
 		# Lista para encontrar elementos
 		listFind = [ '//a/@href',  '//script/@src']
@@ -41,7 +41,8 @@ def crawler(arg):
 					js = regex.search(link)
 					try:
 						if js.group() not in visited:
-							print colored('Link: ', 'white') + colored(js.group(),'blue')
+							if int(verbose) == 2 or int(verbose) == 3:
+								print 'Link: ' + colored(js.group(),'blue')
 							visited.append(link)
 					except:
 						regex = re.compile(r'(.*)\?(.*)') # Quita las variables despues de ?
@@ -49,11 +50,11 @@ def crawler(arg):
 						try:
 							if match.group():
 								if match.group(1) not in toVisit and match.group(1) not in visited:
-									print colored('Link: ', 'white') + colored(match.group(1),'blue')
+									print 'Link: ' + colored(match.group(1),'blue')
 									toVisit.append(match.group(1))
 						except:
 							if link not in toVisit and link not in visited: #Si el enlace no tiene variables
-								print colored('Link: ', 'white') + colored(link,'blue')
+								print 'Link: ' + colored(link,'blue')
 								toVisit.append(link)
 					
 				else: #Otros enlaces Ej:'/'
@@ -68,7 +69,7 @@ def crawler(arg):
 							try:
 								if status.group():
 									if complete not in toVisit and complete not in visited:
-										print colored('Link: ', 'white') + colored(complete,'blue')
+										print 'Link: ' + colored(complete,'blue')
 										toVisit.append(complete)
 							except:
 								continue
@@ -83,13 +84,12 @@ def crawler(arg):
 			crawler(http)
 			exit(2)
 	
-	for element in range(len(toVisit)):
-		visited.append(toVisit[element])
-		print colored(toVisit[element], 'blue')
+	#for element in range(len(toVisit)):
+	#	visited.append(toVisit[element])
+	#	print colored(toVisit[element], 'blue')
 		#toVisit.pop(element)
 		
 		#crawler(toVisit[element])
 	
 	
 
-#crawler(arg)
