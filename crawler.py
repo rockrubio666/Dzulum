@@ -7,7 +7,7 @@ from lxml import etree
 from lxml import html
 from termcolor import colored
 
-arg = sys.argv[1]
+#arg = sys.argv[1]
 visited = []
 toVisit = []
 
@@ -92,4 +92,4 @@ def crawler(arg):
 	
 	
 
-crawler(arg)
+#crawler(arg)
