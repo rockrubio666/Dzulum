@@ -7,10 +7,8 @@ import os
 from termcolor import colored
 
 	
-f = ''
-url = ''
 
-def crawlerHead(url,f):
+def crawlerHead(url,f,verbose):
 	print colored('\nBeginning Crawling with Head request', 'green')
 	fake = []
 	conLen = []
@@ -51,7 +49,7 @@ def crawlerHead(url,f):
 	
 	
 	resources.pop(0)
-	print colored('Buscando recursos en: ', 'white') + colored(sites[0],'green')
+	print 'Buscando recursos en: ' + colored(sites[0],'green')
 	
 
 	for element in resources: # Por cada elemento de la lista, se hace la peticion y se ve el codigo de estado
@@ -66,7 +64,8 @@ def crawlerHead(url,f):
 			if match.group():	# Si el codigo de estado es 200, se muestra el recurso
 				if element not in sites:
 					sites.append(element)
-					print colored("Existe el recurso: ",'white') + colored(element, 'green')
+					if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
+						print "Existe el recurso: " + colored(element, 'green')
 				else:
 					continue
 		except:
@@ -80,7 +79,8 @@ def crawlerHead(url,f):
 							print colored(element, 'cyan')
 						break
 					else:
-						print colored('Posible recurso: ', 'yellow') + colored(element,'blue')				
+						if int(verbose) == 2 or int(verbose) == 3:
+							print colored('Posible recurso: ', 'yellow') + colored(element,'blue')				
 						for key, value in res.headers.iteritems():
 							if 'location' in key: 
 								if value in f:
