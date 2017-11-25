@@ -83,13 +83,13 @@ def crawler(arg):
 			crawler(http)
 			exit(2)
 	
-	for element in range(0,5):
+	for element in range(len(toVisit)):
 		visited.append(toVisit[element])
-		toVisit.pop(element)
+		print colored(toVisit[element], 'blue')
+		#toVisit.pop(element)
 		
-		crawler(toVisit[element])
+		#crawler(toVisit[element])
 	
 	
 
 crawler(arg)
-
