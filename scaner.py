@@ -20,30 +20,36 @@ def getParams(arg):
 	parser.add_argument('-m','--moodle', metavar='URL', help = 'URL from Moodle site')
 	parser.add_argument('-c', '--crawlerHead', metavar='File', help = 'File with directories')	
 	parser.add_argument('-C', '--Crawler', metavar='URL', help = 'Crawling site')	
+	parser.add_argument('-v','--verbose', metavar='Number', help='Verbose Level 1-3', required=True)
 	options = parser.parse_args()
 	
 	if len(sys.argv) == 1 :
 		print parser.print_help()
-		
-	if not (options.ojs or options.moodle):
-		print parser.print_help()
-		
-	elif options.crawlerHead in sys.argv and options.Crawler in sys.argv:
-		print parser.print_help()
-
-	elif options.ojs in sys.argv:
-		ojs(options.ojs)
-		if options.crawlerHead in sys.argv:
-			crawlerHead(options.ojs,options.crawlerHead)
-		elif options.Crawler in sys.argv:
-			crawler(options.ojs)
 	
-	elif options.moodle in sys.argv:
-		moodle(options.moodle)
-		if options.crawlerHead in sys.argv: 
-			crawlerHead(options.moodle,options.crawlerHead)
-		elif options.Crawler in sys.argv:
-			crawler(options.moodle)
+	
+	if int(options.verbose)	>= 4 or int(options.verbose) == 0:
+		print parser.print_help()
+	else:	
+		if not (options.ojs or options.moodle):
+			print parser.print_help()
+		
+		elif options.crawlerHead in sys.argv and options.Crawler in sys.argv:
+			print parser.print_help()
+	
+	
+		elif options.ojs in sys.argv:
+			ojs(options.ojs,options.verbose)
+			if options.crawlerHead in sys.argv:
+				crawlerHead(options.ojs,options.crawlerHead,options.verbose)
+			elif options.Crawler in sys.argv:
+				crawler(options.ojs,options.verbose)
+	
+		elif options.moodle in sys.argv:
+			moodle(options.moodle,options.verbose)
+			if options.crawlerHead in sys.argv: 
+				crawlerHead(options.moodle,options.crawlerHead,options.verbose)
+			elif options.Crawler in sys.argv:
+				crawler(options.moodle,options.verbose)
 	
 	
 	
