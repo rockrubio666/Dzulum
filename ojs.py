@@ -30,11 +30,14 @@ def ojs(arg,verbose):
 			elif int(verbose) == 3:
 				print "La version del sitio: " + colored(arg, 'green') + " es: " + colored(match.group(3),'green')
 				print "Version del sitio encontrada en:" + colored(match.group(),'green')
-			files(arg,verbose)
-		exit
+		
 	except:
 		version(arg,verbose)
-
+		
+	files(arg,verbose,match.group(3))
+	
+			
+	
 def version(arg,verbose):
 	m = hashlib.md5()
 	elements = []
@@ -83,11 +86,12 @@ def version(arg,verbose):
 
 	cnt = Counter(average)
 	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
-		print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(max(cnt.iteritems(),key=operator.itemgetter(1))[0], 'green')
-	files(arg,verbose)
+		v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
+		print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(v, 'green')
+	files(arg,verbose,v)
 	
 	
-def files(arg,verbose):
+def files(arg,verbose,version):
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
 
@@ -218,3 +222,18 @@ def files(arg,verbose):
 				pass	
 		else:
 			sys.exit
+	vuln(version,verbose)
+
+def vuln(version,verbose):
+	f = open('vuln','rb')
+	reader = csv.reader(f,delimiter=',')
+	
+	for row in reader:
+		if 'Ojs' in row[0] and row[1] in version:
+			if int(verbose) == 1:
+				print "Vulnerability Link: " + colored(row[3],'green')
+			elif int(verbose) == 2 or int(verbose) == 3:
+				print "Vulnerability Name: " + colored(row[2],'green') + ' ,Vulnerability Link: ' + colored(row[3],'green')
+	f.close()
+	quit()
+

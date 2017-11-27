@@ -18,7 +18,6 @@ import csv
 plugins = ['']
 
 def moodle(arg, verbose):
-	
 # Si el argumento tiene http(s)
 	m = hashlib.md5()
 	
@@ -26,32 +25,26 @@ def moodle(arg, verbose):
 		requests.packages.urllib3.disable_warnings()					
 		upgrade = requests.post(arg + '/lib/upgrade.txt', verify=False)
 		
-		if upgrade.status_code == 200: #Si tiene el archivp upgrade
+		if int(upgrade.status_code) == 200: #Si tiene el archivp upgrade
 			regex = re.compile(r'===(.*)===')
 			match = regex.search(upgrade.text)
 			try:
 				if match.group(): #Si es un numero de version
-					try:
-						if complex(match.group(1)):
-							if int(verbose) == 1:
-								print 'Version del sitio: ' + colored(match.group(1),'green')
-							elif int(verbose) == 2:
-								print "La version del sitio: " + colored(arg,'green') + " es: " + colored(match.group(1),'green')
-							elif int(verbose) == 3:
-								print "Version del sitio encontrada en: " + colored(upgrade.url,'green')
-							files(arg,verbose)
-							sys.exit	
-					except:	
-						version(arg,verbose)
-						sys.exit
+					if int(verbose) == 1:
+						print 'Version del sitio: ' + colored(match.group(1),'green')
+					elif int(verbose) == 2:
+						print "La version del sitio: " + colored(arg,'green') + " es: " + colored(match.group(1),'green')
+					elif int(verbose) == 3:
+						print "Version del sitio encontrada en: " + colored(upgrade.url,'green')
+					files(arg,verbose,match.group(1))
+				
 					
 			except:
-				version(arg,verbose)
-				sys.exit
+				exit(2)
 		
 		else: #Si no lo tiene
 			version(arg,verbose)
-			sys.exit
+			quit()
 			
 # Si no tiene http(s) se pega a la direccion
 	else:
@@ -121,11 +114,12 @@ def version(arg,verbose):
 	
 	cnt = Counter(average)
 	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
-		print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(max(cnt.iteritems(),key=operator.itemgetter(1))[0], 'green')
-	files(arg,verbose)
+		v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
+		print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(v, 'green')
+	files(arg,verbose,v)
 	f.close()
 
-def files(arg, verbose):
+def files(arg, verbose,version):
 	
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
@@ -220,4 +214,18 @@ def files(arg, verbose):
 			except:
 				if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 					print "Theme Name: " + colored(match.group(2), 'green')
+	vuln(version,verbose)
+	sys.exit
 		
+def vuln(version,verbose):
+	f = open('vuln','rb')
+	reader = csv.reader(f,delimiter=',')
+	
+	for row in reader:
+		if 'Moodle' in row[0] and row[1] in version:
+			if int(verbose) == 1:
+				print "Vulnerability Link: " + colored(row[3],'green')
+			elif int(verbose) == 2 or int(verbose) == 3:
+				print "Vulnerability Name: " + colored(row[2],'green') + ' ,Vulnerability Link: ' + colored(row[3],'green')
+	f.close()
+	quit()
