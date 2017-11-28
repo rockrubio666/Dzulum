@@ -44,7 +44,7 @@ def moodle(arg, verbose):
 		
 		else: #Si no lo tiene
 			version(arg,verbose)
-			quit()
+			
 			
 # Si no tiene http(s) se pega a la direccion
 	else:
@@ -228,4 +228,4 @@ def vuln(version,verbose):
 			elif int(verbose) == 2 or int(verbose) == 3:
 				print "Vulnerability Name: " + colored(row[2],'green') + ' ,Vulnerability Link: ' + colored(row[3],'green')
 	f.close()
-	quit()
+	
