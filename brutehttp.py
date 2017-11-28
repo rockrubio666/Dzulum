@@ -7,18 +7,7 @@ import argparse
 import os.path
 from termcolor import colored
 
-arg = ''
-reqFile = ''
-user = ''
-pwd = ''
-userField = ''
-passField = ''
-userFile = ''
-passile = ''
-message = ''
-op = ''
-
-def checkFile(reqFile,user,pwd,userFile,passFile,message):
+def checkFile(reqFile,user,pwd,userFile,passFile,message,verbose):
 	print colored("\nBeginning BruteForce with Request File", 'cyan')
 	if os.path.exists(reqFile):
 		fo = open(reqFile,'r')
@@ -41,21 +30,20 @@ def checkFile(reqFile,user,pwd,userFile,passFile,message):
 	
 	
 	if user == '' and pwd == '':
-		doubleFile(url,userField,passField,user,pwd,userFile,passFile,message)
+		doubleFile(url,userField,passField,user,pwd,userFile,passFile,message,verbose)
 		
 	elif user == '' and passFile == '':
-		usersFile(url,userField,passField,user,pwd,userFile,passFile,message)
+		usersFile(url,userField,passField,user,pwd,userFile,passFile,message,verbose)
 	
 	elif userFile == '' and pwd == '':
-		pwdFile(url, userField, passField, user, pwd, userFile, passFile, message)
+		pwdFile(url, userField, passField, user, pwd, userFile, passFile, message,verbose)
 		
 	elif userFile == '' and passFile == '':
-		print 'aqui'
-		single(url,userField,passField,user,pwd,userFile,passFile,message)
+		single(url,userField,passField,user,pwd,userFile,passFile,message,verbose)
 			
 
 
-def single(url, userField, passField, user, pwd, userFile, pwdFile, message):
+def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose):
 	print url,userField,passField,user,pwd,userField,passField,message
 	mbefore = message
 	requests.packages.urllib3.disable_warnings()		
@@ -74,22 +62,53 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message):
 
 	if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
 		if int(len(r.content)) - int(len(user)) == int(len(reqadm1.content)) and mbefore in r.content:
-			print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
+			if int(verbose) == 1:
+				print colored('Ataque no exitoso ', 'red')
+			elif int (verbose) == 2:
+				print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow')
+			elif int(verbose) == 3:
+				print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
 		else:
-			print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
+			if int(verbose) == 1:
+				print colored('Ataque exitoso ', 'green')
+			elif int(verbose) == 2:
+				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue')
+			elif int(verbose) == 3:
+				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
 	
 	elif int(len(reqadm1.content)) == int(len(reqadm2.content)) and int(len(reqadm1.content)) == int(len(reqadm3.content)): # Si el Content-Lenght es igual
 		if int(len(r.content)) == int(len(reqadm1.content)) and mbefore in r.content:
-			print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
+			if int(verbose) == 1:
+				print colored('Ataque no exitoso ', 'red')
+			elif int (verbose) == 2:
+				print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow')
+			elif int(verbose) == 3:
+				print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
 		else:
-			print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
+			if int(verbose) == 1:
+				print colored('Ataque exitoso ', 'green')
+			elif int(verbose) == 2:
+				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue')
+			elif int(verbose) == 3:
+				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
 	else: # Si no se puede determinar mediante content-lenght
 		if mbefore in r.text:
-			print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
+			if int(verbose) == 1:
+				print colored('Ataque no exitoso ', 'red')
+			elif int (verbose) == 2:
+				print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow')
+			elif int(verbose) == 3:
+				print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
 		else:
-			print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
+			if int(verbose) == 1:
+				print colored('Ataque exitoso ', 'green')
+			elif int(verbose) == 2:
+				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue')
+			elif int(verbose) == 3:
+				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
+		
 
-def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message):
+def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose):
 	users = []
 	requests.packages.urllib3.disable_warnings()		
 	
@@ -117,23 +136,57 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message):
 			
 			if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
 				if int(len(r.content)) - int(len(users[i])-1) == int(len(reqadm1.content)) and mbefore in r.content:
-					print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
+					if int(verbose) == 1:
+						print colored('Ataque no exitoso ', 'red')
+					elif int (verbose) == 2:
+						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
+					elif int(verbose) == 3:
+						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
 				else:
-					print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
+					if int(verbose) == 1:
+						print colored('Ataque exitoso ', 'green')
+					elif int(verbose) == 2:
+						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
+					elif int(verbose) == 3:
+						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
+	
 	
 			elif int(len(reqadm1.content)) == int(len(reqadm2.content)) and int(len(reqadm1.content)) == int(len(reqadm3.content)): # Si el Content-Lenght es igual
 				if int(len(r.content)) == int(len(reqadm1.content)) or mbefore in r.content:
-					print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
+					if int(verbose) == 1:
+						print colored('Ataque no exitoso ', 'red')
+					elif int (verbose) == 2:
+						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
+					elif int(verbose) == 3:
+						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
 				else:
-					print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
+					if int(verbose) == 1:
+						print colored('Ataque exitoso ', 'green')
+					elif int(verbose) == 2:
+						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
+					elif int(verbose) == 3:
+						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
+	
 	
 			else: # Si no se puede determinar mediante content-lenght
 				if mbefore in r.text:
-					print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
+					if int(verbose) == 1:
+						print colored('Ataque no exitoso ', 'red')
+					elif int (verbose) == 2:
+						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
+					elif int(verbose) == 3:
+						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
 				else:
-					print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
+					if int(verbose) == 1:
+						print colored('Ataque exitoso ', 'green')
+					elif int(verbose) == 2:
+						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
+					elif int(verbose) == 3:
+						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
+		
 
-def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message):
+def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose):
+	
 	passwords = []
 	
 	requests.packages.urllib3.disable_warnings()		
@@ -163,24 +216,53 @@ def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message):
 			
 			if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
 				if int(len(r.content)) - int(len(user)) == int(len(reqadm1.content)) and mbefore in r.content:
-					print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
+					if int(verbose) == 1:
+						print colored('Ataque no exitoso ', 'red')
+					elif int (verbose) == 2:
+						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow')
+					elif int(verbose) == 3:
+						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
 				else:
-					print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
+					if int(verbose) == 1:
+						print colored('Ataque exitoso ', 'green')
+					elif int(verbose) == 2:
+						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue')
+					elif int(verbose) == 3:
+						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
 			
 			elif int(len(reqadm1.content)) == int(len(reqadm2.content)) and int(len(reqadm1.content)) == int(len(reqadm3.content)): # Si el Content-Lenght es igual
 				if int(len(r.content)) == int(len(reqadm1.content)) and mbefore in r.content:
-					print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
+					if int(verbose) == 1:
+						print colored('Ataque no exitoso ', 'red')
+					elif int (verbose) == 2:
+						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow')
+					elif int(verbose) == 3:
+						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
 				else:
-					print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
+					if int(verbose) == 1:
+						print colored('Ataque exitoso ', 'green')
+					elif int(verbose) == 2:
+						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue')
+					elif int(verbose) == 3:
+						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
 					
 			else: # Si no se puede determinar mediante content-lenght
 				if mbefore in r.text:
-					print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
+					if int(verbose) == 1:
+						print colored('Ataque no exitoso ', 'red')
+					elif int (verbose) == 2:
+						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow')
+					elif int(verbose) == 3:
+						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
 				else:
-					print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
+					if int(verbose) == 1:
+						print colored('Ataque exitoso ', 'green')
+					elif int(verbose) == 2:
+						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue')
+					elif int(verbose) == 3:
+						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
 
-
-def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message):
+def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose):
 	users = []
 	passwords = []
 	i = 0
@@ -221,59 +303,65 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message)
 			
 				if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
 					if int(len(r.content)) - int(len(users[i])-1) == int(len(reqadm1.content)) and mbefore in r.content:
-						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
+						if int(verbose) == 1:
+							print colored('Ataque no exitoso ', 'red')
+						elif int (verbose) == 2:
+							print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
+						elif int(verbose) == 3:
+							print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
 						
 						j + 1
 					else:
-						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')
+						if int(verbose) == 1:
+							print colored('Ataque exitoso ', 'green')
+						elif int(verbose) == 2:
+							print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
+						elif int(verbose) == 3:
+							print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')
+
+						
 						j + 1
 						
 				elif int(len(reqadm1.content)) == int(len(reqadm2.content)) and int(len(reqadm1.content)) == int(len(reqadm3.content)): # Si el Content-Lenght es igual
 					if int(len(r.content)) == int(len(reqadm1.content)) and mbefore in r.content:
-						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
+						if int(verbose) == 1:
+							print colored('Ataque no exitoso ', 'red')
+						elif int (verbose) == 2:
+							print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
+						elif int(verbose) == 3:
+							print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
+						
 						j + 1
 					else:
-						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')
+						if int(verbose) == 1:
+							print colored('Ataque exitoso ', 'green')
+						elif int(verbose) == 2:
+							print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
+						elif int(verbose) == 3:
+							print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')
+
+						
 						j + 1
 				else: # Si no se puede determinar mediante content-lenght
 					if mbefore in r.text:
-						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
+						if int(verbose) == 1:
+							print colored('Ataque no exitoso ', 'red')
+						elif int (verbose) == 2:
+							print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
+						elif int(verbose) == 3:
+							print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
+						
+						j + 1
 					else:
-						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')
+						if int(verbose) == 1:
+							print colored('Ataque exitoso ', 'green')
+						elif int(verbose) == 2:
+							print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
+						elif int(verbose) == 3:
+							print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')
+
+						
+						j + 1
 		i + 1	
 
 
-
-'''
-def getParams(arg):
-	parser = argparse.ArgumentParser(description='Fuerza Bruta',
-		formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-
-	parser.add_argument('-r', '--reqfile', help = 'File with HTTP request', required=True)
-	parser.add_argument('-u', '--user', help = 'User account')
-	parser.add_argument('-p', '--password', help='User\'s password')
-	parser.add_argument('-U', '--users', help='File with users')
-	parser.add_argument('-P', '--passwords', help='File with passwords')
-	parser.add_argument('-m', '--message', help='Error message', required=True)
-					
-	options = parser.parse_args()
-	
-	
-	if len(sys.argv) == 1:
-		print parser.print_help()
-	
-	if options.user is None and options.password is None and options.users is not None and options.passwords is not None:
-		checkFile(options.reqfile,'','',options.users,options.passwords,options.message)
-	elif options.password is None and options.users is None and options.user is not None and options.passwords is not None:
-		checkFile(options.reqfile,options.user,'','',options.passwords,options.message)
-	elif options.user is None and options.passwords is None and options.users is not None and options.password is not None:
-		checkFile(options.reqfile,'',options.password,options.users,'',options.message)
-	if options.users is None and options.passwords is None and options.user is not None and options.password is not None:
-		checkFile(options.reqfile,options.user,options.password,'','',options.message)	
-	elif options.user is None and options.users is None or options.password is None and options.passwords is None:
-		print parser.print_help()
-		
-
-		
-getParams(arg)
-'''
