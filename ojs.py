@@ -13,9 +13,26 @@ from collections import Counter
 import operator
 from termcolor import colored
 
-def ojs(arg,verbose):
+def ojs(arg,verbose,cookie,agent):
 	requests.packages.urllib3.disable_warnings()
-	req = requests.post(arg, verify=False)
+	
+	if len(cookie) == 0 and len(agent) == 0:
+		req = requests.post(arg,verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		req = requests.post(arg,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		req = requests.post(arg, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		req = requests.post(arg, cookies = cookies, headers = headers, verify=False)
+	
+	
 	page_source =  req.text
 
 	regex = re.compile(r'(.*)(name="generator") content="(.*)"(.*)')
@@ -32,28 +49,58 @@ def ojs(arg,verbose):
 				print "Version del sitio encontrada en:" + colored(match.group(),'green')
 		
 	except:
-		version(arg,verbose)
+		version(arg,verbose,cookie,agent)
 		
-	files(arg,verbose,match.group(3))
+	files(arg,verbose,match.group(3),cookie,agent)
 	
 			
 	
-def version(arg,verbose):
+def version(arg,verbose,cookie,agent):
 	m = hashlib.md5()
 	elements = []
 	average = []
 	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
 	
 	requests.packages.urllib3.disable_warnings()					
-	res = requests.post(arg, verify=False)
+	if len(cookie) == 0 and len(agent) == 0:
+		req = requests.post(arg,verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		req = requests.post(arg,headers = headers, verify=False)
 	
-	webpage = html.fromstring(res.content)
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		req = requests.post(arg, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		req = requests.post(arg, cookies = cookies, headers = headers, verify=False)
+	
+	
+	webpage = html.fromstring(req.content)
 	dom = re.sub(r'(http|https)://','',arg)
 
 	for i in range(0,len(listFind)):
 		for link in webpage.xpath(listFind[i]):
 			if dom in link:
-				req = requests.post(link)
+				if len(cookie) == 0 and len(agent) == 0:
+					req = requests.post(link,verify=False)
+		
+				elif len(cookie) == 0 and len(agent) > 0:
+					headers = {'user-agent': agent}
+					req = requests.post(link,headers = headers, verify=False)
+			
+				elif len(cookie) > 0 and len(agent) == 0:
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(link, cookies = cookies, verify=False)
+		
+				elif len(cookie) > 0  and len(agent) > 0:
+					headers = {'user-agent': agent}
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(link, cookies = cookies, headers = headers, verify=False)
+	
 				if req.status_code == 200 and i in range(2,3):
 					try:
 						filename = wget.download(link, bar=None)
@@ -91,19 +138,36 @@ def version(arg,verbose):
 	files(arg,verbose,v)
 	
 	
-def files(arg,verbose,version):
+def files(arg,verbose,version,cookie,agent):
+	
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
 
 	listThemes = ['//script/@src', '//@href']
 	tmp = []
 	requests.packages.urllib3.disable_warnings()					
-
+		
 	for row in reader:
 		try:
 			if 'Plugin' in row[1] and 'Ojs' in row[0]:
 				plugin = arg + '/plugins' + row[2]
-				req = requests.post(plugin, verify=False)
+				
+				if len(cookie) == 0 and len(agent) == 0:
+					req = requests.post(plugin,verify=False)
+					
+				elif len(cookie) == 0 and len(agent) > 0:
+					headers = {'user-agent': agent}
+					req = requests.post(plugin,headers = headers, verify=False)
+			
+				elif len(cookie) > 0 and len(agent) == 0:
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(plugin, cookies = cookies, verify=False)
+		
+				elif len(cookie) > 0  and len(agent) > 0:
+					headers = {'user-agent': agent}
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(plugin, cookies = cookies, headers = headers, verify=False)
+					
 				if req.status_code == 200:
 					plugName = re.compile(r'=== (.*)')
 					pN = plugName.search(req.text)
@@ -143,7 +207,22 @@ def files(arg,verbose,version):
 
 			elif 'Readme' in row[1] and 'Ojs' in row[0]:
 				readme = arg + '/docs/release-notes/README-' + row[2]
-				req = requests.post(readme, verify=False)
+				if len(cookie) == 0 and len(agent) == 0:
+					req = requests.post(readme,verify=False)
+		
+				elif len(cookie) == 0 and len(agent) > 0:
+					headers = {'user-agent': agent}
+					req = requests.post(readme,headers = headers, verify=False)
+			
+				elif len(cookie) > 0 and len(agent) == 0:
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(readme, cookies = cookies, verify=False)
+		
+				elif len(cookie) > 0  and len(agent) > 0:
+					headers = {'user-agent': agent}
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(readme, cookies = cookies, headers = headers, verify=False)
+	
 				if req.status_code == 200 and int(verbose) == 3:
 					print 'README file: ' + colored(readme, 'green')
 				else:
@@ -152,14 +231,45 @@ def files(arg,verbose,version):
 			
 			elif 'Change' in row[1] and 'Ojs' in row[0]:		
 				changeLog = arg + '/docs/release-notes/ChangeLog-' + row[2]
-				req = requests.post(changeLog, verify= False)
+				if len(cookie) == 0 and len(agent) == 0:
+					req = requests.post(changeLog,verify=False)
+		
+				elif len(cookie) == 0 and len(agent) > 0:
+					headers = {'user-agent': agent}
+					req = requests.post(changeLog,headers = headers, verify=False)
+			
+				elif len(cookie) > 0 and len(agent) == 0:
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(changeLog, cookies = cookies, verify=False)
+		
+				elif len(cookie) > 0  and len(agent) > 0:
+					headers = {'user-agent': agent}
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(changeLog, cookies = cookies, headers = headers, verify=False)
+	
 				if req.status_code == 200 and int(verbose) == 3:
 					print 'ChangeLog: ' + colored(changeLog,'green')
 				else:
 					continue
 
 			elif 'Robots' in row[1] and 'Ojs' in row[0]:
-				req = requests.post(arg + row[2], verify=False)
+				if len(cookie) == 0 and len(agent) == 0:
+					req = requests.post(arg + row[2],verify=False)
+		
+				elif len(cookie) == 0 and len(agent) > 0:
+					headers = {'user-agent': agent}
+					req = requests.post(arg + row[2],headers = headers, verify=False)
+			
+				elif len(cookie) > 0 and len(agent) == 0:
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(arg + row[2], cookies = cookies, verify=False)
+		
+				elif len(cookie) > 0  and len(agent) > 0:
+					headers = {'user-agent': agent}
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(arg + row[2], cookies = cookies, headers = headers, verify=False)
+	
+				
 				if req.status_code == 200 and int(verbose) == 3:
 					print 'Robots file: ' + colored(req.url, 'green')
 				else:
@@ -168,8 +278,23 @@ def files(arg,verbose,version):
 			continue
 	f.close()
 	
-	res = requests.post(arg, verify=False)
-	webpage = html.fromstring(res.content)
+	if len(cookie) == 0 and len(agent) == 0:
+		req = requests.post(arg,verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		req = requests.post(arg,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		req = requests.post(arg, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		req = requests.post(arg, cookies = cookies, headers = headers, verify=False)
+	
+	webpage = html.fromstring(req.content)
 	for i in range(0,len(listThemes)):
 		for link in webpage.xpath(listThemes[i]):
 			if 'theme' in link or 'journals' in link or 'themes' in link:
