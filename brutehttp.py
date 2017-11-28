@@ -19,7 +19,7 @@ message = ''
 op = ''
 
 def checkFile(reqFile,user,pwd,userFile,passFile,message):
-	
+	print colored("\nBeginning BruteForce with Request File", 'cyan')
 	if os.path.exists(reqFile):
 		fo = open(reqFile,'r')
 		for line in fo:
@@ -29,11 +29,11 @@ def checkFile(reqFile,user,pwd,userFile,passFile,message):
 				if match.group():
 					url = match.group(1)
 			except:		
-				regex = re.compile(r'(.*)(\=)(.*)(\&)(.*)(\=)(.*)')
+				regex = re.compile(r'(.*=&)(.*)(=(.*)\&)(.*)(\=)(.*)')
 				match = regex.search(line)
 				try:
 					if match.group():
-						userField = match.group(1)
+						userField = match.group(2)
 						passField = match.group(5)
 				except:
 					continue
@@ -50,11 +50,13 @@ def checkFile(reqFile,user,pwd,userFile,passFile,message):
 		pwdFile(url, userField, passField, user, pwd, userFile, passFile, message)
 		
 	elif userFile == '' and passFile == '':
+		print 'aqui'
 		single(url,userField,passField,user,pwd,userFile,passFile,message)
 			
 
 
 def single(url, userField, passField, user, pwd, userFile, pwdFile, message):
+	print url,userField,passField,user,pwd,userField,passField,message
 	mbefore = message
 	requests.packages.urllib3.disable_warnings()		
 	
@@ -242,7 +244,7 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message)
 
 
 
-
+'''
 def getParams(arg):
 	parser = argparse.ArgumentParser(description='Fuerza Bruta',
 		formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -274,3 +276,4 @@ def getParams(arg):
 
 		
 getParams(arg)
+'''
