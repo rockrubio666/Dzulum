@@ -9,12 +9,22 @@ from lxml import etree
 from lxml import html
 import wget
 import os
+import urllib2
+import ssl
 from collections import Counter
 import operator
 from termcolor import colored
 
-def ojs(arg,verbose,cookie,agent):
+def ojs(arg,verbose,cookie,agent,ipproxy,portproxy):
 	requests.packages.urllib3.disable_warnings()
+	
+	if 'http://' in arg and len(ipproxy) > 0:
+		proxy = "http://" + ipproxy + ":" + portproxy
+		proxy_support = urllib2.ProxyHandler({'http': proxy})
+		opener = urllib2.build_opener(proxy_support)
+		urllib2.install_opener(opener)
+		html = urllib2.urlopen(arg).read()
+		print html
 	
 	if len(cookie) == 0 and len(agent) == 0:
 		req = requests.post(arg,verify=False)
