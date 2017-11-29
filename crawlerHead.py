@@ -8,7 +8,7 @@ from termcolor import colored
 
 	
 
-def crawlerHead(url,f,verbose):
+def crawlerHead(url,f,verbose,cookie,agent):
 	print colored('\nBeginning Crawling with Head request', 'green')
 	fake = []
 	conLen = []
@@ -41,7 +41,23 @@ def crawlerHead(url,f,verbose):
 			print "No se encontro el archivo"
 
 	requests.packages.urllib3.disable_warnings() # Se revisa el location que devuelve con el recurso que no exite
-	req = requests.head(resources[0], verify=False)
+	if len(cookie) == 0 and len(agent) == 0:
+		req = requests.head(resources[0], verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		req = requests.post(resources[0],headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		req = requests.post(resources[0], cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		req = requests.post(resources[0], cookies = cookies, headers = headers, verify=False)
+	
+	
 	fake.append(req.url)
 	for key,value in req.headers.iteritems():
 		if 'location' in key:
@@ -55,7 +71,24 @@ def crawlerHead(url,f,verbose):
 	for element in resources: # Por cada elemento de la lista, se hace la peticion y se ve el codigo de estado
 		other  = element.rstrip()
 		requests.packages.urllib3.disable_warnings()					
-		res = requests.head(other, verify=False)
+		
+		if len(cookie) == 0 and len(agent) == 0:
+			res = requests.head(other, verify=False)
+			
+		elif len(cookie) == 0 and len(agent) > 0:
+			headers = {'user-agent': agent}
+			res = requests.head(other,headers = headers, verify=False)
+		
+		elif len(cookie) > 0 and len(agent) == 0:
+			cookies = dict(cookies_are=cookie) 
+			res= requests.head(other, cookies = cookies, verify=False)
+		
+		elif len(cookie) > 0  and len(agent) > 0:
+			headers = {'user-agent': agent}
+			cookies = dict(cookies_are=cookie) 
+			res = requests.head(other, cookies = cookies, headers = headers, verify=False)
+	
+		
 		res.connection.close()
 		
 		regex = re.compile(r'20[0-6]')
@@ -88,5 +121,3 @@ def crawlerHead(url,f,verbose):
 			except:
 				continue
 		
-	
-	
