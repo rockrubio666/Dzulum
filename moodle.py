@@ -17,14 +17,31 @@ import csv
 
 plugins = ['']
 
-def moodle(arg, verbose):
+def moodle(arg, verbose,cookie,agent):
 # Si el argumento tiene http(s)
 	m = hashlib.md5()
 	
 	if 'http://' in arg or 'https://' in arg:
-		requests.packages.urllib3.disable_warnings()					
-		upgrade = requests.post(arg + '/lib/upgrade.txt', verify=False)
+		requests.packages.urllib3.disable_warnings()
+	
+		if len(cookie) == 0 and len(agent) == 0:
+			upgrade = requests.post(arg + '/lib/upgrade.txt', verify=False)
 		
+		elif len(cookie) == 0 and len(agent) > 0:
+			headers = {'user-agent': agent}
+			upgrade = requests.post(arg + '/lib/upgrade.txt', headers = headers,verify=False)
+			
+		
+		elif len(cookie) > 0 and len(agent) == 0:
+			cookies = dict(cookies_are=cookie) 
+			upgrade = requests.post(arg + '/lib/upgrade.txt', cookies = cookies,verify=False)
+		
+		elif len(cookie) > 0  and len(agent) > 0:
+			headers = {'user-agent': agent}
+			cookies = dict(cookies_are=cookie) 
+			upgrade = requests.post(arg + '/lib/upgrade.txt', cookies = cookies, headers = headers,verify=False)
+			
+						
 		if int(upgrade.status_code) == 200: #Si tiene el archivp upgrade
 			regex = re.compile(r'===(.*)===')
 			match = regex.search(upgrade.text)
@@ -36,14 +53,14 @@ def moodle(arg, verbose):
 						print "La version del sitio: " + colored(arg,'green') + " es: " + colored(match.group(1),'green')
 					elif int(verbose) == 3:
 						print "Version del sitio encontrada en: " + colored(upgrade.url,'green')
-					files(arg,verbose,match.group(1))
+					files(arg,verbose,match.group(1),cookie,agent)
 				
 					
 			except:
 				exit(2)
 		
 		else: #Si no lo tiene
-			version(arg,verbose)
+			version(arg,verbose,cookie,agent)
 			
 			
 # Si no tiene http(s) se pega a la direccion
@@ -53,7 +70,7 @@ def moodle(arg, verbose):
 		exit(2)
 		
 
-def version(arg,verbose):	
+def version(arg,verbose,cookie,agent):	
 	m = hashlib.md5()
 	elements = []
 	average = []
@@ -61,9 +78,22 @@ def version(arg,verbose):
 	
 	requests.packages.urllib3.disable_warnings()					
 	
-	res = requests.post(arg,verify=False)
-	
+	if len(cookie) == 0 and len(agent) == 0:
+		res = requests.post(arg,verify=False)
 		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		res = requests.post(arg,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		res = requests.post(arg, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		res = requests.post(arg, cookies = cookies, headers = headers, verify=False)
+	
 	webpage = html.fromstring(res.content)
 	dom = re.sub(r'(http|https)://','',arg)
 
@@ -71,7 +101,22 @@ def version(arg,verbose):
 		for link in webpage.xpath(listFind[i]):
 			if dom in link:
 				if link.startswith('http'):	
-					req = requests.post(link)
+					if len(cookie) == 0 and len(agent) == 0:
+						req = requests.post(link,verify=False)
+			
+					elif len(cookie) == 0 and len(agent) > 0:
+						headers = {'user-agent': agent}
+						req = requests.post(link,headers = headers, verify=False)
+			
+					elif len(cookie) > 0 and len(agent) == 0:
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(link, cookies = cookies, verify=False)
+			
+					elif len(cookie) > 0  and len(agent) > 0:
+						headers = {'user-agent': agent}
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(link, cookies = cookies, headers = headers, verify=False)
+					
 					if req.status_code == 200 and i in range(2,3):
 						try:
 							filename = wget.download(link, bar=None)
@@ -119,7 +164,7 @@ def version(arg,verbose):
 	files(arg,verbose,v)
 	f.close()
 
-def files(arg, verbose,version):
+def files(arg, verbose,version,cookie,agent):
 	
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
@@ -128,7 +173,23 @@ def files(arg, verbose,version):
 		try:
 			if 'Readme' in row[1] and 'Moodle' in row[0]: 
 				readme = arg + row[2]
-				req = requests.post(readme, verify=False)
+				
+				if len(cookie) == 0 and len(agent) == 0:
+					req = requests.post(readme,verify=False)
+				
+				elif len(cookie) == 0 and len(agent) > 0:
+					headers = {'user-agent': agent}
+					req = requests.post(readme,headers = headers, verify=False)
+			
+				elif len(cookie) > 0 and len(agent) == 0:
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(readme, cookies = cookies, verify=False)
+			
+				elif len(cookie) > 0  and len(agent) > 0:
+					headers = {'user-agent': agent}
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(readme, cookies = cookies, headers = headers, verify=False)
+				
 				if req.status_code == 200 and int(verbose) == 3:
 					print 'README file: ' + colored(readme, 'green')
 				elif req.status_code == 403 and int(verbose) == 3:
@@ -138,7 +199,22 @@ def files(arg, verbose,version):
 		
 			elif 'Change' in row[1] and 'Moodle' in row[0]:
 				changeLog = arg +  row[2]
-				req = requests.post(changeLog, verify= False)
+				if len(cookie) == 0 and len(agent) == 0:
+					req = requests.post(changeLog,verify=False)
+				
+				elif len(cookie) == 0 and len(agent) > 0:
+					headers = {'user-agent': agent}
+					req = requests.post(changeLog,headers = headers, verify=False)
+			
+				elif len(cookie) > 0 and len(agent) == 0:
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(changeLog, cookies = cookies, verify=False)
+			
+				elif len(cookie) > 0  and len(agent) > 0:
+					headers = {'user-agent': agent}
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(changeLog, cookies = cookies, headers = headers, verify=False)
+				
 				if req.status_code == 200 and int(verbose) == 3:
 					print 'ChangeLog: ' + colored(changeLog,'green')
 				elif req.status_code == 403 and int (verbose) == 3:
@@ -148,7 +224,22 @@ def files(arg, verbose,version):
 			
 			elif 'Plugin' in row[1] and 'Moodle' in row[0]:
 				plugin = arg + row[2]
-				req = requests.post(plugin, verify=False)
+				if len(cookie) == 0 and len(agent) == 0:
+					req = requests.post(plugin,verify=False)
+				
+				elif len(cookie) == 0 and len(agent) > 0:
+					headers = {'user-agent': agent}
+					req = requests.post(plugin,headers = headers, verify=False)
+			
+				elif len(cookie) > 0 and len(agent) == 0:
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(plugin, cookies = cookies, verify=False)
+			
+				elif len(cookie) > 0  and len(agent) > 0:
+					headers = {'user-agent': agent}
+					cookies = dict(cookies_are=cookie) 
+					req = requests.post(plugin, cookies = cookies, headers = headers, verify=False)
+				
 				if req.status_code == 200:
 					up = re.sub(r'\/upgrade.txt','',row[2])
 					begin = re.sub(r'^\/','',up)
@@ -186,7 +277,23 @@ def files(arg, verbose,version):
 		except:
 			continue	
 	f.close()		
-	res = requests.post(arg,verify=False)
+	
+	if len(cookie) == 0 and len(agent) == 0:
+		res = requests.post(arg,verify=False)
+				
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		res = requests.post(arg,headers = headers, verify=False)
+			
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		res = requests.post(arg, cookies = cookies, verify=False)
+	
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		res = requests.post(arg, cookies = cookies, headers = headers, verify=False)
+		
 	webpage = html.fromstring(res.text)
 	theme =  webpage.xpath('//link[@rel="shortcut icon"]/@href')
 	
