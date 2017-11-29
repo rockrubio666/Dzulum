@@ -11,7 +11,7 @@ visited = []
 toVisit = []
 
 
-def crawler(arg,verbose):
+def crawler(arg,verbose,cookie,agent):
 	print colored("Beginning Crawling", 'blue')
 	print 'Consulta del sitio: ' + colored(arg, 'green')
 	if 'http://' in arg or 'https://' in arg: # Valida si tiene http(s)
@@ -21,7 +21,23 @@ def crawler(arg,verbose):
 		# Peticiones
 		try:
 			requests.packages.urllib3.disable_warnings()					
-			res = requests.post(arg, verify=False)
+			if len(cookie) == 0 and len(agent) == 0:
+				res = requests.post(arg,verify=False)
+		
+			elif len(cookie) == 0 and len(agent) > 0:
+				headers = {'user-agent': agent}
+				res = requests.post(arg,headers = headers, verify=False)
+		
+			elif len(cookie) > 0 and len(agent) == 0:
+				cookies = dict(cookies_are=cookie) 
+				res = requests.post(arg, cookies = cookies, verify=False)
+		
+			elif len(cookie) > 0  and len(agent) > 0:
+				headers = {'user-agent': agent}
+				cookies = dict(cookies_are=cookie) 
+				res = requests.post(arg, cookies = cookies, headers = headers, verify=False)
+	
+			
 			page_source = res.text
 			webpage = html.fromstring(res.content)
 			
@@ -63,7 +79,23 @@ def crawler(arg,verbose):
 					try:
 						if diagonal.group():
 							complete =  arg + link
-							r = requests.head(complete)
+							if len(cookie) == 0 and len(agent) == 0:
+								r = requests.head(complete,verify=False)
+		
+							elif len(cookie) == 0 and len(agent) > 0:
+								headers = {'user-agent': agent}
+								r = requests.head(complete,headers = headers, verify=False)
+		
+							elif len(cookie) > 0 and len(agent) == 0:
+								cookies = dict(cookies_are=cookie) 
+								r = requests.head(complete, cookies = cookies, verify=False)
+			
+							elif len(cookie) > 0  and len(agent) > 0:
+								headers = {'user-agent': agent}
+								cookies = dict(cookies_are=cookie) 
+								r = requests.head(complete, cookies = cookies, headers = headers, verify=False)
+	
+							
 							regex = re.compile(r'20[0-6]')
 							status = regex.search(str(r.status_code))
 							try:
