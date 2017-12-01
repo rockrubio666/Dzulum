@@ -44,7 +44,6 @@ def checkFile(reqFile,user,pwd,userFile,passFile,message,verbose,cookie,agent):
 
 
 def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent):
-	print url,userField,passField,user,pwd,userField,passField,message
 	mbefore = message
 	requests.packages.urllib3.disable_warnings()		
 	
