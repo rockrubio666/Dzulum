@@ -15,29 +15,29 @@ from collections import Counter
 import operator
 from termcolor import colored
 
-def ojs(arg,verbose,cookie,agent,ipproxy,portproxy):
+def ojs(arg,verbose,cookie,agent):
 	requests.packages.urllib3.disable_warnings()
 	
-	if 'http://' in arg and len(ipproxy) > 0:
-		proxy = "http://" + ipproxy + ":" + portproxy
-		proxy_support = urllib2.ProxyHandler({'http': proxy})
-		opener = urllib2.build_opener(proxy_support)
-		urllib2.install_opener(opener)
-		html = urllib2.urlopen(arg).read()
-		print html
+	#if 'http://' in arg and len(ipproxy) > 0:
+	#	proxy = "http://" + ipproxy + ":" + portproxy
+	#	proxy_support = urllib2.ProxyHandler({'http': proxy})
+	#	opener = urllib2.build_opener(proxy_support)
+	#	urllib2.install_opener(opener)
+	#	html = urllib2.urlopen(arg).read()
+	#	print html
 	
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		req = requests.post(arg,verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		req = requests.post(arg,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		req = requests.post(arg, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		req = requests.post(arg, cookies = cookies, headers = headers, verify=False)
@@ -72,18 +72,18 @@ def version(arg,verbose,cookie,agent):
 	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
 	
 	requests.packages.urllib3.disable_warnings()					
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		req = requests.post(arg,verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		req = requests.post(arg,headers = headers, verify=False)
 	
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		req = requests.post(arg, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		req = requests.post(arg, cookies = cookies, headers = headers, verify=False)
@@ -95,18 +95,18 @@ def version(arg,verbose,cookie,agent):
 	for i in range(0,len(listFind)):
 		for link in webpage.xpath(listFind[i]):
 			if dom in link:
-				if len(cookie) == 0 and len(agent) == 0:
+				if cookie is None and agent is None:
 					req = requests.post(link,verify=False)
 		
-				elif len(cookie) == 0 and len(agent) > 0:
+				elif cookie is None and agent is not None:
 					headers = {'user-agent': agent}
 					req = requests.post(link,headers = headers, verify=False)
 			
-				elif len(cookie) > 0 and len(agent) == 0:
+				elif cookie is not None and agent is None:
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(link, cookies = cookies, verify=False)
 		
-				elif len(cookie) > 0  and len(agent) > 0:
+				elif cookie is not None and agent is not None:
 					headers = {'user-agent': agent}
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(link, cookies = cookies, headers = headers, verify=False)
@@ -162,18 +162,18 @@ def files(arg,verbose,version,cookie,agent):
 			if 'Plugin' in row[1] and 'Ojs' in row[0]:
 				plugin = arg + '/plugins' + row[2]
 				
-				if len(cookie) == 0 and len(agent) == 0:
+				if cookie is None and agent is None:
 					req = requests.post(plugin,verify=False)
 					
-				elif len(cookie) == 0 and len(agent) > 0:
+				elif cookie is None and agent is not None:
 					headers = {'user-agent': agent}
 					req = requests.post(plugin,headers = headers, verify=False)
 			
-				elif len(cookie) > 0 and len(agent) == 0:
+				elif cookie is not None and agent is None:
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(plugin, cookies = cookies, verify=False)
 		
-				elif len(cookie) > 0  and len(agent) > 0:
+				elif cookie is not None and agent is not None:
 					headers = {'user-agent': agent}
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(plugin, cookies = cookies, headers = headers, verify=False)
@@ -217,18 +217,18 @@ def files(arg,verbose,version,cookie,agent):
 
 			elif 'Readme' in row[1] and 'Ojs' in row[0]:
 				readme = arg + '/docs/release-notes/README-' + row[2]
-				if len(cookie) == 0 and len(agent) == 0:
+				if cookie is None and agent is None:
 					req = requests.post(readme,verify=False)
 		
-				elif len(cookie) == 0 and len(agent) > 0:
+				elif cookie is None and agent is not None:
 					headers = {'user-agent': agent}
 					req = requests.post(readme,headers = headers, verify=False)
 			
-				elif len(cookie) > 0 and len(agent) == 0:
+				elif cookie is not None and agent is None:
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(readme, cookies = cookies, verify=False)
 		
-				elif len(cookie) > 0  and len(agent) > 0:
+				elif cookie is not None and agent is not None:
 					headers = {'user-agent': agent}
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(readme, cookies = cookies, headers = headers, verify=False)
@@ -241,18 +241,18 @@ def files(arg,verbose,version,cookie,agent):
 			
 			elif 'Change' in row[1] and 'Ojs' in row[0]:		
 				changeLog = arg + '/docs/release-notes/ChangeLog-' + row[2]
-				if len(cookie) == 0 and len(agent) == 0:
+				if cookie is None and agent is None:
 					req = requests.post(changeLog,verify=False)
 		
-				elif len(cookie) == 0 and len(agent) > 0:
+				elif cookie is None and agent is not None:
 					headers = {'user-agent': agent}
 					req = requests.post(changeLog,headers = headers, verify=False)
 			
-				elif len(cookie) > 0 and len(agent) == 0:
+				elif cookie is not None and agent is None:
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(changeLog, cookies = cookies, verify=False)
 		
-				elif len(cookie) > 0  and len(agent) > 0:
+				elif cookie is not None and agent is not None:
 					headers = {'user-agent': agent}
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(changeLog, cookies = cookies, headers = headers, verify=False)
@@ -263,18 +263,18 @@ def files(arg,verbose,version,cookie,agent):
 					continue
 
 			elif 'Robots' in row[1] and 'Ojs' in row[0]:
-				if len(cookie) == 0 and len(agent) == 0:
+				if cookie is None and agent is None:
 					req = requests.post(arg + row[2],verify=False)
 		
-				elif len(cookie) == 0 and len(agent) > 0:
+				elif cookie is None and agent is not None:
 					headers = {'user-agent': agent}
 					req = requests.post(arg + row[2],headers = headers, verify=False)
 			
-				elif len(cookie) > 0 and len(agent) == 0:
+				elif cookie is not None and agent is None:
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(arg + row[2], cookies = cookies, verify=False)
 		
-				elif len(cookie) > 0  and len(agent) > 0:
+				elif cookie is not None and agent is not None:
 					headers = {'user-agent': agent}
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(arg + row[2], cookies = cookies, headers = headers, verify=False)
@@ -288,18 +288,18 @@ def files(arg,verbose,version,cookie,agent):
 			continue
 	f.close()
 	
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		req = requests.post(arg,verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		req = requests.post(arg,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		req = requests.post(arg, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		req = requests.post(arg, cookies = cookies, headers = headers, verify=False)

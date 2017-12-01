@@ -24,19 +24,19 @@ def moodle(arg, verbose,cookie,agent):
 	if 'http://' in arg or 'https://' in arg:
 		requests.packages.urllib3.disable_warnings()
 	
-		if len(cookie) == 0 and len(agent) == 0:
+		if cookie is None and agent is None:
 			upgrade = requests.post(arg + '/lib/upgrade.txt', verify=False)
 		
-		elif len(cookie) == 0 and len(agent) > 0:
+		elif cookie is None and agent is not None:
 			headers = {'user-agent': agent}
 			upgrade = requests.post(arg + '/lib/upgrade.txt', headers = headers,verify=False)
 			
 		
-		elif len(cookie) > 0 and len(agent) == 0:
+		elif cookie is not None and agent is None:
 			cookies = dict(cookies_are=cookie) 
 			upgrade = requests.post(arg + '/lib/upgrade.txt', cookies = cookies,verify=False)
 		
-		elif len(cookie) > 0  and len(agent) > 0:
+		elif cookie is not None and agent is not None:
 			headers = {'user-agent': agent}
 			cookies = dict(cookies_are=cookie) 
 			upgrade = requests.post(arg + '/lib/upgrade.txt', cookies = cookies, headers = headers,verify=False)
@@ -78,18 +78,18 @@ def version(arg,verbose,cookie,agent):
 	
 	requests.packages.urllib3.disable_warnings()					
 	
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		res = requests.post(arg,verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		res = requests.post(arg,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		res = requests.post(arg, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		res = requests.post(arg, cookies = cookies, headers = headers, verify=False)
@@ -101,18 +101,18 @@ def version(arg,verbose,cookie,agent):
 		for link in webpage.xpath(listFind[i]):
 			if dom in link:
 				if link.startswith('http'):	
-					if len(cookie) == 0 and len(agent) == 0:
+					if cookie is None and agent is None:
 						req = requests.post(link,verify=False)
 			
-					elif len(cookie) == 0 and len(agent) > 0:
+					elif cookie is None and agent is not None:
 						headers = {'user-agent': agent}
 						req = requests.post(link,headers = headers, verify=False)
 			
-					elif len(cookie) > 0 and len(agent) == 0:
+					elif cookie is not None and agent is None:
 						cookies = dict(cookies_are=cookie) 
 						req = requests.post(link, cookies = cookies, verify=False)
 			
-					elif len(cookie) > 0  and len(agent) > 0:
+					elif cookie is not None and agent is not None:
 						headers = {'user-agent': agent}
 						cookies = dict(cookies_are=cookie) 
 						req = requests.post(link, cookies = cookies, headers = headers, verify=False)
@@ -174,18 +174,18 @@ def files(arg, verbose,version,cookie,agent):
 			if 'Readme' in row[1] and 'Moodle' in row[0]: 
 				readme = arg + row[2]
 				
-				if len(cookie) == 0 and len(agent) == 0:
+				if cookie is None and agent is None:
 					req = requests.post(readme,verify=False)
 				
-				elif len(cookie) == 0 and len(agent) > 0:
+				elif cookie is None and agent is not None:
 					headers = {'user-agent': agent}
 					req = requests.post(readme,headers = headers, verify=False)
 			
-				elif len(cookie) > 0 and len(agent) == 0:
+				elif cookie is not None and agent is None:
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(readme, cookies = cookies, verify=False)
 			
-				elif len(cookie) > 0  and len(agent) > 0:
+				elif cookie is not None and agent is not None:
 					headers = {'user-agent': agent}
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(readme, cookies = cookies, headers = headers, verify=False)
@@ -199,18 +199,18 @@ def files(arg, verbose,version,cookie,agent):
 		
 			elif 'Change' in row[1] and 'Moodle' in row[0]:
 				changeLog = arg +  row[2]
-				if len(cookie) == 0 and len(agent) == 0:
+				if cookie is None and agent is None:
 					req = requests.post(changeLog,verify=False)
 				
-				elif len(cookie) == 0 and len(agent) > 0:
+				elif cookie is None and agent is not None:
 					headers = {'user-agent': agent}
 					req = requests.post(changeLog,headers = headers, verify=False)
 			
-				elif len(cookie) > 0 and len(agent) == 0:
+				elif cookie is not None and agent is None:
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(changeLog, cookies = cookies, verify=False)
 			
-				elif len(cookie) > 0  and len(agent) > 0:
+				elif cookie is not None and agent is not None:
 					headers = {'user-agent': agent}
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(changeLog, cookies = cookies, headers = headers, verify=False)
@@ -224,18 +224,18 @@ def files(arg, verbose,version,cookie,agent):
 			
 			elif 'Plugin' in row[1] and 'Moodle' in row[0]:
 				plugin = arg + row[2]
-				if len(cookie) == 0 and len(agent) == 0:
+				if cookie is None and agent is None:
 					req = requests.post(plugin,verify=False)
 				
-				elif len(cookie) == 0 and len(agent) > 0:
+				elif cookie is None and agent is not None:
 					headers = {'user-agent': agent}
 					req = requests.post(plugin,headers = headers, verify=False)
 			
-				elif len(cookie) > 0 and len(agent) == 0:
+				elif cookie is not None and agent is None:
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(plugin, cookies = cookies, verify=False)
 			
-				elif len(cookie) > 0  and len(agent) > 0:
+				elif cookie is not None and agent is not None:
 					headers = {'user-agent': agent}
 					cookies = dict(cookies_are=cookie) 
 					req = requests.post(plugin, cookies = cookies, headers = headers, verify=False)
@@ -278,18 +278,18 @@ def files(arg, verbose,version,cookie,agent):
 			continue	
 	f.close()		
 	
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		res = requests.post(arg,verify=False)
 				
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		res = requests.post(arg,headers = headers, verify=False)
 			
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		res = requests.post(arg, cookies = cookies, verify=False)
 	
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		res = requests.post(arg, cookies = cookies, headers = headers, verify=False)

