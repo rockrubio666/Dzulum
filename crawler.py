@@ -21,6 +21,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport):
 		# Peticiones
 		try:
 			proxy = proxip + ':' + proxport
+			proxies = {'http' : proxy, 'https' : proxy,}
 			requests.packages.urllib3.disable_warnings()					
 			if len(proxip) == 0:
 				if cookie is None and agent is None:

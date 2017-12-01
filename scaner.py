@@ -2,12 +2,12 @@
 
 import argparse
 import sys
-from ojs import ojs
-from moodle import moodle
-from crawlerHead import crawlerHead
-from crawler import crawler
-from bruteforce import single,doubleFile,usersFile,pwdFile
-from brutehttp import checkFile
+from ojs import *
+from moodle import *
+from crawlerHead import *
+from crawler import *
+from bruteforce import *
+from brutehttp import *
 arg = ''
 
 
@@ -31,6 +31,7 @@ def getParams(arg):
 	
 	if len(sys.argv) == 1 :
 		print parser.print_help()
+		sys.exit(2)
 	
 	if options.verbose is None:
 		options.verbose = 1
@@ -46,44 +47,47 @@ def getParams(arg):
 		
 	if options.Bruteforce in sys.argv and options.bruteFile in sys.argv:
 		print parser.print_help()
-	
+
+
+	if options.proxy in sys.argv:
+		for element in options.proxy.split(','):
+			pvalues.append(element)
+	else:
+		pvalues.append('')
+		pvalues.append('')
+
+
 	if options.ojs in sys.argv:
-		ojs(options.ojs,options.verbose,options.Cookie,options.Agent)	
+		ojs(options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1])	
 	
 	if options.moodle in sys.argv:
-		moodle(options.moodle,options.verbose,options.Cookie,options.Agent)
+		moodle(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1])
 		
 	if options.Bruteforce in sys.argv:
 		for element in options.Bruteforce.split(','):
 			bforce.append(element)
 		if len(bforce[5]) == 0 and len(bforce[6]) == 0 and len(bforce[3]) > 0 and len(bforce[4]) > 0 :
-			single(bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent)
+			single(bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1])
 		elif len(bforce[3]) == 0 and len(bforce[4]) == 0 and len(bforce[5]) > 0 and len(bforce[6]) > 0:
-			doubleFile(bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent)
+			doubleFile(bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1])
 		elif len(bforce[3]) == 0 and len(bforce[6]) == 0 and len(bforce[4]) > 0 and len(bforce[5]) > 0:
-			usersFile(bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent)
+			usersFile(bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1])
 		elif len(bforce[4]) == 0 and len(bforce[5]) == 0 and len(bforce[3]) > 0 and len(bforce[6]) > 0:
-			pwdFile(bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent)
+			pwdFile(bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1])
 	
 	if options.bruteFile in sys.argv:
 		for element in options.bruteFile.split(','):
 			bforce.append(element)
-		checkFile(bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],options.verbose,'','')
+		checkFile(bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1])
 	
 	if options.Crawler == True and options.moodle in sys.argv:
-		crawler(options.moodle,options.verbose,'','')
+		crawler(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1])
 	elif options.Crawler == True and options.ojs in sys.argv:
-		crawler(options.ojs,options.verbose,'','')
+		crawler(options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1])
 	
 	if options.crawlerHead in sys.argv and options.ojs in sys.argv:
-		crawlerHead(options.ojs,options.crawlerHead,options.verbose,'','')
+		crawlerHead(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1])
 	elif options.crawlerHead in sys.argv and options.moodle in sys.argv:
-		crawlerHead(options.moodle,options.crawlerHead,options.verbose,'','')
+		crawlerHead(options.moodle,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1])
 		
 getParams(arg)
-
-
-
-
-
-

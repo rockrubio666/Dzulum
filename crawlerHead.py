@@ -15,6 +15,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 	resources = []
 	sites = []
 	proxy = proxip + ':' + proxport
+	proxies = {'http' : proxy, 'https' : proxy,}
 		
 	if url.endswith('/'): # Si la URL termina con /, se agrega la cadena para validar multiples redirecciones
 		sites.append(url)

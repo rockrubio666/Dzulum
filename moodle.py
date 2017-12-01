@@ -21,7 +21,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport):
 # Si el argumento tiene http(s)
 	m = hashlib.md5()
 	proxy = proxip + ':' + proxport
-	
+	proxies = {'http' : proxy, 'https' : proxy,}
 	if 'http://' in arg or 'https://' in arg:
 		requests.packages.urllib3.disable_warnings()
 	
@@ -96,7 +96,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 	average = []
 	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
 	proxy = proxip + ':' + proxport
-	
+	proxies = {'http' : proxy, 'https' : proxy,}
 	requests.packages.urllib3.disable_warnings()					
 	
 	if len(proxip) == 0:
@@ -223,6 +223,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 
 def files(arg, verbose,version,cookie,agent,proxip,proxport):
 	proxy = proxip + ':' + proxport
+	proxies = {'http' : proxy, 'https' : proxy,}
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
 

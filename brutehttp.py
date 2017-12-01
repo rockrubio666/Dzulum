@@ -48,6 +48,7 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 	mbefore = message
 	requests.packages.urllib3.disable_warnings()		
 	proxy = proxip  + ':' + proxport
+	proxies = {'http' : proxy, 'https' : proxy,}
 	payadm1 = {userField: '', passField: ''}
 	
 	if len(proxip) == 0:
@@ -240,6 +241,7 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 	users = []
 	requests.packages.urllib3.disable_warnings()		
 	proxy = proxip + ':' + proxport
+	proxies = {'http' : proxy, 'https' : proxy,}
 	
 	payadm1 = {userField: '', passField: ''}
 	if len(proxip) == 0:
@@ -445,6 +447,7 @@ def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ver
 	
 	passwords = []
 	proxy = proxip + ':' + proxport
+	proxies = {'http' : proxy, 'https' : proxy,}
 	requests.packages.urllib3.disable_warnings()		
 	
 	payadm1 = {userField: '', passField: ''}
@@ -652,6 +655,7 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 	i = 0
 	j = 0
 	proxy = proxip + ':' + proxport
+	proxies = {'http' : proxy, 'https' : proxy,}
 	requests.packages.urllib3.disable_warnings()		
 	
 	payadm1 = {userField: '', passField: ''}
