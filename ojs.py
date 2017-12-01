@@ -17,7 +17,6 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport):
 	
 	requests.packages.urllib3.disable_warnings()
 	
-	
 	if len(proxip) == 0:
 		if cookie is None and agent is None:
 			req = requests.post(arg,verify=False)
@@ -34,23 +33,23 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport):
 			headers = {'user-agent': agent}
 			cookies = dict(cookies_are=cookie) 
 			req = requests.post(arg, cookies = cookies, headers = headers,verify=False)
-	
-	proxy = proxip + ':' + proxport	
-	if cookie is None and agent is None:
-		req = requests.post(arg,proxies = {'http':proxy},verify=False)
+	else:
+		proxy = proxip + ':' + proxport	
+		if cookie is None and agent is None:
+			req = requests.post(arg,proxies = {'http':proxy},verify=False)
 			
-	elif cookie is None and agent is not None:
-		headers = {'user-agent': agent}
-		req = requests.post(arg,headers = headers, proxies = {'http':proxy},verify=False)
+		elif cookie is None and agent is not None:
+			headers = {'user-agent': agent}
+			req = requests.post(arg,headers = headers, proxies = {'http':proxy},verify=False)
 		
-	elif cookie is not None and agent is None:
-		cookies = dict(cookies_are=cookie) 
-		req = requests.post(arg, cookies = cookies, proxies = {'http':proxy},verify=False)
+		elif cookie is not None and agent is None:
+			cookies = dict(cookies_are=cookie) 
+			req = requests.post(arg, cookies = cookies, proxies = {'http':proxy},verify=False)
 		
-	elif cookie is not None and agent is not None:
-		headers = {'user-agent': agent}
-		cookies = dict(cookies_are=cookie) 
-		req = requests.post(arg, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+		elif cookie is not None and agent is not None:
+			headers = {'user-agent': agent}
+			cookies = dict(cookies_are=cookie) 
+			req = requests.post(arg, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 	
 	page_source =  req.text
 	regex = re.compile(r'(.*)(name="generator") content="(.*)"(.*)')
@@ -98,22 +97,22 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 			headers = {'user-agent': agent}
 			cookies = dict(cookies_are=cookie) 
 			req = requests.post(arg, cookies = cookies, headers = headers, verify=False)
-	
-	if cookie is None and agent is None:
-		req = requests.post(arg,proxies = {'http':proxy},verify=False)
+	else:
+		if cookie is None and agent is None:
+			req = requests.post(arg,proxies = {'http':proxy},verify=False)
 		
-	elif cookie is None and agent is not None:
-		headers = {'user-agent': agent}
-		req = requests.post(arg,headers = headers, proxies = {'http':proxy},verify=False)
+		elif cookie is None and agent is not None:
+			headers = {'user-agent': agent}
+			req = requests.post(arg,headers = headers, proxies = {'http':proxy},verify=False)
 	
-	elif cookie is not None and agent is None:
-		cookies = dict(cookies_are=cookie) 
-		req = requests.post(arg, cookies = cookies, proxies = {'http':proxy},verify=False)
+		elif cookie is not None and agent is None:
+			cookies = dict(cookies_are=cookie) 
+			req = requests.post(arg, cookies = cookies, proxies = {'http':proxy},verify=False)
 		
-	elif cookie is not None and agent is not None:
-		headers = {'user-agent': agent}
-		cookies = dict(cookies_are=cookie) 
-		req = requests.post(arg, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+		elif cookie is not None and agent is not None:
+			headers = {'user-agent': agent}
+			cookies = dict(cookies_are=cookie) 
+			req = requests.post(arg, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 	
 	webpage = html.fromstring(req.content)
 	dom = re.sub(r'(http|https)://','',arg)
@@ -137,22 +136,22 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 						headers = {'user-agent': agent}
 						cookies = dict(cookies_are=cookie) 
 						req = requests.post(link, cookies = cookies, headers = headers, verify=False)
-				
-				if cookie is None and agent is None:
-					req = requests.post(link,proxies = {'http':proxy},verify=False)
+				else:
+					if cookie is None and agent is None:
+						req = requests.post(link,proxies = {'http':proxy},verify=False)
 		
-				elif cookie is None and agent is not None:
-					headers = {'user-agent': agent}
-					req = requests.post(link,headers = headers, proxies = {'http':proxy},verify=False)
+					elif cookie is None and agent is not None:
+						headers = {'user-agent': agent}
+						req = requests.post(link,headers = headers, proxies = {'http':proxy},verify=False)
 			
-				elif cookie is not None and agent is None:
-					cookies = dict(cookies_are=cookie) 
-					req = requests.post(link, cookies = cookies, proxies = {'http':proxy},verify=False)
+					elif cookie is not None and agent is None:
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(link, cookies = cookies, proxies = {'http':proxy},verify=False)
 		
-				elif cookie is not None and agent is not None:
-					headers = {'user-agent': agent}
-					cookies = dict(cookies_are=cookie) 
-					req = requests.post(link, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+					elif cookie is not None and agent is not None:
+						headers = {'user-agent': agent}
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(link, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 	
 				if req.status_code == 200 and i in range(2,3):
 					try:
@@ -223,21 +222,22 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 						cookies = dict(cookies_are=cookie) 
 						req = requests.post(plugin, cookies = cookies, headers = headers, verify=False)
 				
-				if cookie is None and agent is None:
-					req = requests.post(plugin,proxies = {'http':proxy},verify=False)
+				else:
+					if cookie is None and agent is None:
+						req = requests.post(plugin,proxies = {'http':proxy},verify=False)
 					
-				elif cookie is None and agent is not None:
-					headers = {'user-agent': agent}
-					req = requests.post(plugin,headers = headers, proxies = {'http':proxy},verify=False)
+					elif cookie is None and agent is not None:
+						headers = {'user-agent': agent}
+						req = requests.post(plugin,headers = headers, proxies = {'http':proxy},verify=False)
 			
-				elif cookie is not None and agent is None:
-					cookies = dict(cookies_are=cookie) 
-					req = requests.post(plugin, cookies = cookies,proxies = {'http':proxy}, verify=False)
+					elif cookie is not None and agent is None:
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(plugin, cookies = cookies,proxies = {'http':proxy}, verify=False)
 		
-				elif cookie is not None and agent is not None:
-					headers = {'user-agent': agent}
-					cookies = dict(cookies_are=cookie) 
-					req = requests.post(plugin, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+					elif cookie is not None and agent is not None:
+						headers = {'user-agent': agent}
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(plugin, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 					
 				if req.status_code == 200:
 					plugName = re.compile(r'=== (.*)')
@@ -296,22 +296,23 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 						headers = {'user-agent': agent}
 						cookies = dict(cookies_are=cookie) 
 						req = requests.post(readme, cookies = cookies, headers = headers, verify=False)
-						
-				if cookie is None and agent is None:
-					req = requests.post(readme,proxies = {'http':proxy},verify=False)
+				
+				else:
+					if cookie is None and agent is None:
+						req = requests.post(readme,proxies = {'http':proxy},verify=False)
 		
-				elif cookie is None and agent is not None:
-					headers = {'user-agent': agent}
-					req = requests.post(readme,headers = headers, proxies = {'http':proxy},verify=False)
+					elif cookie is None and agent is not None:
+						headers = {'user-agent': agent}
+						req = requests.post(readme,headers = headers, proxies = {'http':proxy},verify=False)
 			
-				elif cookie is not None and agent is None:
-					cookies = dict(cookies_are=cookie) 
-					req = requests.post(readme, cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-				elif cookie is not None and agent is not None:
-					headers = {'user-agent': agent}
-					cookies = dict(cookies_are=cookie) 
-					req = requests.post(readme, cookies = cookies, headers = headers,proxies = {'http':proxy}, verify=False)
+					elif cookie is not None and agent is None:
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(readme, cookies = cookies, proxies = {'http':proxy},verify=False)
+			
+					elif cookie is not None and agent is not None:
+						headers = {'user-agent': agent}
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(readme, cookies = cookies, headers = headers,proxies = {'http':proxy}, verify=False)
 	
 				if req.status_code == 200 and int(verbose) == 3:
 					print 'README file: ' + colored(readme, 'green')
@@ -339,22 +340,22 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 						cookies = dict(cookies_are=cookie) 
 						req = requests.post(changeLog, cookies = cookies, headers = headers, verify=False)
 	
-	
-				if cookie is None and agent is None:
-					req = requests.post(changeLog,proxies = {'http':proxy},verify=False)
+				else:
+					if cookie is None and agent is None:
+						req = requests.post(changeLog,proxies = {'http':proxy},verify=False)
 		
-				elif cookie is None and agent is not None:
-					headers = {'user-agent': agent}
-					req = requests.post(changeLog,headers = headers, proxies = {'http':proxy},verify=False)
+					elif cookie is None and agent is not None:
+						headers = {'user-agent': agent}
+						req = requests.post(changeLog,headers = headers, proxies = {'http':proxy},verify=False)
 			
-				elif cookie is not None and agent is None:
-					cookies = dict(cookies_are=cookie) 
-					req = requests.post(changeLog, cookies = cookies, proxies = {'http':proxy},verify=False)
+					elif cookie is not None and agent is None:
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(changeLog, cookies = cookies, proxies = {'http':proxy},verify=False)
 		
-				elif cookie is not None and agent is not None:
-					headers = {'user-agent': agent}
-					cookies = dict(cookies_are=cookie) 
-					req = requests.post(changeLog, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+					elif cookie is not None and agent is not None:
+						headers = {'user-agent': agent}
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(changeLog, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 
 				if req.status_code == 200 and int(verbose) == 3:
 					print 'ChangeLog: ' + colored(changeLog,'green')
@@ -380,21 +381,22 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 						cookies = dict(cookies_are=cookie) 
 						req = requests.post(arg + row[2], cookies = cookies, headers = headers, verify=False)
 	
-				if cookie is None and agent is None:
-					req = requests.post(arg + row[2],proxies = {'http':proxy},verify=False)
+				else:
+					if cookie is None and agent is None:
+						req = requests.post(arg + row[2],proxies = {'http':proxy},verify=False)
 		
-				elif cookie is None and agent is not None:
-					headers = {'user-agent': agent}
-					req = requests.post(arg + row[2],headers = headers, proxies = {'http':proxy},verify=False)
+					elif cookie is None and agent is not None:
+						headers = {'user-agent': agent}
+						req = requests.post(arg + row[2],headers = headers, proxies = {'http':proxy},verify=False)
 			
-				elif cookie is not None and agent is None:
-					cookies = dict(cookies_are=cookie) 
-					req = requests.post(arg + row[2], cookies = cookies, proxies = {'http':proxy},verify=False)
+					elif cookie is not None and agent is None:
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(arg + row[2], cookies = cookies, proxies = {'http':proxy},verify=False)
 		
-				elif cookie is not None and agent is not None:
-					headers = {'user-agent': agent}
-					cookies = dict(cookies_are=cookie) 
-					req = requests.post(arg + row[2], cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+					elif cookie is not None and agent is not None:
+						headers = {'user-agent': agent}
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(arg + row[2], cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 				
 				if req.status_code == 200 and int(verbose) == 3:
 					print 'Robots file: ' + colored(req.url, 'green')
@@ -420,22 +422,22 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 			headers = {'user-agent': agent}
 			cookies = dict(cookies_are=cookie) 
 			req = requests.post(arg, cookies = cookies, headers = headers, verify=False)
-	
-	if cookie is None and agent is None:
-		req = requests.post(arg,proxies = {'http':proxy},verify=False)
+	else:
+		if cookie is None and agent is None:
+			req = requests.post(arg,proxies = {'http':proxy},verify=False)
 		
-	elif cookie is None and agent is not None:
-		headers = {'user-agent': agent}
-		req = requests.post(arg,headers = headers, proxies = {'http':proxy},verify=False)
+		elif cookie is None and agent is not None:
+			headers = {'user-agent': agent}
+			req = requests.post(arg,headers = headers, proxies = {'http':proxy},verify=False)
 		
-	elif cookie is not None and agent is None:
-		cookies = dict(cookies_are=cookie) 
-		req = requests.post(arg, cookies = cookies, proxies = {'http':proxy},verify=False)
+		elif cookie is not None and agent is None:
+			cookies = dict(cookies_are=cookie) 
+			req = requests.post(arg, cookies = cookies, proxies = {'http':proxy},verify=False)
 		
-	elif cookie is not None and agent is not None:
-		headers = {'user-agent': agent}
-		cookies = dict(cookies_are=cookie) 
-		req = requests.post(arg, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+		elif cookie is not None and agent is not None:
+			headers = {'user-agent': agent}
+			cookies = dict(cookies_are=cookie) 
+			req = requests.post(arg, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 	
 	webpage = html.fromstring(req.content)
 	for i in range(0,len(listThemes)):
