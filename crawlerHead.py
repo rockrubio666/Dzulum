@@ -41,18 +41,18 @@ def crawlerHead(url,f,verbose,cookie,agent):
 			print "No se encontro el archivo"
 
 	requests.packages.urllib3.disable_warnings() # Se revisa el location que devuelve con el recurso que no exite
-	if len(cookie) == 0 and len(agent) == 0:
+	if cookie is None and agent is None:
 		req = requests.head(resources[0], verify=False)
 		
-	elif len(cookie) == 0 and len(agent) > 0:
+	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
 		req = requests.post(resources[0],headers = headers, verify=False)
 		
-	elif len(cookie) > 0 and len(agent) == 0:
+	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
 		req = requests.post(resources[0], cookies = cookies, verify=False)
 		
-	elif len(cookie) > 0  and len(agent) > 0:
+	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
 		req = requests.post(resources[0], cookies = cookies, headers = headers, verify=False)
@@ -72,18 +72,18 @@ def crawlerHead(url,f,verbose,cookie,agent):
 		other  = element.rstrip()
 		requests.packages.urllib3.disable_warnings()					
 		
-		if len(cookie) == 0 and len(agent) == 0:
+		if cookie is None and agent is None:
 			res = requests.head(other, verify=False)
 			
-		elif len(cookie) == 0 and len(agent) > 0:
+		elif cookie is None and agent is not None:
 			headers = {'user-agent': agent}
 			res = requests.head(other,headers = headers, verify=False)
 		
-		elif len(cookie) > 0 and len(agent) == 0:
+		elif cookie is not None and agent is None:
 			cookies = dict(cookies_are=cookie) 
 			res= requests.head(other, cookies = cookies, verify=False)
 		
-		elif len(cookie) > 0  and len(agent) > 0:
+		elif cookie is not None and agent is not None:
 			headers = {'user-agent': agent}
 			cookies = dict(cookies_are=cookie) 
 			res = requests.head(other, cookies = cookies, headers = headers, verify=False)

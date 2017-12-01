@@ -21,18 +21,18 @@ def crawler(arg,verbose,cookie,agent):
 		# Peticiones
 		try:
 			requests.packages.urllib3.disable_warnings()					
-			if len(cookie) == 0 and len(agent) == 0:
+			if cookie is None and agent is None:
 				res = requests.post(arg,verify=False)
 		
-			elif len(cookie) == 0 and len(agent) > 0:
+			elif cookie is None and agent is not None:
 				headers = {'user-agent': agent}
 				res = requests.post(arg,headers = headers, verify=False)
 		
-			elif len(cookie) > 0 and len(agent) == 0:
+			elif cookie is not None and agent is None:
 				cookies = dict(cookies_are=cookie) 
 				res = requests.post(arg, cookies = cookies, verify=False)
 		
-			elif len(cookie) > 0  and len(agent) > 0:
+			elif cookie is not None and agent is not None:
 				headers = {'user-agent': agent}
 				cookies = dict(cookies_are=cookie) 
 				res = requests.post(arg, cookies = cookies, headers = headers, verify=False)
@@ -79,18 +79,18 @@ def crawler(arg,verbose,cookie,agent):
 					try:
 						if diagonal.group():
 							complete =  arg + link
-							if len(cookie) == 0 and len(agent) == 0:
+							if cookie is None and agent is None:
 								r = requests.head(complete,verify=False)
 		
-							elif len(cookie) == 0 and len(agent) > 0:
+							elif cookie is None and agent is not None:
 								headers = {'user-agent': agent}
 								r = requests.head(complete,headers = headers, verify=False)
 		
-							elif len(cookie) > 0 and len(agent) == 0:
+							elif cookie is not None and agent is None:
 								cookies = dict(cookies_are=cookie) 
 								r = requests.head(complete, cookies = cookies, verify=False)
 			
-							elif len(cookie) > 0  and len(agent) > 0:
+							elif cookie is not None and agent is not None:
 								headers = {'user-agent': agent}
 								cookies = dict(cookies_are=cookie) 
 								r = requests.head(complete, cookies = cookies, headers = headers, verify=False)
