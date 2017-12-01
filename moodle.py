@@ -17,13 +17,15 @@ import csv
 
 plugins = ['']
 
-def moodle(arg, verbose,cookie,agent):
+def moodle(arg, verbose,cookie,agent,proxip,proxport):
 # Si el argumento tiene http(s)
 	m = hashlib.md5()
+	proxy = proxip + ':' + proxport
 	
 	if 'http://' in arg or 'https://' in arg:
 		requests.packages.urllib3.disable_warnings()
 	
+	if len(proxip) == 0:
 		if cookie is None and agent is None:
 			upgrade = requests.post(arg + '/lib/upgrade.txt', verify=False)
 		
@@ -40,6 +42,23 @@ def moodle(arg, verbose,cookie,agent):
 			headers = {'user-agent': agent}
 			cookies = dict(cookies_are=cookie) 
 			upgrade = requests.post(arg + '/lib/upgrade.txt', cookies = cookies, headers = headers,verify=False)
+	
+	if cookie is None and agent is None:
+		upgrade = requests.post(arg + '/lib/upgrade.txt', proxies = {'http':proxy},verify=False)
+		
+	elif cookie is None and agent is not None:
+		headers = {'user-agent': agent}
+		upgrade = requests.post(arg + '/lib/upgrade.txt', headers = headers,proxies = {'http':proxy},verify=False)
+			
+		
+	elif cookie is not None and agent is None:
+		cookies = dict(cookies_are=cookie) 
+		upgrade = requests.post(arg + '/lib/upgrade.txt', cookies = cookies,proxies = {'http':proxy},verify=False)
+		
+	elif cookie is not None and agent is not None:
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		upgrade = requests.post(arg + '/lib/upgrade.txt', cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 			
 						
 		if int(upgrade.status_code) == 200: #Si tiene el archivp upgrade
@@ -53,14 +72,14 @@ def moodle(arg, verbose,cookie,agent):
 						print "La version del sitio: " + colored(arg,'green') + " es: " + colored(match.group(1),'green')
 					elif int(verbose) == 3:
 						print "Version del sitio encontrada en: " + colored(upgrade.url,'green')
-					files(arg,verbose,match.group(1),cookie,agent)
+					files(arg,verbose,match.group(1),cookie,agent,proxip,proxport)
 				
 					
 			except:
 				exit(2)
 		
 		else: #Si no lo tiene
-			version(arg,verbose,cookie,agent)
+			version(arg,verbose,cookie,agent,proxip,proxport)
 			
 			
 # Si no tiene http(s) se pega a la direccion
@@ -70,29 +89,48 @@ def moodle(arg, verbose,cookie,agent):
 		exit(2)
 		
 
-def version(arg,verbose,cookie,agent):	
+def version(arg,verbose,cookie,agent,proxip,proxport):	
 	m = hashlib.md5()
 	elements = []
 	average = []
 	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
+	proxy = proxip + ':' + proxport
 	
 	requests.packages.urllib3.disable_warnings()					
 	
+	if len(proxip) == 0:
+		if cookie is None and agent is None:
+			res = requests.post(arg,verify=False)
+		
+		elif cookie is None and agent is not None:
+			headers = {'user-agent': agent}
+			res = requests.post(arg,headers = headers, verify=False)
+		
+		elif cookie is not None and agent is None:
+			cookies = dict(cookies_are=cookie) 
+			res = requests.post(arg, cookies = cookies, verify=False)
+		
+		elif cookie is not None and agent is not None:
+			headers = {'user-agent': agent}
+			cookies = dict(cookies_are=cookie) 
+			res = requests.post(arg, cookies = cookies, headers = headers, verify=False)
+	
+	
 	if cookie is None and agent is None:
-		res = requests.post(arg,verify=False)
+		res = requests.post(arg,proxies = {'http':proxy},verify=False)
 		
 	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
-		res = requests.post(arg,headers = headers, verify=False)
+		res = requests.post(arg,headers = headers, proxies = {'http':proxy},verify=False)
 		
 	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
-		res = requests.post(arg, cookies = cookies, verify=False)
-		
+		res = requests.post(arg, cookies = cookies, proxies = {'http':proxy},verify=False)
+	
 	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
-		res = requests.post(arg, cookies = cookies, headers = headers, verify=False)
+		res = requests.post(arg, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 	
 	webpage = html.fromstring(res.content)
 	dom = re.sub(r'(http|https)://','',arg)
@@ -101,22 +139,40 @@ def version(arg,verbose,cookie,agent):
 		for link in webpage.xpath(listFind[i]):
 			if dom in link:
 				if link.startswith('http'):	
+					if len(proxip) == 0:
+						if cookie is None and agent is None:
+							req = requests.post(link,verify=False)
+			
+						elif cookie is None and agent is not None:
+							headers = {'user-agent': agent}
+							req = requests.post(link,headers = headers, verify=False)
+			
+						elif cookie is not None and agent is None:
+							cookies = dict(cookies_are=cookie) 
+							req = requests.post(link, cookies = cookies, verify=False)
+			
+						elif cookie is not None and agent is not None:
+							headers = {'user-agent': agent}
+							cookies = dict(cookies_are=cookie) 
+							req = requests.post(link, cookies = cookies, headers = headers, verify=False)
+					
+					
 					if cookie is None and agent is None:
-						req = requests.post(link,verify=False)
+						req = requests.post(link,proxies = {'http':proxy},verify=False)
 			
 					elif cookie is None and agent is not None:
 						headers = {'user-agent': agent}
-						req = requests.post(link,headers = headers, verify=False)
+						req = requests.post(link,headers = headers, proxies = {'http':proxy},verify=False)
 			
 					elif cookie is not None and agent is None:
 						cookies = dict(cookies_are=cookie) 
-						req = requests.post(link, cookies = cookies, verify=False)
+						req = requests.post(link, cookies = cookies, proxies = {'http':proxy},verify=False)
 			
 					elif cookie is not None and agent is not None:
 						headers = {'user-agent': agent}
 						cookies = dict(cookies_are=cookie) 
-						req = requests.post(link, cookies = cookies, headers = headers, verify=False)
-					
+						req = requests.post(link, cookies = cookies, headers = headers,proxies = {'http':proxy}, verify=False)
+						
 					if req.status_code == 200 and i in range(2,3):
 						try:
 							filename = wget.download(link, bar=None)
@@ -161,11 +217,11 @@ def version(arg,verbose,cookie,agent):
 	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 		v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
 		print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(v, 'green')
-	files(arg,verbose,v)
+	files(arg,verbose,v,proxip,proxport)
 	f.close()
 
-def files(arg, verbose,version,cookie,agent):
-	
+def files(arg, verbose,version,cookie,agent,proxip,proxport):
+	proxy = proxip + ':' + proxport
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
 
@@ -173,22 +229,40 @@ def files(arg, verbose,version,cookie,agent):
 		try:
 			if 'Readme' in row[1] and 'Moodle' in row[0]: 
 				readme = arg + row[2]
+				if len(proxip) == 0:
+					if cookie is None and agent is None:
+						req = requests.post(readme,verify=False)
+				
+					elif cookie is None and agent is not None:
+						headers = {'user-agent': agent}
+						req = requests.post(readme,headers = headers, verify=False)
+			
+					elif cookie is not None and agent is None:
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(readme, cookies = cookies, verify=False)
+			
+					elif cookie is not None and agent is not None:
+						headers = {'user-agent': agent}
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(readme, cookies = cookies, headers = headers, verify=False)
+				
 				
 				if cookie is None and agent is None:
-					req = requests.post(readme,verify=False)
+					req = requests.post(readme,proxies = {'http':proxy},verify=False)
 				
 				elif cookie is None and agent is not None:
 					headers = {'user-agent': agent}
-					req = requests.post(readme,headers = headers, verify=False)
+					req = requests.post(readme,headers = headers, proxies = {'http':proxy},verify=False)
 			
 				elif cookie is not None and agent is None:
 					cookies = dict(cookies_are=cookie) 
-					req = requests.post(readme, cookies = cookies, verify=False)
+					req = requests.post(readme, cookies = cookies, proxies = {'http':proxy},verify=False)
 			
 				elif cookie is not None and agent is not None:
 					headers = {'user-agent': agent}
 					cookies = dict(cookies_are=cookie) 
-					req = requests.post(readme, cookies = cookies, headers = headers, verify=False)
+					req = requests.post(readme, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+				
 				
 				if req.status_code == 200 and int(verbose) == 3:
 					print 'README file: ' + colored(readme, 'green')
@@ -199,21 +273,40 @@ def files(arg, verbose,version,cookie,agent):
 		
 			elif 'Change' in row[1] and 'Moodle' in row[0]:
 				changeLog = arg +  row[2]
+				
+				if len(proxip) == 0:
+					if cookie is None and agent is None:
+						req = requests.post(changeLog,verify=False)
+				
+					elif cookie is None and agent is not None:
+						headers = {'user-agent': agent}
+						req = requests.post(changeLog,headers = headers, verify=False)
+			
+					elif cookie is not None and agent is None:
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(changeLog, cookies = cookies, verify=False)
+			
+					elif cookie is not None and agent is not None:
+						headers = {'user-agent': agent}
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(changeLog, cookies = cookies, headers = headers, verify=False)
+				
 				if cookie is None and agent is None:
-					req = requests.post(changeLog,verify=False)
+					req = requests.post(changeLog,proxies = {'http':proxy},verify=False)
 				
 				elif cookie is None and agent is not None:
 					headers = {'user-agent': agent}
-					req = requests.post(changeLog,headers = headers, verify=False)
+					req = requests.post(changeLog,headers = headers, proxies = {'http':proxy},verify=False)
 			
 				elif cookie is not None and agent is None:
 					cookies = dict(cookies_are=cookie) 
-					req = requests.post(changeLog, cookies = cookies, verify=False)
+					req = requests.post(changeLog, cookies = cookies, proxies = {'http':proxy},verify=False)
 			
 				elif cookie is not None and agent is not None:
 					headers = {'user-agent': agent}
 					cookies = dict(cookies_are=cookie) 
-					req = requests.post(changeLog, cookies = cookies, headers = headers, verify=False)
+					req = requests.post(changeLog, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+				
 				
 				if req.status_code == 200 and int(verbose) == 3:
 					print 'ChangeLog: ' + colored(changeLog,'green')
@@ -224,21 +317,39 @@ def files(arg, verbose,version,cookie,agent):
 			
 			elif 'Plugin' in row[1] and 'Moodle' in row[0]:
 				plugin = arg + row[2]
+				if len(proxip) == 0:
+					if cookie is None and agent is None:
+						req = requests.post(plugin,verify=False)
+				
+					elif cookie is None and agent is not None:
+						headers = {'user-agent': agent}
+						req = requests.post(plugin,headers = headers, verify=False)
+			
+					elif cookie is not None and agent is None:
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(plugin, cookies = cookies, verify=False)
+			
+					elif cookie is not None and agent is not None:
+						headers = {'user-agent': agent}
+						cookies = dict(cookies_are=cookie) 
+						req = requests.post(plugin, cookies = cookies, headers = headers, verify=False)
+				
 				if cookie is None and agent is None:
-					req = requests.post(plugin,verify=False)
+					req = requests.post(plugin,proxies = {'http':proxy},verify=False)
 				
 				elif cookie is None and agent is not None:
 					headers = {'user-agent': agent}
-					req = requests.post(plugin,headers = headers, verify=False)
+					req = requests.post(plugin,headers = headers, proxies = {'http':proxy},verify=False)
 			
 				elif cookie is not None and agent is None:
 					cookies = dict(cookies_are=cookie) 
-					req = requests.post(plugin, cookies = cookies, verify=False)
+					req = requests.post(plugin, cookies = cookies, proxies = {'http':proxy},verify=False)
 			
 				elif cookie is not None and agent is not None:
 					headers = {'user-agent': agent}
 					cookies = dict(cookies_are=cookie) 
-					req = requests.post(plugin, cookies = cookies, headers = headers, verify=False)
+					req = requests.post(plugin, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+				
 				
 				if req.status_code == 200:
 					up = re.sub(r'\/upgrade.txt','',row[2])
@@ -278,22 +389,40 @@ def files(arg, verbose,version,cookie,agent):
 			continue	
 	f.close()		
 	
+	if len(proxip) == 0:
+		if cookie is None and agent is None:
+			res = requests.post(arg,verify=False)
+				
+		elif cookie is None and agent is not None:
+			headers = {'user-agent': agent}
+			res = requests.post(arg,headers = headers, verify=False)
+			
+		elif cookie is not None and agent is None:
+			cookies = dict(cookies_are=cookie) 
+			res = requests.post(arg, cookies = cookies, verify=False)
+	
+		elif cookie is not None and agent is not None:
+			headers = {'user-agent': agent}
+			cookies = dict(cookies_are=cookie) 
+			res = requests.post(arg, cookies = cookies, headers = headers, verify=False)
+	
+	
 	if cookie is None and agent is None:
-		res = requests.post(arg,verify=False)
+		res = requests.post(arg,proxies = {'http':proxy},verify=False)
 				
 	elif cookie is None and agent is not None:
 		headers = {'user-agent': agent}
-		res = requests.post(arg,headers = headers, verify=False)
+		res = requests.post(arg,headers = headers, proxies = {'http':proxy},verify=False)
 			
 	elif cookie is not None and agent is None:
 		cookies = dict(cookies_are=cookie) 
-		res = requests.post(arg, cookies = cookies, verify=False)
+		res = requests.post(arg, cookies = cookies, proxies = {'http':proxy},verify=False)
 	
 	elif cookie is not None and agent is not None:
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
-		res = requests.post(arg, cookies = cookies, headers = headers, verify=False)
-		
+		res = requests.post(arg, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+	
 	webpage = html.fromstring(res.text)
 	theme =  webpage.xpath('//link[@rel="shortcut icon"]/@href')
 	
