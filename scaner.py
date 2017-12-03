@@ -2,12 +2,14 @@
 
 import argparse
 import sys
+import os
 from ojs import *
 from moodle import *
 from crawlerHead import *
 from crawler import *
 from bruteforce import *
 from brutehttp import *
+import git
 arg = ''
 
 
@@ -36,7 +38,9 @@ def getParams(arg):
 	elif len(sys.argv) >= 2:
 		update = raw_input('Do yo want to update the databases? [Y/N] ') or 'N'
 		if 'Y' in update or 'y' in update:
-			print 'Updating'
+			cwd = os.getcwd()
+			g = git.cmd.Git(cwd)			
+			g.pull()
 		else:
 			print 'No updated'
 			pass
