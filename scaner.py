@@ -32,7 +32,15 @@ def getParams(arg):
 	if len(sys.argv) == 1 :
 		print parser.print_help()
 		sys.exit(2)
-	
+
+	elif len(sys.argv) >= 2:
+		update = raw_input('Do yo want to update the databases? [Y/N] ') or 'N'
+		if 'Y' in update or 'y' in update:
+			print 'Updating'
+		else:
+			print 'No updated'
+			pass
+
 	if options.verbose is None:
 		options.verbose = 1
 		
