@@ -38,7 +38,7 @@ def getParams(arg):
 	elif len(sys.argv) >= 2:
 		update = raw_input('Do yo want to update the databases? [Y/N] ') or 'N'
 		if 'Y' in update or 'y' in update:
-			cwd = getcwd()		
+			cwd = os.getcwd()		
 			g = git.cmd.Git(cwd)
 			g.pull()
 			#subprocess.call(['git','pull'])
