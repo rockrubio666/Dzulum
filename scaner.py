@@ -3,6 +3,7 @@
 import argparse
 import sys
 import os
+import git 
 import subprocess
 from ojs import *
 from moodle import *
