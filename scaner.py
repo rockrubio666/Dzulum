@@ -4,7 +4,6 @@ import argparse
 import sys
 import os
 import git 
-import subprocess
 from ojs import *
 from moodle import *
 from crawlerHead import *
@@ -42,7 +41,7 @@ def getParams(arg):
 			cwd = os.getcwd()		
 			g = git.cmd.Git(cwd)
 			g.pull()
-			#subprocess.call(['git','pull'])
+			print 'Databases Updated'
 		else:
 			print 'No updated'
 			pass
