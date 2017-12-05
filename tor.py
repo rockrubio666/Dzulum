@@ -1,47 +1,22 @@
 #!/usr/bin/python
 
+import socks
+import socket
 
-import urllib2
+socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+socket.socket = socks.socksocket
 
-from stem import Signal
-from stem.control import Controller
+def getaddrinfo(*args):
+	return [(socket.AF_INET,socket.SOCK_STREAM,6,'',(args[0],args[1]))]
+
+socket.getaddrinfo = getaddrinfo
+
 import requests
+headers = {
+	'User-agent' : 'Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
+	'referer' : 'https://www.google.com'
+}
 
-#from config.config import *
+#print  requests.get('https://check.torproject.org/',headers = headers).content
+print  requests.get('http://httpbin.org/ip',headers = headers).content
 
-def renew_ip():
- with Controller.from_port(port=9051) as controller:
-	 controller.authenticate()
-	 controller.signal(Signal.NEWNYM)
-	 print 'controller'
-#	print requests.get('http://httpbin.org/ip', proxies=proxies).text
-
-def send_request():
-	renew_ip()
-	session = requests.Session()
-	session.proxies = {'http':'localhost:8118'}
-	response = session.get('http://httpbin.org/ip', timeout=2)
-	print response.text
-	pass
-	
-	
-for tmp in list(range(0,20)):
-	send_request()
-	
-	
-'''
-proxy = urllib2.ProxyHandler({'http' : '127.0.0.1:8118'})
-opener = urllib2.build_opener(proxy)
-urllib2.install_opener(opener)
-
-
-'''
-
-'''
-import requesocks
-session = requesocks.session()
-
-session.proxies = {'http':'socks5://localhost:9050','https':'socks5://localhost:9050'}
-response = session.get('http://icanhazip.com')
-print response.text
-'''
