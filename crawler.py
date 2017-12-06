@@ -25,36 +25,36 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport):
 			requests.packages.urllib3.disable_warnings()					
 			if len(proxip) == 0:
 				if cookie is None and agent is None:
-					res = requests.post(arg,verify=False)
+					res = requests.get(arg,verify=False)
 		
 				elif cookie is None and agent is not None:
 					headers = {'user-agent': agent}
-					res = requests.post(arg,headers = headers, verify=False)
+					res = requests.get(arg,headers = headers, verify=False)
 		
 				elif cookie is not None and agent is None:
 					cookies = dict(cookies_are=cookie) 
-					res = requests.post(arg, cookies = cookies, verify=False)
+					res = requests.get(arg, cookies = cookies, verify=False)
 		
 				elif cookie is not None and agent is not None:
 					headers = {'user-agent': agent}
 					cookies = dict(cookies_are=cookie) 
-					res = requests.post(arg, cookies = cookies, headers = headers, verify=False)
+					res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 			else:
 				if cookie is None and agent is None:
-					res = requests.post(arg,proxies = {'http':proxy},verify=False)
+					res = requests.get(arg,proxies = {'http':proxy},verify=False)
 		
 				elif cookie is None and agent is not None:
 					headers = {'user-agent': agent}
-					res = requests.post(arg,headers = headers, proxies = {'http':proxy},verify=False)
+					res = requests.get(arg,headers = headers, proxies = {'http':proxy},verify=False)
 		
 				elif cookie is not None and agent is None:
 					cookies = dict(cookies_are=cookie) 
-					res = requests.post(arg, cookies = cookies, proxies = {'http':proxy},verify=False)
+					res = requests.get(arg, cookies = cookies, proxies = {'http':proxy},verify=False)
 		
 				elif cookie is not None and agent is not None:
 					headers = {'user-agent': agent}
 					cookies = dict(cookies_are=cookie) 
-					res = requests.post(arg, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+					res = requests.get(arg, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 			
 			page_source = res.text
 			webpage = html.fromstring(res.content)

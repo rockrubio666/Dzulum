@@ -48,16 +48,16 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 		
 		elif cookie is None and agent is not None:
 			headers = {'user-agent': agent}
-			req = requests.post(resources[0],headers = headers, verify=False)
+			req = requests.head(resources[0],headers = headers, verify=False)
 		
 		elif cookie is not None and agent is None:
 			cookies = dict(cookies_are=cookie) 
-			req = requests.post(resources[0], cookies = cookies, verify=False)
+			req = requests.head(resources[0], cookies = cookies, verify=False)
 		
 		elif cookie is not None and agent is not None:
 			headers = {'user-agent': agent}
 			cookies = dict(cookies_are=cookie) 
-			req = requests.post(resources[0], cookies = cookies, headers = headers, verify=False)
+			req = requests.head(resources[0], cookies = cookies, headers = headers, verify=False)
 			
 	else:
 		if cookie is None and agent is None:
@@ -65,16 +65,16 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 		
 		elif cookie is None and agent is not None:
 			headers = {'user-agent': agent}
-			req = requests.post(resources[0],headers = headers, proxies = {'http':proxy},verify=False)
+			req = requests.head(resources[0],headers = headers, proxies = {'http':proxy},verify=False)
 		
 		elif cookie is not None and agent is None:
 			cookies = dict(cookies_are=cookie) 
-			req = requests.post(resources[0], cookies = cookies, proxies = {'http':proxy},verify=False)
+			req = requests.head(resources[0], cookies = cookies, proxies = {'http':proxy},verify=False)
 		
 		elif cookie is not None and agent is not None:
 			headers = {'user-agent': agent}
 			cookies = dict(cookies_are=cookie) 
-			req = requests.post(resources[0], cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+			req = requests.head(resources[0], cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 	
 	
 	fake.append(req.url)
