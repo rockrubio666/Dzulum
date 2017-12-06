@@ -8,7 +8,7 @@ from ojs import *
 from moodle import *
 from crawlerHead import *
 from crawler import *
-from bruteforce import *
+from bruteforce import single
 from brutehttp import *
 from multiprocessing import Process
 arg = ''
@@ -93,30 +93,52 @@ def getParams(arg):
 			p3.join()
 	
 	
-		if options.Bruteforce in sys.argv:
+		if options.Bruteforce in sys.argv and options.moodle in sys.argv:
 			for element in options.Bruteforce.split(','):
 				bforce.append(element)
+			url = options.moodle + bforce[0]
 			if len(bforce[5]) == 0 and len(bforce[6]) == 0 and len(bforce[3]) > 0 and len(bforce[4]) > 0 :
-				p4 = Process(target = single,args =(bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
+				p4 = Process(target = single,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
 				p4.start()
 				p4.join()
 			elif len(bforce[3]) == 0 and len(bforce[4]) == 0 and len(bforce[5]) > 0 and len(bforce[6]) > 0:
-				p4 = Process(target = doubleFile,args =(bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
+				p4 = Process(target = doubleFile,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
 				p4.start()
 				p4.join()
 			elif len(bforce[3]) == 0 and len(bforce[6]) == 0 and len(bforce[4]) > 0 and len(bforce[5]) > 0:
-				p4 = Process(target = usersFile,args =(bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
+				p4 = Process(target = usersFile,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
 				p4.start()
 				p4.join()
 			elif len(bforce[4]) == 0 and len(bforce[5]) == 0 and len(bforce[3]) > 0 and len(bforce[6]) > 0:
-				p4 = Process(target = pwdFile,args =(bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
+				p4 = Process(target = pwdFile,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
 				p4.start()
 				p4.join()
-			
+
+		elif options.Bruteforce in sys.argv and options.ojs in sys.argv:
+			for element in options.Bruteforce.split(','):
+				bforce.append(element)
+			url = options.ojs + bforce[0]
+			if len(bforce[5]) == 0 and len(bforce[6]) == 0 and len(bforce[3]) > 0 and len(bforce[4]) > 0 :
+				p4 = Process(target = single,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
+				p4.start()
+				p4.join()
+			elif len(bforce[3]) == 0 and len(bforce[4]) == 0 and len(bforce[5]) > 0 and len(bforce[6]) > 0:
+				p4 = Process(target = doubleFile,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
+				p4.start()
+				p4.join()
+			elif len(bforce[3]) == 0 and len(bforce[6]) == 0 and len(bforce[4]) > 0 and len(bforce[5]) > 0:
+				p4 = Process(target = usersFile,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
+				p4.start()
+				p4.join()
+			elif len(bforce[4]) == 0 and len(bforce[5]) == 0 and len(bforce[3]) > 0 and len(bforce[6]) > 0:
+				p4 = Process(target = pwdFile,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
+				p4.start()
+				p4.join()
 	
 		if options.bruteFile in sys.argv:
 			for element in options.bruteFile.split(','):
 				bforce.append(element)
+				
 			p5 = Process(target = checkFile, args = (bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
 			p5.start()
 			p5.join()
@@ -126,7 +148,7 @@ def getParams(arg):
 			p6.start()
 			p6.join()
 		elif options.Crawler == True and options.ojs in sys.argv:
-			p6 = Process(target = crawler, args = (options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
+			p6 = Process(target = crawler, args = (options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
 			p6.start()
 			p6.join()
 	
