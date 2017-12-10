@@ -9,6 +9,28 @@ from termcolor import colored
 	
 
 def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
+
+	requests.packages.urllib3.disable_warnings()
+	req = requests.post(url,verify=False)
+	
+	if cookie is None:
+		for key,value in req.headers.iteritems():
+			if 'set-cookie' in key:
+				regex = re.compile(r'(OJSSID=)((.*);)')
+				match = regex.search(value)
+				try:
+					if match.group():
+						cookie = re.sub(r';(.*)','',match.group(2))
+				except:
+					print 'nio'
+	else:
+		pass
+		
+	if agent is None:
+		agent = 'Kakeando'
+	else:
+		pass
+		
 	print colored('\nBeginning Crawling with Head request', 'green')
 	fake = []
 	conLen = []
@@ -42,40 +64,10 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 			print "No se encontro el archivo"
 
 	requests.packages.urllib3.disable_warnings() # Se revisa el location que devuelve con el recurso que no exite
-	if len(proxip) == 0:
-		if cookie is None and agent is None:
-			req = requests.head(resources[0], verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			req = requests.head(resources[0],headers = headers, verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			req = requests.head(resources[0], cookies = cookies, verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			req = requests.head(resources[0], cookies = cookies, headers = headers, verify=False)
+	headers = {'user-agent': agent}
+	cookies = dict(cookies_are=cookie) 
+	req = requests.head(resources[0], cookies = cookies, headers = headers, verify=False)
 			
-	else:
-		if cookie is None and agent is None:
-			req = requests.head(resources[0], proxies = {'http':proxy},verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			req = requests.head(resources[0],headers = headers, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			req = requests.head(resources[0], cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			req = requests.head(resources[0], cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
-	
 	
 	fake.append(req.url)
 	for key,value in req.headers.iteritems():
@@ -91,41 +83,9 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 		other  = element.rstrip()
 		requests.packages.urllib3.disable_warnings()					
 		
-		if len(proxip) == 0:
-			if cookie is None and agent is None:
-				res = requests.head(other, verify=False)
-			
-			elif cookie is None and agent is not None:
-				headers = {'user-agent': agent}
-				res = requests.head(other,headers = headers, verify=False)
-		
-			elif cookie is not None and agent is None:
-				cookies = dict(cookies_are=cookie) 
-				res= requests.head(other, cookies = cookies, verify=False)
-		
-			elif cookie is not None and agent is not None:
-				headers = {'user-agent': agent}
-				cookies = dict(cookies_are=cookie) 
-				res = requests.head(other, cookies = cookies, headers = headers, verify=False)
-		
-		else:
-			if cookie is None and agent is None:
-				res = requests.head(other, proxies = {'http':proxy},verify=False)
-			
-			elif cookie is None and agent is not None:
-				headers = {'user-agent': agent}
-				res = requests.head(other,headers = headers, proxies = {'http':proxy},verify=False)
-		
-			elif cookie is not None and agent is None:
-				cookies = dict(cookies_are=cookie) 
-				res= requests.head(other, cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-			elif cookie is not None and agent is not None:
-				headers = {'user-agent': agent}
-				cookies = dict(cookies_are=cookie) 
-				res = requests.head(other, cookies = cookies, headers = headers,proxies = {'http':proxy}, verify=False)
-	
-		
+		headers = {'user-agent': agent}
+		cookies = dict(cookies_are=cookie) 
+		res = requests.head(other, cookies = cookies, headers = headers, verify=False)
 		res.connection.close()
 		
 		regex = re.compile(r'20[0-6]')
