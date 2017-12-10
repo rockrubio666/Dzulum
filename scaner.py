@@ -97,7 +97,7 @@ def getParams(arg):
 			for element in options.Bruteforce.split(','):
 				bforce.append(element)
 			url = options.moodle + bforce[0]
-			p4 = Process(target = test,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
+			p4 = Process(target = check,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
 			p4.start()
 			p4.join()
 			
@@ -106,7 +106,7 @@ def getParams(arg):
 			for element in options.Bruteforce.split(','):
 				bforce.append(element)
 			url = options.ojs + bforce[0]
-			p4 = Process(target = test,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
+			p4 = Process(target = check,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
 			p4.start()
 			p4.join()
 			

@@ -8,7 +8,7 @@ import os.path
 from termcolor import colored
 
 
-def test(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip):
+def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip):
 	b = ['','1','12']
 	a = []
 	print colored("\nBeginning BruteForce", 'yellow')
