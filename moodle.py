@@ -20,7 +20,12 @@ plugins = ['']
 def moodle(arg, verbose,cookie,agent,proxip,proxport):
 # Si el argumento tiene http(s)
 	requests.packages.urllib3.disable_warnings()
-	req = requests.post(arg,verify=False)
+	if len(proxip) == 0:
+		req = requests.get(arg,verify=False)
+	else:
+		proxy = proxip  + ':' + proxport
+		proxies = {'http' : proxy, 'https' : proxy,}
+		req = requests.get(arg,proxies = {'http':proxy},verify=False)
 	
 	if cookie is None:
 		for key,value in req.headers.iteritems():
@@ -41,15 +46,18 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport):
 		pass
 
 	m = hashlib.md5()
-	proxy = proxip + ':' + proxport
-	proxies = {'http' : proxy, 'https' : proxy,}
+	
 	if 'http://' in arg or 'https://' in arg:
 		requests.packages.urllib3.disable_warnings()
 	
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
-		upgrade = requests.get(arg + '/lib/upgrade.txt', cookies = cookies, headers = headers,verify=False)
-			
+		if len(proxip) == 0:
+			upgrade = requests.get(arg + '/lib/upgrade.txt', cookies = cookies, headers = headers,verify=False)
+		else:
+			proxy = proxip  + ':' + proxport
+			proxies = {'http' : proxy, 'https' : proxy,}
+			upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 						
 		if int(upgrade.status_code) == 200: #Si tiene el archivp upgrade
 			regex = re.compile(r'===(.*)===')
@@ -84,15 +92,19 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 	elements = []
 	average = []
 	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
-	proxy = proxip + ':' + proxport
-	proxies = {'http' : proxy, 'https' : proxy,}
+	
 	requests.packages.urllib3.disable_warnings()					
 	
-	if len(proxip) == 0:
-		headers = {'user-agent': agent}
-		cookies = dict(cookies_are=cookie) 
-		res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+	headers = {'user-agent': agent}
+	cookies = dict(cookies_are=cookie) 
 	
+	if len(proxip) == 0:
+		res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+	else:
+		proxy = proxip  + ':' + proxport
+		proxies = {'http' : proxy, 'https' : proxy,}
+		res = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+		
 	webpage = html.fromstring(res.content)
 	dom = re.sub(r'(http|https)://','',arg)
 
@@ -102,7 +114,12 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 				if link.startswith('http'):	
 					headers = {'user-agent': agent}
 					cookies = dict(cookies_are=cookie) 
-					req = requests.get(link, cookies = cookies, headers = headers, verify=False)
+					if len(proxip) == 0:
+						req = requests.get(link, cookies = cookies, headers = headers, verify=False)
+					else:
+						proxy = proxip  + ':' + proxport
+						proxies = {'http' : proxy, 'https' : proxy,}
+						req = requests.get(link,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 						
 					if req.status_code == 200 and i in range(2,3):
 						try:
@@ -123,7 +140,12 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 							continue
 	headers = {'user-agent': agent}
 	cookies = dict(cookies_are=cookie) 			
-	readme = requests.get(arg + '/README.txt', cookies = cookies, headers = headers, verify=False)
+	if len(proxip) == 0:
+		readme = requests.get(arg + '/README.txt', cookies = cookies, headers = headers, verify=False)
+	else:
+		proxy = proxip  + ':' + proxport
+		proxies = {'http' : proxy, 'https' : proxy,}
+		readme = requests.get(arg + '/README.txt',cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 	if readme.status_code == 200:
 		try:
 			m.update(readme.text)
@@ -153,8 +175,6 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 	f.close()
 
 def files(arg, verbose,version,cookie,agent,proxip,proxport):
-	proxy = proxip + ':' + proxport
-	proxies = {'http' : proxy, 'https' : proxy,}
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
 
@@ -162,10 +182,14 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport):
 		try:
 			if 'Readme' in row[1] and 'Moodle' in row[0]: 
 				readme = arg + row[2]
+				headers = {'user-agent': agent}
+				cookies = dict(cookies_are=cookie) 
 				if len(proxip) == 0:
-					headers = {'user-agent': agent}
-					cookies = dict(cookies_are=cookie) 
 					req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
+				else:
+					proxy = proxip  + ':' + proxport
+					proxies = {'http' : proxy, 'https' : proxy,}
+					req = requests.get(readme,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 				
 				if req.status_code == 200 and int(verbose) == 3:
 					print 'README file: ' + colored(readme, 'green')
@@ -179,7 +203,12 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport):
 				
 				headers = {'user-agent': agent}
 				cookies = dict(cookies_are=cookie) 
-				req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
+				if len(proxip) == 0:
+					req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
+				else:
+					proxy = proxip  + ':' + proxport
+					proxies = {'http' : proxy, 'https' : proxy,}
+					req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 				
 				if req.status_code == 200 and int(verbose) == 3:
 					print 'ChangeLog: ' + colored(changeLog,'green')
@@ -190,10 +219,14 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport):
 			
 			elif 'Plugin' in row[1] and 'Moodle' in row[0]:
 				plugin = arg + row[2]
+				headers = {'user-agent': agent}
+				cookies = dict(cookies_are=cookie) 
 				if len(proxip) == 0:
-					headers = {'user-agent': agent}
-					cookies = dict(cookies_are=cookie) 
 					req = requests.get(plugin, cookies = cookies, headers = headers, verify=False)
+				else:
+					proxy = proxip  + ':' + proxport
+					proxies = {'http' : proxy, 'https' : proxy,}
+					req = requests.get(plugin,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 				
 				if req.status_code == 200:
 					up = re.sub(r'\/upgrade.txt','',row[2])
@@ -235,7 +268,12 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport):
 	
 	headers = {'user-agent': agent}
 	cookies = dict(cookies_are=cookie) 
-	res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+	if len(proxip) == 0:
+		res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+	else:
+		proxy = proxip  + ':' + proxport
+		proxies = {'http' : proxy, 'https' : proxy,}
+		res = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 	
 	webpage = html.fromstring(res.text)
 	theme =  webpage.xpath('//link[@rel="shortcut icon"]/@href')

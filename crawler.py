@@ -14,8 +14,13 @@ toVisit = []
 def crawler(arg,verbose,cookie,agent,proxip,proxport):
 	
 	requests.packages.urllib3.disable_warnings()
-	req = requests.post(arg,verify=False)
-	
+	if len(proxip) == 0:
+		req = requests.get(arg,verify=False)
+	else:
+		proxy = proxip  + ':' + proxport
+		proxies = {'http' : proxy, 'https' : proxy,}
+		req = requests.get(arg,proxies = {'http':proxy},verify=False)
+		
 	if cookie is None:
 		for key,value in req.headers.iteritems():
 			if 'set-cookie' in key:
@@ -42,13 +47,16 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport):
 		
 		# Peticiones
 		try:
-			proxy = proxip + ':' + proxport
-			proxies = {'http' : proxy, 'https' : proxy,}
 			requests.packages.urllib3.disable_warnings()					
 			
 			headers = {'user-agent': agent}
 			cookies = dict(cookies_are=cookie) 
-			res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+			if len(proxip) == 0:
+				res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+			else:
+				proxy = proxip  + ':' + proxport
+				proxies = {'http' : proxy, 'https' : proxy,}
+				req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 			
 			page_source = res.text
 			webpage = html.fromstring(res.content)
@@ -93,7 +101,12 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport):
 							complete =  arg + link
 							headers = {'user-agent': agent}
 							cookies = dict(cookies_are=cookie) 
-							r = requests.head(complete, cookies = cookies, headers = headers, verify=False)
+							if len(proxip) == 0:
+								r = requests.head(complete, cookies = cookies, headers = headers, verify=False)
+							else:
+								proxy = proxip  + ':' + proxport
+								proxies = {'http' : proxy, 'https' : proxy,}
+								r = requests.head(complete,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 							
 							
 							regex = re.compile(r'20[0-6]')

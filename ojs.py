@@ -14,10 +14,14 @@ import operator
 from termcolor import colored
 
 def ojs(arg,verbose,cookie,agent,proxip,proxport):
-	
 	requests.packages.urllib3.disable_warnings()
-	req = requests.post(arg,verify=False)
-	
+	if len(proxip) == 0:
+		req = requests.get(arg,verify=False)
+	else:
+		proxy = proxip  + ':' + proxport
+		proxies = {'http' : proxy, 'https' : proxy,}
+		req = requests.post(arg,proxies = {'http':proxy},verify=False)
+		
 	if cookie is None:
 		for key,value in req.headers.iteritems():
 			if 'set-cookie' in key:
@@ -38,7 +42,13 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport):
 
 	headers = {'user-agent': agent}
 	cookies = dict(cookies_are=cookie) 
-	req = requests.get(arg, cookies = cookies, headers = headers,verify=False)
+	
+	if len(proxip) == 0:
+		req = requests.get(arg, cookies = cookies, headers = headers,verify=False)
+	else:
+		proxy = proxip  + ':' + proxport
+		proxies = {'http' : proxy, 'https' : proxy,}
+		req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 	
 	page_source =  req.text
 	regex = re.compile(r'(.*)(name="generator") content="(.*)"(.*)')
@@ -67,12 +77,15 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
 	
 	requests.packages.urllib3.disable_warnings()					
-	proxy = proxip + ':' + proxport
-	proxies = {'http' : proxy, 'https' : proxy,}
 	
 	headers = {'user-agent': agent}
 	cookies = dict(cookies_are=cookie) 
-	req = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+	if len(proxip) == 0:
+		req = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+	else:
+		proxy = proxip  + ':' + proxport
+		proxies = {'http' : proxy, 'https' : proxy,}
+		req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 	
 	webpage = html.fromstring(req.content)
 	dom = re.sub(r'(http|https)://','',arg)
@@ -82,7 +95,12 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 			if dom in link:
 				headers = {'user-agent': agent}
 				cookies = dict(cookies_are=cookie) 
-				req = requests.get(link, cookies = cookies, headers = headers, verify=False)
+				if len(proxip) == 0:
+					req = requests.get(link, cookies = cookies, headers = headers, verify=False)
+				else:
+					proxy = proxip  + ':' + proxport
+					proxies = {'http' : proxy, 'https' : proxy,}
+					req = requests.get(link,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 				
 				if req.status_code == 200 and i in range(2,3):
 					try:
@@ -129,8 +147,6 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 	tmp = []
 	requests.packages.urllib3.disable_warnings()					
 	
-	proxy = proxip + ':' + proxport
-	proxies = {'http' : proxy, 'https' : proxy,}
 	for row in reader:
 		try:
 			if 'Plugin' in row[1] and 'Ojs' in row[0]:
@@ -138,7 +154,12 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 				
 				headers = {'user-agent': agent}
 				cookies = dict(cookies_are=cookie) 
-				req = requests.get(plugin, cookies = cookies, headers = headers, verify=False)
+				if len(proxip) == 0:
+					req = requests.get(plugin, cookies = cookies, headers = headers, verify=False)
+				else:
+					proxy = proxip  + ':' + proxport
+					proxies = {'http' : proxy, 'https' : proxy,}
+					req = requests.get(plugin,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 					
 				if req.status_code == 200:
 					plugName = re.compile(r'=== (.*)')
@@ -182,7 +203,12 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 				
 				headers = {'user-agent': agent}
 				cookies = dict(cookies_are=cookie) 
-				req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
+				if len(proxip) == 0:
+					req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
+				else:
+					proxy = proxip  + ':' + proxport
+					proxies = {'http' : proxy, 'https' : proxy,}
+					req = requests.get(readme,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 				
 				if req.status_code == 200 and int(verbose) == 3:
 					print 'README file: ' + colored(readme, 'green')
@@ -195,7 +221,12 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 				
 				headers = {'user-agent': agent}
 				cookies = dict(cookies_are=cookie) 
-				req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
+				if len(proxip) == 0:
+					req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
+				else:
+					proxy = proxip  + ':' + proxport
+					proxies = {'http' : proxy, 'https' : proxy,}
+					req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 	
 				if req.status_code == 200 and int(verbose) == 3:
 					print 'ChangeLog: ' + colored(changeLog,'green')
@@ -206,7 +237,12 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 				
 				headers = {'user-agent': agent}
 				cookies = dict(cookies_are=cookie) 
-				req = requests.get(arg + row[2], cookies = cookies, headers = headers, verify=False)
+				if len(proxip) == 0:
+					req = requests.get(arg + row[2], cookies = cookies, headers = headers, verify=False)
+				else:
+					proxy = proxip  + ':' + proxport
+					proxies = {'http' : proxy, 'https' : proxy,}
+					req = requests.get(arg + row[2],cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 	
 				if req.status_code == 200 and int(verbose) == 3:
 					print 'Robots file: ' + colored(req.url, 'green')
@@ -218,7 +254,12 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 	
 	headers = {'user-agent': agent}
 	cookies = dict(cookies_are=cookie) 
-	req = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+	if len(proxip) == 0:
+		req = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+	else:
+		proxy = proxip  + ':' + proxport
+		proxies = {'http' : proxy, 'https' : proxy,}
+		req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 	
 	webpage = html.fromstring(req.content)
 	for i in range(0,len(listThemes)):

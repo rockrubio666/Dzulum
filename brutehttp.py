@@ -34,7 +34,12 @@ def checkFile(reqFile,user,pwd,userFile,passFile,message,verbose,cookie,agent,pr
 		fo.close()
 	
 	requests.packages.urllib3.disable_warnings()
-	req = requests.post(url,verify=False)
+	if len(proxip) == 0:
+		req = requests.post(url,verify=False)
+	else:
+		proxy = proxip  + ':' + proxport
+		proxies = {'http' : proxy, 'https' : proxy,}
+		req = requests.get(url,proxies = {'http':proxy},verify=False)
 	
 	if cookie is None:
 		for key,value in req.headers.iteritems():
@@ -60,7 +65,12 @@ def checkFile(reqFile,user,pwd,userFile,passFile,message,verbose,cookie,agent,pr
 		payload = {userField : element, passField: ''}
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
-		req = requests.post(url,payload, cookies = cookies, headers = headers, verify=False)
+		if len(proxip) == 0:
+			req = requests.post(url,payload, cookies = cookies, headers = headers, verify=False)
+		else:
+			proxy = proxip  + ':' + proxport
+			proxies = {'http' : proxy, 'https' : proxy,}
+			req = requests.post(url,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 		a.append(len(req.content))
 	
 	if user == '' and pwd == '':
@@ -81,14 +91,18 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 	
 	mbefore = message
 	requests.packages.urllib3.disable_warnings()		
-	proxy = proxip  + ':' + proxport
-	proxies = {'http' : proxy, 'https' : proxy,}
+	
 		
 	payload = { userField : user, passField: pwd}
 	
 	headers = {'user-agent': agent}
 	cookies = dict(cookies_are=cookie) 
-	r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
+	if len(proxip) == 0:
+		r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
+	else:
+		proxy = proxip  + ':' + proxport
+		proxies = {'http' : proxy, 'https' : proxy,}
+		r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 	
 	if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 		if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content:
@@ -141,8 +155,6 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,list):
 	users = []
 	requests.packages.urllib3.disable_warnings()		
-	proxy = proxip + ':' + proxport
-	proxies = {'http' : proxy, 'https' : proxy,}
 	
 	if os.path.exists(userFile): #archivo con usuarios
 		fo = open(userFile, 'r')
@@ -157,7 +169,12 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 			payload = { userField : users[i].rstrip('\n'), passField: pwd}
 			headers = {'user-agent': agent}
 			cookies = dict(cookies_are=cookie) 
-			r = requests.post(url, data = payload,cookies = cookies, headers = headers, verify=False)
+			if len(proxip) == 0:
+				r = requests.post(url, data = payload,cookies = cookies, headers = headers, verify=False)
+			else:
+				proxy = proxip  + ':' + proxport
+				proxies = {'http' : proxy, 'https' : proxy,}
+				r = requests.post(url, data = payload,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 			
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 				if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content:
@@ -213,8 +230,6 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,list):
 	
 	passwords = []
-	proxy = proxip + ':' + proxport
-	proxies = {'http' : proxy, 'https' : proxy,}
 	requests.packages.urllib3.disable_warnings()		
 	
 	if os.path.exists(pwdFile): #archivo con usuarios
@@ -231,7 +246,12 @@ def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ver
 			payload = { userField : user, passField: passwords[i].rstrip('\n')}
 			headers = {'user-agent': agent}
 			cookies = dict(cookies_are=cookie) 
-			r = requests.post(url, data = payload,cookies = cookies, headers = headers, verify=False)
+			if len(proxip) == 0:
+				r = requests.post(url, data = payload,cookies = cookies, headers = headers, verify=False)
+			else:
+				proxy = proxip  + ':' + proxport
+				proxies = {'http' : proxy, 'https' : proxy,}
+				r = requests.post(url, data = payload,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 		
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 				if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content:
@@ -286,8 +306,6 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 	passwords = []
 	i = 0
 	j = 0
-	proxy = proxip + ':' + proxport
-	proxies = {'http' : proxy, 'https' : proxy,}
 	requests.packages.urllib3.disable_warnings()		
 	
 	
@@ -313,7 +331,12 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 				payload = { userField : users[i].rstrip('\n'), passField: passwords[j].rstrip('\n')}
 				headers = {'user-agent': agent}
 				cookies = dict(cookies_are=cookie) 
-				r = requests.post(url, data = payload,cookies = cookies, headers = headers, verify=False)
+				if len(proxip) == 0:
+					r = requests.post(url, data = payload,cookies = cookies, headers = headers, verify=False)
+				else:
+					proxy = proxip  + ':' + proxport
+					proxies = {'http' : proxy, 'https' : proxy,}
+					r = requests.post(url, data = payload,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 					
 				if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 					if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content:

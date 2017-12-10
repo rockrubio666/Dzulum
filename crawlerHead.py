@@ -11,7 +11,12 @@ from termcolor import colored
 def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 
 	requests.packages.urllib3.disable_warnings()
-	req = requests.post(url,verify=False)
+	if len(proxip) == 0:
+		req = requests.get(url,verify=False)
+	else:
+		proxy = proxip  + ':' + proxport
+		proxies = {'http' : proxy, 'https' : proxy,}
+		req = requests.get(url,proxies = {'http':proxy},verify=False)
 	
 	if cookie is None:
 		for key,value in req.headers.iteritems():
@@ -66,7 +71,12 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 	requests.packages.urllib3.disable_warnings() # Se revisa el location que devuelve con el recurso que no exite
 	headers = {'user-agent': agent}
 	cookies = dict(cookies_are=cookie) 
-	req = requests.head(resources[0], cookies = cookies, headers = headers, verify=False)
+	if len(proxip) == 0:
+		req = requests.head(resources[0], cookies = cookies, headers = headers, verify=False)
+	else:
+		proxy = proxip  + ':' + proxport
+		proxies = {'http' : proxy, 'https' : proxy,}
+		req = requests.head(resources[0],cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 			
 	
 	fake.append(req.url)
@@ -85,8 +95,14 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 		
 		headers = {'user-agent': agent}
 		cookies = dict(cookies_are=cookie) 
-		res = requests.head(other, cookies = cookies, headers = headers, verify=False)
-		res.connection.close()
+		if len(proxip) == 0:
+			res = requests.head(other, cookies = cookies, headers = headers, verify=False)
+			res.connection.close()
+		else:
+			proxy = proxip  + ':' + proxport
+			proxies = {'http' : proxy, 'https' : proxy,}
+			res = requests.head(other,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+			res.connection.close()
 		
 		regex = re.compile(r'20[0-6]')
 		match = regex.search(str(res.status_code))
