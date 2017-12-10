@@ -16,41 +16,31 @@ from termcolor import colored
 def ojs(arg,verbose,cookie,agent,proxip,proxport):
 	
 	requests.packages.urllib3.disable_warnings()
+	req = requests.post(arg,verify=False)
 	
-	if len(proxip) == 0:
-		if cookie is None and agent is None:
-			req = requests.get(arg,verify=False)
-			
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			req = requests.get(arg,headers = headers,verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			req = requests.get(arg, cookies = cookies, verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			req = requests.get(arg, cookies = cookies, headers = headers,verify=False)
+	if cookie is None:
+		for key,value in req.headers.iteritems():
+			if 'set-cookie' in key:
+				regex = re.compile(r'(OJSSID=)((.*);)')
+				match = regex.search(value)
+				try:
+					if match.group():
+						cookie = re.sub(r';(.*)','',match.group(2))
+				except:
+					print 'nio'
 	else:
-		proxy = proxip + ':' + proxport	
-		proxies = {'http' : proxy, 'https' : proxy,}
-		if cookie is None and agent is None:
-			req = requests.get(arg,proxies = proxies,verify=False)
-			
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			req = requests.get(arg,headers = headers, proxies = proxies,verify=False)
+		pass
 		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			req = requests.get(arg, cookies = cookies, proxies = proxies,verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			req = requests.get(arg, cookies = cookies, headers = headers, proxies = proxies,verify=False)
+	if agent is None:
+		agent = 'Kakeando'
+	else:
+		pass
+	
+	print agent
+	#elif cookie is not None and agent is not None:
+	#		headers = {'user-agent': agent}
+	#		cookies = dict(cookies_are=cookie) 
+	#		req = requests.get(arg, cookies = cookies, headers = headers,verify=False)
 	
 	page_source =  req.text
 	regex = re.compile(r'(.*)(name="generator") content="(.*)"(.*)')
