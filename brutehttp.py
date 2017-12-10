@@ -8,6 +8,11 @@ import os.path
 from termcolor import colored
 
 def checkFile(reqFile,user,pwd,userFile,passFile,message,verbose,cookie,agent,proxip,proxport):
+	print user
+	b = ['','1','12']
+	a = []
+	
+	
 	print colored("\nBeginning BruteForce with Request File", 'cyan')
 	if os.path.exists(reqFile):
 		fo = open(reqFile,'r')
@@ -28,131 +33,32 @@ def checkFile(reqFile,user,pwd,userFile,passFile,message,verbose,cookie,agent,pr
 					continue
 		fo.close()
 	
+	requests.packages.urllib3.disable_warnings()	
+	for element in b:
+		payload = {userField : element, passField: ''}
+		req = requests.post(url,payload,verify=False)
+		a.append(len(req.content))
 	
 	if user == '' and pwd == '':
-		doubleFile(url,userField,passField,user,pwd,userFile,passFile,message,verbose,cookie,agent,proxip,proxport)
+		doubleFile(url,userField,passField,user,pwd,userFile,passFile,message,verbose,cookie,agent,proxip,proxport,a)
 		
 	elif user == '' and passFile == '':
-		usersFile(url,userField,passField,user,pwd,userFile,passFile,message,verbose,cookie,agent,proxip,proxport)
+		usersFile(url,userField,passField,user,pwd,userFile,passFile,message,verbose,cookie,agent,proxip,proxport,a)
 	
 	elif userFile == '' and pwd == '':
-		pwdFile(url, userField, passField, user, pwd, userFile, passFile, message,verbose,cookie,agent,proxip,proxport)
+		pwdFile(url, userField, passField, user, pwd, userFile, passFile, message,verbose,cookie,agent,proxip,proxport,a)
 		
 	elif userFile == '' and passFile == '':
-		single(url,userField,passField,user,pwd,userFile,passFile,message,verbose,cookie,agent,proxip,proxport)
+		single(url,userField,passField,user,pwd,userFile,passFile,message,verbose,cookie,agent,proxip,proxport,a)
 			
 
 
-def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport):
+def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,list):
 	
 	mbefore = message
 	requests.packages.urllib3.disable_warnings()		
 	proxy = proxip  + ':' + proxport
 	proxies = {'http' : proxy, 'https' : proxy,}
-	payadm1 = {userField: '', passField: ''}
-	
-	if len(proxip) == 0:
-		if cookie is None and agent is None:
-			reqadm1 = requests.post(url,payadm1, verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm1 = requests.post(url,payadm1,headers = headers, verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies, verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies, headers = headers, verify=False)
-	else:
-		if cookie is None and agent is None:
-			reqadm1 = requests.post(url,payadm1, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm1 = requests.post(url,payadm1,headers = headers, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
-	
-	payadm2 = {userField: '1', passField: ''}
-	if len(proxip) == 0:
-		if cookie is None and agent is None:
-			reqadm2 = requests.post(url,payadm1, verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm2 = requests.post(url,payadm2,headers = headers, verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, headers = headers, verify=False)
-	
-	else:
-		if cookie is None and agent is None:
-			reqadm2 = requests.post(url,payadm1, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm2 = requests.post(url,payadm2,headers = headers, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
-		
-	payadm3 = {userField: '12', passField: ''}
-	if len(proxip) == 0:
-		if cookie is None and agent is None:
-			reqadm3 = requests.post(url,payadm3, verify=False)
-			
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm3 = requests.post(url,payadm3,headers = headers, verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, headers = headers, verify=False)
-	
-	else:
-		if cookie is None and agent is None:
-			reqadm3 = requests.post(url,payadm3, proxies = {'http':proxy},verify=False)
-			
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm3 = requests.post(url,payadm3,headers = headers, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 		
 	payload = { userField : user, passField: pwd}
 	if len(proxip) == 0:
@@ -189,8 +95,8 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 			cookies = dict(cookies_are=cookie) 
 			r = requests.post(url, payload,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 		
-	if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
-		if int(len(r.content)) - int(len(user)) == int(len(reqadm1.content)) and mbefore in r.content:
+	if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
+		if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content:
 			if int(verbose) == 1:
 				print colored('Ataque no exitoso ', 'red')
 			elif int (verbose) == 2:
@@ -205,8 +111,8 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 			elif int(verbose) == 3:
 				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
 	
-	elif int(len(reqadm1.content)) == int(len(reqadm2.content)) and int(len(reqadm1.content)) == int(len(reqadm3.content)): # Si el Content-Lenght es igual
-		if int(len(r.content)) == int(len(reqadm1.content)) and mbefore in r.content:
+	elif list[0] == list[1] and list[0] == list[2]: # Si el Content-Lenght es igual
+		if int(len(r.content)) == list[0] and mbefore in r.content:
 			if int(verbose) == 1:
 				print colored('Ataque no exitoso ', 'red')
 			elif int (verbose) == 2:
@@ -237,116 +143,12 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
 		
 
-def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport):
+def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,list):
 	users = []
 	requests.packages.urllib3.disable_warnings()		
 	proxy = proxip + ':' + proxport
 	proxies = {'http' : proxy, 'https' : proxy,}
 	
-	payadm1 = {userField: '', passField: ''}
-	if len(proxip) == 0:
-		if cookie is None and agent is None:
-			reqadm1 = requests.post(url,payadm1, verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm1 = requests.post(url,payadm1,headers = headers, verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies, verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies, headers = headers, verify=False)
-	else:
-		if cookie is None and agent is None:
-			reqadm1 = requests.post(url,payadm1, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm1 = requests.post(url,payadm1,headers = headers, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
-		
-	payadm2 = {userField: '1', passField: ''}
-	if len(proxip) == 0:
-		if cookie is None and agent is None:
-			reqadm2 = requests.post(url,payadm2, verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm2 = requests.post(url,payadm2,headers = headers, verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, verify=False)
-			
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, headers = headers, verify=False)
-	else:
-		if cookie is None and agent is None:
-			reqadm2 = requests.post(url,payadm2, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm2 = requests.post(url,payadm2,headers = headers, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, proxies = {'http':proxy},verify=False)
-			
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
-		
-	
-	payadm3 = {userField: '12', passField: ''}
-	if len(proxip) == 0:
-		if cookie is None and agent is None:
-			reqadm3 = requests.post(url,payadm3, verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm3 = requests.post(url,payadm3,headers = headers, verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, headers = headers, verify=False)
-	else:
-		if cookie is None and agent is None:
-			reqadm3 = requests.post(url,payadm3, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm3 = requests.post(url,payadm3,headers = headers, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
-		
-
 	if os.path.exists(userFile): #archivo con usuarios
 		fo = open(userFile, 'r')
 		for element in fo:
@@ -392,8 +194,8 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 					r = requests.post(url, data = payload,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 				
 			
-			if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
-				if int(len(r.content)) - int(len(users[i])-1) == int(len(reqadm1.content)) and mbefore in r.content:
+			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
+				if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content:
 					if int(verbose) == 1:
 						print colored('Ataque no exitoso ', 'red')
 					elif int (verbose) == 2:
@@ -409,8 +211,8 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
 	
 	
-			elif int(len(reqadm1.content)) == int(len(reqadm2.content)) and int(len(reqadm1.content)) == int(len(reqadm3.content)): # Si el Content-Lenght es igual
-				if int(len(r.content)) == int(len(reqadm1.content)) or mbefore in r.content:
+			elif list[0] == list[1] and list[0] == list[2]: # Si el Content-Lenght es igual
+				if int(len(r.content)) == list[0] or mbefore in r.content:
 					if int(verbose) == 1:
 						print colored('Ataque no exitoso ', 'red')
 					elif int (verbose) == 2:
@@ -443,117 +245,12 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
 		
 
-def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport):
+def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,list):
 	
 	passwords = []
 	proxy = proxip + ':' + proxport
 	proxies = {'http' : proxy, 'https' : proxy,}
 	requests.packages.urllib3.disable_warnings()		
-	
-	payadm1 = {userField: '', passField: ''}
-	if len(proxip) == 0:
-		if cookie is None and agent is None:
-			reqadm1 = requests.post(url,payadm1, verify=False)
-			
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm1 = requests.post(url,payadm1,headers = headers, verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies, verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies, headers = headers, verify=False)
-	else:
-		if cookie is None and agent is None:
-			reqadm1 = requests.post(url,payadm1, proxies = {'http':proxy},verify=False)
-			
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm1 = requests.post(url,payadm1,headers = headers, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies,proxies = {'http':proxy}, verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
-		
-	
-	payadm2 = {userField: '1', passField: ''}
-	if len(proxip) == 0:
-		if cookie is None and agent is None:
-			reqadm2 = requests.post(url,payadm2, verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm2 = requests.post(url,payadm2,headers = headers, verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, headers = headers, verify=False)
-	else:
-		if cookie is None and agent is None:
-			reqadm2 = requests.post(url,payadm2, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm2 = requests.post(url,payadm2,headers = headers, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
-		
-	
-	payadm3 = {userField: '12', passField: ''}
-	if len(proxip) == 0:
-		if cookie is None and agent is None:
-			reqadm3 = requests.post(url,payadm3, verify=False)
-			
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm3 = requests.post(url,payadm3,headers = headers, verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, headers = headers, verify=False)
-	else:
-		if cookie is None and agent is None:
-			reqadm3 = requests.post(url,payadm3, proxies = {'http':proxy},verify=False)
-			
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm3 = requests.post(url,payadm3,headers = headers, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
-		
 	
 	if os.path.exists(pwdFile): #archivo con usuarios
 		fo = open(pwdFile, 'r')
@@ -601,8 +298,8 @@ def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ver
 					cookies = dict(cookies_are=cookie) 
 					r = requests.post(url, data = payload,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 				
-			if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
-				if int(len(r.content)) - int(len(user)) == int(len(reqadm1.content)) and mbefore in r.content:
+			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
+				if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content:
 					if int(verbose) == 1:
 						print colored('Ataque no exitoso ', 'red')
 					elif int (verbose) == 2:
@@ -617,8 +314,8 @@ def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ver
 					elif int(verbose) == 3:
 						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
 			
-			elif int(len(reqadm1.content)) == int(len(reqadm2.content)) and int(len(reqadm1.content)) == int(len(reqadm3.content)): # Si el Content-Lenght es igual
-				if int(len(r.content)) == int(len(reqadm1.content)) and mbefore in r.content:
+			elif list[0] == list[1] and list[0] == list[2]: # Si el Content-Lenght es igual
+				if int(len(r.content)) == list[0] and mbefore in r.content:
 					if int(verbose) == 1:
 						print colored('Ataque no exitoso ', 'red')
 					elif int (verbose) == 2:
@@ -649,7 +346,7 @@ def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ver
 					elif int(verbose) == 3:
 						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
 
-def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport):
+def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,list):
 	users = []
 	passwords = []
 	i = 0
@@ -657,111 +354,6 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 	proxy = proxip + ':' + proxport
 	proxies = {'http' : proxy, 'https' : proxy,}
 	requests.packages.urllib3.disable_warnings()		
-	
-	payadm1 = {userField: '', passField: ''}
-	if len(proxip) == 0:
-		if cookie is None and agent is None:
-			reqadm1 = requests.post(url,payadm1, verify=False)
-			
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm1 = requests.post(url,payadm1,headers = headers, verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies, verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies, headers = headers, verify=False)
-	else:
-		if cookie is None and agent is None:
-			reqadm1 = requests.post(url,payadm1, proxies = {'http':proxy},verify=False)
-			
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm1 = requests.post(url,payadm1,headers = headers, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm1 = requests.post(url, payadm1,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
-		
-	
-	payadm2 = {userField: '1', passField: ''}
-	if len(proxip) == 0:
-		if cookie is None and agent is None:
-			reqadm2 = requests.post(url,payadm2, verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm2 = requests.post(url,payadm2,headers = headers, verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, headers = headers, verify=False)
-	else:
-		if cookie is None and agent is None:
-			reqadm2 = requests.post(url,payadm2, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm2 = requests.post(url,payadm2,headers = headers, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm2 = requests.post(url, payadm2,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
-		
-	
-	payadm3 = {userField: '12', passField: ''}
-	if len(proxip) == 0:
-		if cookie is None and agent is None:
-			reqadm3 = requests.post(url,payadm3, verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm3 = requests.post(url,payadm3,headers = headers, verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, headers = headers, verify=False)
-	else:
-		if cookie is None and agent is None:
-			reqadm3 = requests.post(url,payadm3, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is None and agent is not None:
-			headers = {'user-agent': agent}
-			reqadm3 = requests.post(url,payadm3,headers = headers, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is None:
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, proxies = {'http':proxy},verify=False)
-		
-		elif cookie is not None and agent is not None:
-			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
-			reqadm3 = requests.post(url, payadm3,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
-		
 	
 	
 	if os.path.exists(userFile) and os.path.exists(pwdFile): # ambos archivos
@@ -818,8 +410,8 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 						r = requests.post(url, data = payload,cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
 					
 			
-				if int(len(reqadm2.content)) - 1 == int(len(reqadm1.content)) and int(len(reqadm3.content)) -2 == int(len(reqadm1.content)): # Si en la respuesta devuelve el nombre de usuario
-					if int(len(r.content)) - int(len(users[i])-1) == int(len(reqadm1.content)) and mbefore in r.content:
+				if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
+					if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content:
 						if int(verbose) == 1:
 							print colored('Ataque no exitoso ', 'red')
 						elif int (verbose) == 2:
@@ -839,8 +431,8 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 						
 						j + 1
 						
-				elif int(len(reqadm1.content)) == int(len(reqadm2.content)) and int(len(reqadm1.content)) == int(len(reqadm3.content)): # Si el Content-Lenght es igual
-					if int(len(r.content)) == int(len(reqadm1.content)) and mbefore in r.content:
+				elif list[0] == list[1] and list[0] == list[2]: # Si el Content-Lenght es igual
+					if int(len(r.content)) == list[0] and mbefore in r.content:
 						if int(verbose) == 1:
 							print colored('Ataque no exitoso ', 'red')
 						elif int (verbose) == 2:
@@ -880,5 +472,3 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 						
 						j + 1
 		i + 1	
-
-
