@@ -70,7 +70,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 
 	requests.packages.urllib3.disable_warnings() # Se revisa el location que devuelve con el recurso que no exite
 	headers = {'user-agent': agent}
-	cookies = dict(cookies_are=cookie) 
+	cookies = {'': cookie} 
 	if len(proxip) == 0:
 		req = requests.head(resources[0], cookies = cookies, headers = headers, verify=False)
 	else:
@@ -94,7 +94,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 		requests.packages.urllib3.disable_warnings()					
 		
 		headers = {'user-agent': agent}
-		cookies = dict(cookies_are=cookie) 
+		cookies = {'': cookie} 
 		if len(proxip) == 0:
 			res = requests.head(other, cookies = cookies, headers = headers, verify=False)
 			res.connection.close()

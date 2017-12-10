@@ -50,7 +50,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport):
 			requests.packages.urllib3.disable_warnings()					
 			
 			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
+			cookies = {'': cookie} 
 			if len(proxip) == 0:
 				res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 			else:
@@ -100,7 +100,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport):
 						if diagonal.group():
 							complete =  arg + link
 							headers = {'user-agent': agent}
-							cookies = dict(cookies_are=cookie) 
+							cookies = {'': cookie} 
 							if len(proxip) == 0:
 								r = requests.head(complete, cookies = cookies, headers = headers, verify=False)
 							else:

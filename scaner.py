@@ -25,7 +25,7 @@ def getParams(arg):
 	parser.add_argument('-b', '--bruteFile',metavar='RequestFile,User,Password,UsersFile,PassFile,Message',help=' User = It could be optional, Password = It could be optional, UsersFile = It could be optional, PassFile = It could be optional')
 	parser.add_argument('-c', '--crawlerHead', metavar='File', help = 'File with directories')	
 	parser.add_argument('-C', '--Crawler', help = 'Crawling site',action='store_true')	
-	parser.add_argument('-k', '--Cookie',metavar='Set Cookie', help='Cookie value')
+	parser.add_argument('-k', '--Cookie',metavar='Set Cookie', help='Cookide ID,Cookie value')
 	parser.add_argument('-m','--moodle', metavar='URL', help = 'URL from Moodle site')
 	parser.add_argument('-o', '--ojs', metavar= 'URL', help = 'URL from OJS site')
 	parser.add_argument('-p','--proxy',metavar='Proxy IP,Port', help = 'Proxy')

@@ -41,7 +41,7 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport):
 		pass
 
 	headers = {'user-agent': agent}
-	cookies = dict(cookies_are=cookie) 
+	cookies = {'': cookie}
 	
 	if len(proxip) == 0:
 		req = requests.get(arg, cookies = cookies, headers = headers,verify=False)
@@ -79,7 +79,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 	requests.packages.urllib3.disable_warnings()					
 	
 	headers = {'user-agent': agent}
-	cookies = dict(cookies_are=cookie) 
+	cookies = {'': cookie}
 	if len(proxip) == 0:
 		req = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 	else:
@@ -153,7 +153,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 				plugin = arg + '/plugins' + row[2]
 				
 				headers = {'user-agent': agent}
-				cookies = dict(cookies_are=cookie) 
+				cookies = {'': cookie}
 				if len(proxip) == 0:
 					req = requests.get(plugin, cookies = cookies, headers = headers, verify=False)
 				else:
@@ -202,7 +202,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 				readme = arg + '/docs/release-notes/README-' + row[2]
 				
 				headers = {'user-agent': agent}
-				cookies = dict(cookies_are=cookie) 
+				cookies = {'': cookie}
 				if len(proxip) == 0:
 					req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
 				else:
@@ -220,7 +220,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 				changeLog = arg + '/docs/release-notes/ChangeLog-' + row[2]
 				
 				headers = {'user-agent': agent}
-				cookies = dict(cookies_are=cookie) 
+				cookies = {'': cookie}
 				if len(proxip) == 0:
 					req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
 				else:
@@ -236,7 +236,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 			elif 'Robots' in row[1] and 'Ojs' in row[0]:
 				
 				headers = {'user-agent': agent}
-				cookies = dict(cookies_are=cookie) 
+				cookies = {'': cookie}
 				if len(proxip) == 0:
 					req = requests.get(arg + row[2], cookies = cookies, headers = headers, verify=False)
 				else:
@@ -253,7 +253,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 	f.close()
 	
 	headers = {'user-agent': agent}
-	cookies = dict(cookies_are=cookie) 
+	cookies = {'': cookie} 
 	if len(proxip) == 0:
 		req = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 	else:

@@ -51,7 +51,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport):
 		requests.packages.urllib3.disable_warnings()
 	
 		headers = {'user-agent': agent}
-		cookies = dict(cookies_are=cookie) 
+		cookies = {'': cookie}
 		if len(proxip) == 0:
 			upgrade = requests.get(arg + '/lib/upgrade.txt', cookies = cookies, headers = headers,verify=False)
 		else:
@@ -96,7 +96,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 	requests.packages.urllib3.disable_warnings()					
 	
 	headers = {'user-agent': agent}
-	cookies = dict(cookies_are=cookie) 
+	cookies = {'': cookie} 
 	
 	if len(proxip) == 0:
 		res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
@@ -113,7 +113,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 			if dom in link:
 				if link.startswith('http'):	
 					headers = {'user-agent': agent}
-					cookies = dict(cookies_are=cookie) 
+					cookies = {'': cookie} 
 					if len(proxip) == 0:
 						req = requests.get(link, cookies = cookies, headers = headers, verify=False)
 					else:
@@ -139,7 +139,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 						except:
 							continue
 	headers = {'user-agent': agent}
-	cookies = dict(cookies_are=cookie) 			
+	cookies = {'': cookie} 			
 	if len(proxip) == 0:
 		readme = requests.get(arg + '/README.txt', cookies = cookies, headers = headers, verify=False)
 	else:
@@ -183,7 +183,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport):
 			if 'Readme' in row[1] and 'Moodle' in row[0]: 
 				readme = arg + row[2]
 				headers = {'user-agent': agent}
-				cookies = dict(cookies_are=cookie) 
+				cookies = {'': cookie} 
 				if len(proxip) == 0:
 					req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
 				else:
@@ -202,7 +202,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport):
 				changeLog = arg +  row[2]
 				
 				headers = {'user-agent': agent}
-				cookies = dict(cookies_are=cookie) 
+				cookies = {'': cookie} 
 				if len(proxip) == 0:
 					req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
 				else:
@@ -220,7 +220,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport):
 			elif 'Plugin' in row[1] and 'Moodle' in row[0]:
 				plugin = arg + row[2]
 				headers = {'user-agent': agent}
-				cookies = dict(cookies_are=cookie) 
+				cookies = {'': cookie} 
 				if len(proxip) == 0:
 					req = requests.get(plugin, cookies = cookies, headers = headers, verify=False)
 				else:
@@ -267,7 +267,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport):
 	f.close()		
 	
 	headers = {'user-agent': agent}
-	cookies = dict(cookies_are=cookie) 
+	cookies = {'': cookie} 
 	if len(proxip) == 0:
 		res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 	else:

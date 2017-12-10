@@ -64,7 +64,7 @@ def checkFile(reqFile,user,pwd,userFile,passFile,message,verbose,cookie,agent,pr
 	for element in b:
 		payload = {userField : element, passField: ''}
 		headers = {'user-agent': agent}
-		cookies = dict(cookies_are=cookie) 
+		cookies = {'': cookie} 
 		if len(proxip) == 0:
 			req = requests.post(url,payload, cookies = cookies, headers = headers, verify=False)
 		else:
@@ -96,7 +96,7 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 	payload = { userField : user, passField: pwd}
 	
 	headers = {'user-agent': agent}
-	cookies = dict(cookies_are=cookie) 
+	cookies = {'': cookie} 
 	if len(proxip) == 0:
 		r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
 	else:
@@ -168,7 +168,7 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 			#Login
 			payload = { userField : users[i].rstrip('\n'), passField: pwd}
 			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
+			cookies = {'': cookie} 
 			if len(proxip) == 0:
 				r = requests.post(url, data = payload,cookies = cookies, headers = headers, verify=False)
 			else:
@@ -245,7 +245,7 @@ def pwdFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ver
 			#Login
 			payload = { userField : user, passField: passwords[i].rstrip('\n')}
 			headers = {'user-agent': agent}
-			cookies = dict(cookies_are=cookie) 
+			cookies = {'': cookie} 
 			if len(proxip) == 0:
 				r = requests.post(url, data = payload,cookies = cookies, headers = headers, verify=False)
 			else:
@@ -330,7 +330,7 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 				
 				payload = { userField : users[i].rstrip('\n'), passField: passwords[j].rstrip('\n')}
 				headers = {'user-agent': agent}
-				cookies = dict(cookies_are=cookie) 
+				cookies = {'': cookie} 
 				if len(proxip) == 0:
 					r = requests.post(url, data = payload,cookies = cookies, headers = headers, verify=False)
 				else:
