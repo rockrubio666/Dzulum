@@ -30,10 +30,17 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport):
 					if match.group():
 						cookie = re.sub(r';(.*)','',match.group(2))
 				except:
-					print 'nio'
+						regex = re.compile(r'((.*)=)((.*);)')
+						match = regex.search(value)
+						try:
+							if match.group():
+								cookie = re.sub(r';(.*)','',match.group(3))
+						except:
+							print 'nio'
+				
 	else:
 		pass
-		
+	print cookie
 	if agent is None:
 		agent = 'Kakeando'
 	else:

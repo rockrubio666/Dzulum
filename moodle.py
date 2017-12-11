@@ -20,6 +20,7 @@ plugins = ['']
 def moodle(arg, verbose,cookie,agent,proxip,proxport):
 # Si el argumento tiene http(s)
 	requests.packages.urllib3.disable_warnings()
+	
 	if len(proxip) == 0:
 		req = requests.get(arg,verify=False)
 	else:
@@ -29,12 +30,13 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport):
 	
 	if cookie is None:
 		for key,value in req.headers.iteritems():
+			print value
 			if 'set-cookie' in key:
-				regex = re.compile(r'(OJSSID=)((.*);)')
+				regex = re.compile(r'((.*)=)((.*);)')
 				match = regex.search(value)
 				try:
 					if match.group():
-						cookie = re.sub(r';(.*)','',match.group(2))
+						cookie = re.sub(r';(.*)','',match.group(3))
 				except:
 					print 'nio'
 	else:
