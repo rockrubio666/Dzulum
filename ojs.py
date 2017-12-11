@@ -54,8 +54,13 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport):
 	regex = re.compile(r'(.*)(name="generator") content="(.*)"(.*)')
 	match = regex.search(page_source)
 
+	if 'Open Journal Systems' in match.group():
+		pass
+	else:
+		print colored('The site: ','yellow') + colored(match.group(3),'blue') + colored(' It could not be an OJS','yellow')
+		sys.exit(2)
 	try:
-		if match.group():	
+		if match.group():		
 			if int(verbose) == 1:
 				print "la version del sitio es: " + colored(match.group(3),'green')
 			elif int(verbose) == 2:
@@ -63,7 +68,7 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport):
 			elif int(verbose) == 3:
 				print "La version del sitio: " + colored(arg, 'green') + " es: " + colored(match.group(3),'green')
 				print "Version del sitio encontrada en:" + colored(match.group(),'green')
-		
+			
 	except:
 		version(arg,verbose,cookie,agent,proxip,proxport)
 	
