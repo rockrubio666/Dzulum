@@ -30,7 +30,6 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport):
 	
 	if cookie is None:
 		for key,value in req.headers.iteritems():
-			print value
 			if 'set-cookie' in key:
 				regex = re.compile(r'((.*)=)((.*);)')
 				match = regex.search(value)
@@ -182,44 +181,47 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport):
 
 	for row in reader:
 		try:
-			if 'Readme' in row[1] and 'Moodle' in row[0]: 
-				readme = arg + row[2]
-				headers = {'user-agent': agent}
-				cookies = {'': cookie} 
-				if len(proxip) == 0:
-					req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
-				else:
-					proxy = proxip  + ':' + proxport
-					proxies = {'http' : proxy, 'https' : proxy,}
-					req = requests.get(readme,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+			if int(verbose) == 3:
+				if 'Readme' in row[1] and 'Moodle' in row[0]: 
+					readme = arg + row[2]
+					headers = {'user-agent': agent}
+					cookies = {'': cookie} 
+					if len(proxip) == 0:
+						req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
+					else:
+						proxy = proxip  + ':' + proxport
+						proxies = {'http' : proxy, 'https' : proxy,}
+						req = requests.get(readme,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 				
-				if req.status_code == 200 and int(verbose) == 3:
-					print 'README file: ' + colored(readme, 'green')
-				elif req.status_code == 403 and int(verbose) == 3:
-					print 'Forbidden README: ' + colored(readme, 'green')
-				else:
-					continue
+					if req.status_code == 200:
+						print 'README file: ' + colored(readme, 'green')
+					elif req.status_code == 403:
+						print 'Forbidden README: ' + colored(readme, 'green')
+					else:
+						continue
 		
-			elif 'Change' in row[1] and 'Moodle' in row[0]:
-				changeLog = arg +  row[2]
+				elif 'Change' in row[1] and 'Moodle' in row[0]:
+					changeLog = arg +  row[2]
 				
-				headers = {'user-agent': agent}
-				cookies = {'': cookie} 
-				if len(proxip) == 0:
-					req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
-				else:
-					proxy = proxip  + ':' + proxport
-					proxies = {'http' : proxy, 'https' : proxy,}
-					req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+					headers = {'user-agent': agent}
+					cookies = {'': cookie} 
+					if len(proxip) == 0:
+						req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
+					else:
+						proxy = proxip  + ':' + proxport
+						proxies = {'http' : proxy, 'https' : proxy,}
+						req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 				
-				if req.status_code == 200 and int(verbose) == 3:
-					print 'ChangeLog: ' + colored(changeLog,'green')
-				elif req.status_code == 403 and int (verbose) == 3:
-					print 'Forbidden ChangeLog: ' + colored(changeLog,'green')
-				else:
-					continue
-			
-			elif 'Plugin' in row[1] and 'Moodle' in row[0]:
+					if req.status_code == 200:
+						print 'ChangeLog: ' + colored(changeLog,'green')
+					elif req.status_code == 403:
+						print 'Forbidden ChangeLog: ' + colored(changeLog,'green')
+					else:
+						continue
+			else:
+				pass
+				
+			if 'Plugin' in row[1] and 'Moodle' in row[0]:
 				plugin = arg + row[2]
 				headers = {'user-agent': agent}
 				cookies = {'': cookie} 

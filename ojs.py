@@ -202,57 +202,60 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 				
 				else:
 					continue
-
-			elif 'Readme' in row[1] and 'Ojs' in row[0]:
-				readme = arg + '/docs/release-notes/README-' + row[2]
+			
+			if int(verbose) == 3:
+				if 'Readme' in row[1] and 'Ojs' in row[0]:
+					readme = arg + '/docs/release-notes/README-' + row[2]
 				
-				headers = {'user-agent': agent}
-				cookies = {'': cookie}
-				if len(proxip) == 0:
-					req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
-				else:
-					proxy = proxip  + ':' + proxport
-					proxies = {'http' : proxy, 'https' : proxy,}
-					req = requests.get(readme,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+					headers = {'user-agent': agent}
+					cookies = {'': cookie}
+					if len(proxip) == 0:
+						req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
+					else:
+						proxy = proxip  + ':' + proxport
+						proxies = {'http' : proxy, 'https' : proxy,}
+						req = requests.get(readme,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 				
-				if req.status_code == 200 and int(verbose) == 3:
-					print 'README file: ' + colored(readme, 'green')
-				else:
-					continue
+					if req.status_code == 200:
+						print 'README file: ' + colored(readme, 'green')
+					else:
+						continue
 					
 			
-			elif 'Change' in row[1] and 'Ojs' in row[0]:		
-				changeLog = arg + '/docs/release-notes/ChangeLog-' + row[2]
+				elif 'Change' in row[1] and 'Ojs' in row[0]:		
+					changeLog = arg + '/docs/release-notes/ChangeLog-' + row[2]
 				
-				headers = {'user-agent': agent}
-				cookies = {'': cookie}
-				if len(proxip) == 0:
-					req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
-				else:
-					proxy = proxip  + ':' + proxport
-					proxies = {'http' : proxy, 'https' : proxy,}
-					req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+					headers = {'user-agent': agent}
+					cookies = {'': cookie}
+					if len(proxip) == 0:
+						req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
+					else:
+						proxy = proxip  + ':' + proxport
+						proxies = {'http' : proxy, 'https' : proxy,}
+						req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 	
-				if req.status_code == 200 and int(verbose) == 3:
-					print 'ChangeLog: ' + colored(changeLog,'green')
-				else:
-					continue
-
-			elif 'Robots' in row[1] and 'Ojs' in row[0]:
+					if req.status_code == 200:
+						print 'ChangeLog: ' + colored(changeLog,'green')
+					else:
+						continue
+	
+				elif 'Robots' in row[1] and 'Ojs' in row[0]:
 				
-				headers = {'user-agent': agent}
-				cookies = {'': cookie}
-				if len(proxip) == 0:
-					req = requests.get(arg + row[2], cookies = cookies, headers = headers, verify=False)
-				else:
-					proxy = proxip  + ':' + proxport
-					proxies = {'http' : proxy, 'https' : proxy,}
-					req = requests.get(arg + row[2],cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+					headers = {'user-agent': agent}
+					cookies = {'': cookie}
+					if len(proxip) == 0:
+						req = requests.get(arg + row[2], cookies = cookies, headers = headers, verify=False)
+					else:
+						proxy = proxip  + ':' + proxport
+						proxies = {'http' : proxy, 'https' : proxy,}
+						req = requests.get(arg + row[2],cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 	
-				if req.status_code == 200 and int(verbose) == 3:
-					print 'Robots file: ' + colored(req.url, 'green')
-				else:
-					continue
+					if req.status_code == 200:
+						print 'Robots file: ' + colored(req.url, 'green')
+					else:
+						continue
+			else:
+				continue
 		except:
 			continue
 	f.close()
