@@ -118,7 +118,8 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 				if element not in sites:
 					sites.append(element)
 					if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
-						print "Existe el recurso: " + colored(element, 'green')
+						print "Existe el recurso: " + colored(element, 'green') + " Status code: " + colored(res.status_code, 'yellow')
+						
 				else:
 					continue
 		except:
@@ -133,7 +134,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 						break
 					else:
 						if int(verbose) == 2 or int(verbose) == 3:
-							print colored('Posible recurso: ', 'yellow') + colored(element,'blue')				
+							print colored('Posible recurso: ', 'yellow') + colored(element,'blue') + " Status code: " + colored(res.status_code,'yellow')
 						for key, value in res.headers.iteritems():
 							if 'location' in key: 
 								if value in f:
