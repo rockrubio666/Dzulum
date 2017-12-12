@@ -4,6 +4,7 @@ import requests
 import re
 import sys
 import os
+from lxml.html import fromstring
 from termcolor import colored
 
 	
@@ -61,7 +62,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 				resources.append(union)	
 			fo.close()
 		else:
-			print "No se encontro el archivo"
+			print "File not found"
 	
 	else:
 		sites.append(url + '/') # Si la URL no tiene /, se agrega la '/' y la cadena para validar multiples redirecciones
@@ -73,7 +74,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 				resources.append(union)	
 			fo.close()
 		else:
-			print "No se encontro el archivo"
+			print "File not found"
 
 	requests.packages.urllib3.disable_warnings() # Se revisa el location que devuelve con el recurso que no exite
 	headers = {'user-agent': agent}
@@ -93,7 +94,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 	
 	
 	resources.pop(0)
-	print 'Buscando recursos en: ' + colored(sites[0],'green')
+	print 'Looking for resources in: ' + colored(sites[0],'green')
 	
 
 	for element in resources: # Por cada elemento de la lista, se hace la peticion y se ve el codigo de estado
@@ -118,27 +119,45 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 				if element not in sites:
 					sites.append(element)
 					if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
-						print "Existe el recurso: " + colored(element, 'green') + " Status code: " + colored(res.status_code, 'yellow')
+						print "Resource exists: " + colored(element, 'green') + " Status code: " + colored(res.status_code, 'yellow')
 						
 				else:
 					continue
 		except:
-			regex = re.compile(r'30[0-7]') # Si el codigo de estado es 300
-			match = regex.search(str(res.status_code))
+			reg = re.compile(r'30[0-7]')
+			m3 = reg.search(str(res.status_code))
 			try:
-				if match.group():
+				if m3.group():
 					if len(fake) == 20:
-						print 'Se detuvo la ejecucion por los siguientes enlaces: '
+						print 'Execution stopped for those links: '
 						for element in fake:
 							print colored(element, 'cyan')
 						break
 					else:
-						if int(verbose) == 2 or int(verbose) == 3:
-							print colored('Posible recurso: ', 'yellow') + colored(element,'blue') + " Status code: " + colored(res.status_code,'yellow')
+						if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
+							indexOf = res.url + '/'
+							r = requests.get(indexOf,verify=False)
+							
+							if r.status_code == 200 and '<title>Index of' in r.content:
+								print "Index of: " + colored(r.url, 'green') + " Status code: " + colored(r.status_code, 'yellow')
+							elif r.status_code == 200:
+								print "Resource exists: " + colored(r.url, 'green') + " Status code: " + colored(r.status_code, 'yellow')
+							elif r.status_code == 403:
+								if os.path.exists(f):
+									fo = open(f, 'r')
+									for line in fo:
+										new = r.url + line
+										rn = requests.head(new.rstrip('\n'),verify=False)
+										if rn.status_code == 200:
+											print "Resource exists: " + colored(rn.url, 'green') + " Status code: " + colored(rn.status_code, 'yellow')
+									fo.close()
+								else:
+									print "File not found"
+								
 						for key, value in res.headers.iteritems():
 							if 'location' in key: 
 								if value in f:
-									fake.append(res.url)			
+									fake.append(res.url)	
+						
 			except:
-				continue
-		
+				pass

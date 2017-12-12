@@ -17,8 +17,40 @@ arg = ''
 def getParams(arg):
 	bforce = []	
 	pvalues = []
-	parser = argparse.ArgumentParser(description='Escaner de vulnerabilidades en OJS y Moodle',
-		formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+	parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
+	description=(
+	'''				Vulnerability scanner for Moodle and OJS
+-----------------------------------------------------------------------------------------------
+ * Agent: Lets to specify the User Agent use it in the requests, e.g: -a 'Thunderstruck'
+ 
+ * Bruteforce: Tries to obtain the credentials of the site, it could be use with files like:
+	Option with both individuals: /login,username,password,papu,pass123,,,'Error login'
+	Option user and file with passwords: /login,username,password,papu,,,passFile,'Error login'
+	Option file with users and password: /login,username,password,,pass123,usersFile,,'Error login'
+	Option with both files: /login,username,password,,,usersFile,passFile,'Error Login'
+	
+ * Bruteforce with file: Tries to obtain the credentials of the site, this option needs a file with request and the usage is:
+	Option with both individuals: reqFile,papu,pass123,,,'Error login'
+	Option user and file with passwords: reqFile,papu,,,passFile,'Error login'
+	Option file with users and password: reqFile,,pass123,usersFile,,'Error login'
+	Option with both iles: reqFile,,,usersFile,passFile,'Error Login'
+	
+ * Cookie: Lets to specify the Session Cookie use it in the requests, e.g: -k 'Cuki'
+ 
+ * Crawler: Look for possible links and javascript in the index page, e.g: -C
+ 
+ * Crawler with head requests: Look for possible links and javascript in the index page with help of a file, e.g: -c sitesFile
+ 
+ * Moodle: Searches elements necessaries to get the version and determine the possible vulnerabilities, e.g: -m https://example.com/moodle/
+ 
+ * Proxy: Sends requests through proxy, e.g: -p 169.69.69.69,6969
+ 
+ * OJS: Searches elements necessaries to get the version an determine the possible vulnerabilities, e.g: -o https://example.com/ojs/
+ 
+ * Tor: Makes requests through Tor socks, e.g: -T
+ 
+ * Verbose: Shows differents depuration levels, from 1 to 3, e.g: -v 3	'''),
+	epilog = 'Enjoy it! ')
 
 	parser.add_argument('-a', '--Agent',metavar='Set User Agent', help='User Agent value')
 	parser.add_argument('-B', '--Bruteforce',metavar='Login,UserField,PassField,User,Password,UsersFile,PassFile,Message',help='Login = Url Login, User = It could be optional, Password = It could be optional, UsersFile = It could be optional, PassFile = It could be optional')
