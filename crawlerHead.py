@@ -6,14 +6,22 @@ import sys
 import os
 from lxml.html import fromstring
 from termcolor import colored
+import socket
+import socks
 
 	
 
-def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
+def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor):
 
 	requests.packages.urllib3.disable_warnings()
 	if len(proxip) == 0:
-		req = requests.get(url,verify=False)
+		if tor == True:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+			socket.socket = socks.socksocket
+			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+			req = requests.get(url,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+		else:
+			req = requests.get(url,verify=False)
 	else:
 		proxy = proxip  + ':' + proxport
 		proxies = {'http' : proxy, 'https' : proxy,}
@@ -80,7 +88,13 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 	headers = {'user-agent': agent}
 	cookies = {'': cookie} 
 	if len(proxip) == 0:
-		req = requests.head(resources[0], cookies = cookies, headers = headers, verify=False)
+		if tor == True:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+			socket.socket = socks.socksocket
+			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+			req = requests.head(resources[0],cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+		else:
+			req = requests.head(resources[0], cookies = cookies, headers = headers, verify=False)
 	else:
 		proxy = proxip  + ':' + proxport
 		proxies = {'http' : proxy, 'https' : proxy,}
@@ -104,7 +118,13 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 		headers = {'user-agent': agent}
 		cookies = {'': cookie} 
 		if len(proxip) == 0:
-			res = requests.head(other, cookies = cookies, headers = headers, verify=False)
+			if tor == True:
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+				socket.socket = socks.socksocket
+				proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+				res = requests.get(other,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+			else:
+				res = requests.head(other, cookies = cookies, headers = headers, verify=False)
 			res.connection.close()
 		else:
 			proxy = proxip  + ':' + proxport
@@ -139,7 +159,13 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 							headers = {'user-agent': agent}
 							cookies = {'': cookie} 
 							if len(proxip) == 0:
-								r = requests.get(indexOf,cookies=cookies,headers=headers,verify=False)
+								if tor == True:
+									socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)	
+									socket.socket = socks.socksocket
+									proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+									r = requests.get(indexOf,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+								else:
+									r = requests.get(indexOf,cookies=cookies,headers=headers,verify=False)
 							else:
 								proxy = proxip  + ':' + proxport
 								proxies = {'http' : proxy, 'https' : proxy,}
@@ -157,7 +183,13 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 										headers = {'user-agent': agent}
 										cookies = {'': cookie} 
 										if len(proxip) == 0:
-											rn = requests.head(new.rstrip('\n'),cookies=cookies,headers=headers,verify=False)
+											if tor == True:
+												socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+												socket.socket = socks.socksocket
+												proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+												rn = requests.head(new.rstrip('\n'),cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+											else:
+												rn = requests.head(new.rstrip('\n'),cookies=cookies,headers=headers,verify=False)
 										else:
 											proxy = proxip  + ':' + proxport
 											proxies = {'http' : proxy, 'https' : proxy,}

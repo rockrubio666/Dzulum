@@ -61,6 +61,7 @@ def getParams(arg):
 	parser.add_argument('-m','--moodle', metavar='URL', help = 'URL from Moodle site')
 	parser.add_argument('-o', '--ojs', metavar= 'URL', help = 'URL from OJS site')
 	parser.add_argument('-p','--proxy',metavar='Proxy IP,Port', help = 'Proxy')
+	parser.add_argument('-T','--tor', help = 'Use Tor',action='store_true')
 	parser.add_argument('-v','--verbose', metavar='Number', nargs = '?',help='Verbose Level 1-3', default = 1)
 	options = parser.parse_args()
 	
@@ -68,29 +69,28 @@ def getParams(arg):
 		print parser.print_help()
 		sys.exit(2)
 
-	if options.verbose is None:
-		options.verbose = 1
-		
 	if int(options.verbose)	>= 4 or int(options.verbose) == 0:
 		print parser.print_help()
+		sys.exit(2)
 	
+	if options.verbose is None:
+		options.verbose = 1
+
 	if not (options.ojs or options.moodle):
 		print parser.print_help()
-	
-	if options.crawlerHead in sys.argv and options.Crawler in sys.argv:
-		print parser.print_help()
+		sys.exit(2)
 		
+	if options.Crawler == True and options.crawlerHead in sys.argv:
+		print parser.print_help()
+	
 	if options.Bruteforce in sys.argv and options.bruteFile in sys.argv:
 		print parser.print_help()
-
-
-	if options.proxy in sys.argv:
-		for element in options.proxy.split(','):
-			pvalues.append(element)
-	else:
-		pvalues.append('')
-		pvalues.append('')
-
+		sys.exit(2)
+	
+	if options.proxy in sys.argv and options.tor == True:
+		print parser.print_help()
+		sys.exit(2)	
+		
 	if len(sys.argv) >= 2:
 		update = raw_input('Do yo want to update the databases? [Y/N] ') or 'N'
 		if 'Y' in update or 'y' in update:
@@ -101,63 +101,64 @@ def getParams(arg):
 		else:
 			print 'No updated'
 			pass
-
+	
+	if options.proxy in sys.argv:
+		for element in options.proxy.split(','):
+			pvalues.append(element)
+	else:
+		pvalues.append('')
+		pvalues.append('')
+	
+	if options.ojs in sys.argv:
+		p1 = Process(target = ojs,args = (options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor))
+		p1.start()
+		p1.join()
 		
-	if __name__ == '__main__':
-		if options.ojs in sys.argv:
-			p1 = Process(target = ojs,args = (options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
-			p1.start()
-			p1.join()
+	if options.moodle in sys.argv:
+		p2 = Process(target = moodle, args = (options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor))
+		p2.start()
+		p2.join()
 			
-	
-		if options.moodle in sys.argv:
-			p2 = Process(target = moodle, args = (options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
-			p2.start()
-			p2.join()
-			
-		if options.crawlerHead in sys.argv and options.ojs in sys.argv:
-			p3 = Process(target = crawlerHead, args =(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
-			p3.start()
-			p3.join()
-		elif options.crawlerHead in sys.argv and options.moodle in sys.argv:
-			p3 = Process(target = crawlerHead, args =(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
-			p3.start()
-			p3.join()
+	if options.crawlerHead in sys.argv and options.ojs in sys.argv:
+		p3 = Process(target = crawlerHead, args =(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor))
+		p3.start()
+		p3.join()
+	elif options.crawlerHead in sys.argv and options.moodle in sys.argv:
+		p3 = Process(target = crawlerHead, args =(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor))
+		p3.start()
+		p3.join()
 	
 	
-		if options.Bruteforce in sys.argv and options.moodle in sys.argv:
-			for element in options.Bruteforce.split(','):
-				bforce.append(element)
-			url = options.moodle + bforce[0]
-			p4 = Process(target = check,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
-			p4.start()
-			p4.join()
-			
-
-		elif options.Bruteforce in sys.argv and options.ojs in sys.argv:
-			for element in options.Bruteforce.split(','):
-				bforce.append(element)
-			url = options.ojs + bforce[0]
-			p4 = Process(target = check,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
-			p4.start()
-			p4.join()
-			
-			
-		if options.bruteFile in sys.argv:
-			for element in options.bruteFile.split(','):
-				bforce.append(element)	
-			p5 = Process(target = checkFile, args = (bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
-			p5.start()
-			p5.join()
-	
-		if options.Crawler == True and options.moodle in sys.argv:
-			p6 = Process(target = crawler, args = (options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
-			p6.start()
-			p6.join()
-		elif options.Crawler == True and options.ojs in sys.argv:
-			p6 = Process(target = crawler, args = (options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1]))
-			p6.start()
-			p6.join()
-	
+	if options.Bruteforce in sys.argv and options.moodle in sys.argv:
+		for element in options.Bruteforce.split(','):
+			bforce.append(element)
+		url = options.moodle + bforce[0]
+		p4 = Process(target = check,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor))
+		p4.start()
+		p4.join()
 		
+	elif options.Bruteforce in sys.argv and options.ojs in sys.argv:
+		for element in options.Bruteforce.split(','):
+			bforce.append(element)
+		url = options.ojs + bforce[0]
+		p4 = Process(target = check,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor))
+		p4.start()
+		p4.join()
+			
+	if options.bruteFile in sys.argv:
+		for element in options.bruteFile.split(','):
+			bforce.append(element)	
+		p5 = Process(target = checkFile, args = (bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor))
+		p5.start()
+		p5.join()
+
+	if options.Crawler == True and options.moodle in sys.argv:
+		p6 = Process(target = crawler, args = (options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor))
+		p6.start()
+		p6.join()
+	elif options.Crawler == True and options.ojs in sys.argv:
+		p6 = Process(target = crawler, args = (options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor))
+		p6.start()
+		p6.join()
+
 getParams(arg)

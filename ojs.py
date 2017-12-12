@@ -12,11 +12,21 @@ import os
 from collections import Counter
 import operator
 from termcolor import colored
+import socks
+import socket
 
-def ojs(arg,verbose,cookie,agent,proxip,proxport):
+def ojs(arg,verbose,cookie,agent,proxip,proxport,tor):
+	
+	
 	requests.packages.urllib3.disable_warnings()
 	if len(proxip) == 0:
-		req = requests.get(arg,verify=False)
+		if tor == True:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+			socket.socket = socks.socksocket
+			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+			req = requests.get(arg,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+		else:
+			req = requests.get(arg,verify=False)
 	else:
 		proxy = proxip  + ':' + proxport
 		proxies = {'http' : proxy, 'https' : proxy,}
@@ -43,8 +53,15 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport):
 	headers = {'user-agent': agent}
 	cookies = {'': cookie}
 	
+	
 	if len(proxip) == 0:
-		req = requests.get(arg, cookies = cookies, headers = headers,verify=False)
+		if tor == True:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+			socket.socket = socks.socksocket
+			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+			req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+		elif tor == False:
+			req = requests.get(arg, cookies = cookies, headers = headers,verify=False)
 	else:
 		proxy = proxip  + ':' + proxport
 		proxies = {'http' : proxy, 'https' : proxy,}
@@ -70,12 +87,12 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport):
 				print "Version del sitio encontrada en:" + colored(match.group(),'green')
 			
 	except:
-		version(arg,verbose,cookie,agent,proxip,proxport)
+		version(arg,verbose,cookie,agent,proxip,proxport,tor)
 	
-	files(arg,verbose,match.group(3),cookie,agent,proxip,proxport)
+	files(arg,verbose,match.group(3),cookie,agent,proxip,proxport,tor)
 	
 	
-def version(arg,verbose,cookie,agent,proxip,proxport):
+def version(arg,verbose,cookie,agent,proxip,proxport,tor):
 	m = hashlib.md5()
 	elements = []
 	average = []
@@ -86,7 +103,13 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 	headers = {'user-agent': agent}
 	cookies = {'': cookie}
 	if len(proxip) == 0:
-		req = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+		if tor == True:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+			socket.socket = socks.socksocket
+			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+			req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+		else:
+			req = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 	else:
 		proxy = proxip  + ':' + proxport
 		proxies = {'http' : proxy, 'https' : proxy,}
@@ -101,7 +124,13 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 				headers = {'user-agent': agent}
 				cookies = dict(cookies_are=cookie) 
 				if len(proxip) == 0:
-					req = requests.get(link, cookies = cookies, headers = headers, verify=False)
+					if tor == True:
+						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+						socket.socket = socks.socksocket
+						proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+						req = requests.get(link,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+					else:
+						req = requests.get(link, cookies = cookies, headers = headers, verify=False)
 				else:
 					proxy = proxip  + ':' + proxport
 					proxies = {'http' : proxy, 'https' : proxy,}
@@ -141,10 +170,10 @@ def version(arg,verbose,cookie,agent,proxip,proxport):
 	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 		v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
 		print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(v, 'green')
-	files(arg,verbose,v,cookie,agent,proxip,proxport)
+	files(arg,verbose,v,cookie,agent,proxip,proxport,tor)
 	
 	
-def files(arg,verbose,version,cookie,agent,proxip,proxport):
+def files(arg,verbose,version,cookie,agent,proxip,proxport,tor):
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
 
@@ -160,7 +189,13 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 				headers = {'user-agent': agent}
 				cookies = {'': cookie}
 				if len(proxip) == 0:
-					req = requests.get(plugin, cookies = cookies, headers = headers, verify=False)
+					if tor == True:
+						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+						socket.socket = socks.socksocket
+						proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+						req = requests.get(plugin,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+					else:
+						req = requests.get(plugin, cookies = cookies, headers = headers, verify=False)
 				else:
 					proxy = proxip  + ':' + proxport
 					proxies = {'http' : proxy, 'https' : proxy,}
@@ -210,7 +245,13 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 					headers = {'user-agent': agent}
 					cookies = {'': cookie}
 					if len(proxip) == 0:
-						req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
+						if tor == True:
+							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+							socket.socket = socks.socksocket
+							proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+							req = requests.get(readme,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+						else:
+							req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
 					else:
 						proxy = proxip  + ':' + proxport
 						proxies = {'http' : proxy, 'https' : proxy,}
@@ -228,7 +269,13 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 					headers = {'user-agent': agent}
 					cookies = {'': cookie}
 					if len(proxip) == 0:
-						req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
+						if tor == True:
+							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+							socket.socket = socks.socksocket
+							proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+							req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+						else:
+							req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
 					else:
 						proxy = proxip  + ':' + proxport
 						proxies = {'http' : proxy, 'https' : proxy,}
@@ -244,7 +291,13 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 					headers = {'user-agent': agent}
 					cookies = {'': cookie}
 					if len(proxip) == 0:
-						req = requests.get(arg + row[2], cookies = cookies, headers = headers, verify=False)
+						if tor == True:
+							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+							socket.socket = socks.socksocket
+							proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+							req = requests.get(arg + row[2],cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+						else:
+							req = requests.get(arg + row[2], cookies = cookies, headers = headers, verify=False)
 					else:
 						proxy = proxip  + ':' + proxport
 						proxies = {'http' : proxy, 'https' : proxy,}
@@ -263,7 +316,13 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport):
 	headers = {'user-agent': agent}
 	cookies = {'': cookie} 
 	if len(proxip) == 0:
-		req = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+		if tor == True:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+			socket.socket = socks.socksocket
+			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+			req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+		else:
+			req = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 	else:
 		proxy = proxip  + ':' + proxport
 		proxies = {'http' : proxy, 'https' : proxy,}

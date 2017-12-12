@@ -6,8 +6,10 @@ import requests
 import argparse
 import os.path
 from termcolor import colored
+import socket
+import socks
 
-def checkFile(reqFile,user,pwd,userFile,passFile,message,verbose,cookie,agent,proxip,proxport):
+def checkFile(reqFile,user,pwd,userFile,passFile,message,verbose,cookie,agent,proxip,proxport,tor):
 	print user
 	b = ['','1','12']
 	a = []

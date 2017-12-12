@@ -6,16 +6,24 @@ import argparse
 from lxml import etree
 from lxml import html
 from termcolor import colored
+import socket
+import socks
 
 visited = []
 toVisit = []
 
 
-def crawler(arg,verbose,cookie,agent,proxip,proxport):
+def crawler(arg,verbose,cookie,agent,proxip,proxport,tor):
 	
 	requests.packages.urllib3.disable_warnings()
 	if len(proxip) == 0:
-		req = requests.get(arg,verify=False)
+		if tor == True:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+			socket.socket = socks.socksocket
+			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+			req = requests.get(arg,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+		else:
+			req = requests.get(arg,verify=False)
 	else:
 		proxy = proxip  + ':' + proxport
 		proxies = {'http' : proxy, 'https' : proxy,}
@@ -40,7 +48,6 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport):
 				
 	else:
 		pass
-	print cookie
 	if agent is None:
 		agent = 'Kakeando'
 	else:
@@ -59,7 +66,13 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport):
 			headers = {'user-agent': agent}
 			cookies = {'': cookie} 
 			if len(proxip) == 0:
-				res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+				if tor == True:
+					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+					socket.socket = socks.socksocket
+					proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+					res = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+				else:
+					res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 			else:
 				proxy = proxip  + ':' + proxport
 				proxies = {'http' : proxy, 'https' : proxy,}
