@@ -136,8 +136,15 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 					else:
 						if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 							indexOf = res.url + '/'
-							r = requests.get(indexOf,verify=False)
-							
+							headers = {'user-agent': agent}
+							cookies = {'': cookie} 
+							if len(proxip) == 0:
+								r = requests.get(indexOf,cookies=cookies,headers=headers,verify=False)
+							else:
+								proxy = proxip  + ':' + proxport
+								proxies = {'http' : proxy, 'https' : proxy,}
+								r = requests.get(indexOf,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+								
 							if r.status_code == 200 and '<title>Index of' in r.content:
 								print "Index of: " + colored(r.url, 'green') + " Status code: " + colored(r.status_code, 'yellow')
 							elif r.status_code == 200:
@@ -147,7 +154,16 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport):
 									fo = open(f, 'r')
 									for line in fo:
 										new = r.url + line
-										rn = requests.head(new.rstrip('\n'),verify=False)
+										headers = {'user-agent': agent}
+										cookies = {'': cookie} 
+										if len(proxip) == 0:
+											rn = requests.head(new.rstrip('\n'),cookies=cookies,headers=headers,verify=False)
+										else:
+											proxy = proxip  + ':' + proxport
+											proxies = {'http' : proxy, 'https' : proxy,}
+											rn = requests.head(new.strip('\n'),cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+			
+		
 										if rn.status_code == 200:
 											print "Resource exists: " + colored(rn.url, 'green') + " Status code: " + colored(rn.status_code, 'yellow')
 									fo.close()
