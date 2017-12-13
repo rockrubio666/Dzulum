@@ -1,41 +1,40 @@
 #!/usr/bin/python
 
-import socket
-import re
+import re # Utilizado para las regex
 import sys
-import requests
-import hashlib
-from lxml import etree
-from lxml import html
-import wget
-import os
-from collections import Counter
+import requests # Utilizado para realizar las peticiones
+import hashlib # Utilizado para obtener los hashes
+from lxml import etree # Utilizado para obtener los enlaces, imagenes, etc.
+from lxml import html # Utilizado para obtener los enlaces, imagenes, etc.
+import wget # Utilizado para descargar las imagenes
+import os 
+from collections import Counter # Utilizado para obtener el promedio de las versiones
 import operator
 from termcolor import colored
-import csv
-import socks
-import socket
+import csv # Utilizado para leer los archivos que contienen los hashes
+import socks #Tor
+import socket #Tor
 
 plugins = ['']
 
-def moodle(arg, verbose,cookie,agent,proxip,proxport,tor):
+def moodle(arg, verbose,cookie,agent,proxip,proxport,tor): # Version
 # Si el argumento tiene http(s)
 	requests.packages.urllib3.disable_warnings()
 	
 	if len(proxip) == 0:
-		if tor == True:
+		if tor == True: # Peticiones a traves de Tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
 			req = requests.get(arg,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
 		else:
 			req = requests.get(arg,verify=False)
-	else:
+	else: # Peticiones a traves del proxy
 		proxy = proxip  + ':' + proxport
 		proxies = {'http' : proxy, 'https' : proxy,}
 		req = requests.get(arg,proxies = {'http':proxy},verify=False)
 	
-	if cookie is None:
+	if cookie is None: # Obtencion de la cookie de sesion
 		for key,value in req.headers.iteritems():
 			if 'set-cookie' in key:
 				regex = re.compile(r'((.*)=)((.*);)')
@@ -70,10 +69,10 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor):
 				upgrade = requests.get(arg + '/lib/upgrade.txt', cookies = cookies, headers = headers,verify=False)
 		else:
 			proxy = proxip  + ':' + proxport
-			proxies = {'http' : proxy, 'https' : proxy,}
+			proxies = {'http' : proxy, 'https' : proxy,} # Busqueda del archivo upgrade.txt, que contiene la version del sitio
 			upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 						
-		if int(upgrade.status_code) == 200: #Si tiene el archivp upgrade
+		if int(upgrade.status_code) == 200: #Si tiene el archivo upgrade
 			regex = re.compile(r'===(.*)===')
 			match = regex.search(upgrade.text)
 			try:
@@ -84,14 +83,14 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor):
 						print "La version del sitio: " + colored(arg,'green') + " es: " + colored(match.group(1),'green')
 					elif int(verbose) == 3:
 						print "Version del sitio encontrada en: " + colored(upgrade.url,'green')
-					files(arg,verbose,match.group(1),cookie,agent,proxip,proxport,tor)
+					files(arg,verbose,match.group(1),cookie,agent,proxip,proxport,tor) # Si existe el archivo se obtienen los plugins y el tema
 				
 					
 			except:
 				exit(2)
 		
 		else: #Si no lo tiene
-			version(arg,verbose,cookie,agent,proxip,proxport,tor)
+			version(arg,verbose,cookie,agent,proxip,proxport,tor) # Si no se obtiene la version a partir del archivo, se obtiene a partir de los archivos por defecto
 			
 			
 # Si no tiene http(s) se pega a la direccion
@@ -101,11 +100,11 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor):
 		exit(2)
 		
 
-def version(arg,verbose,cookie,agent,proxip,proxport,tor):	
+def version(arg,verbose,cookie,agent,proxip,proxport,tor):	 # Obtencion de la version a partir de archivos
 	m = hashlib.md5()
 	elements = []
 	average = []
-	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
+	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href'] # Busqueda de imagenes, favicon, hojas de estilo y js
 	
 	requests.packages.urllib3.disable_warnings()					
 	
@@ -128,7 +127,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor):
 	webpage = html.fromstring(res.content)
 	dom = re.sub(r'(http|https)://','',arg)
 
-	for i in range(0,len(listFind)):
+	for i in range(0,len(listFind)): # Busqueda de css, js, imagenes, favicon
 		for link in webpage.xpath(listFind[i]):
 			if dom in link:
 				if link.startswith('http'):	
@@ -147,7 +146,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor):
 						proxies = {'http' : proxy, 'https' : proxy,}
 						req = requests.get(link,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 						
-					if req.status_code == 200 and i in range(2,3):
+					if req.status_code == 200 and i in range(2,3): # Si existen las imagenes, se descargan y se obtiene el hash
 						try:
 							filename = wget.download(link, bar=None)
 							m.update(filename)
@@ -158,7 +157,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor):
 							continue
 				
 					else:
-						try:
+						try: # Si es js o css, se obtiene el has
 							m.update(req.text)
 							hs =  m.hexdigest()
 							elements.append(hs)
@@ -166,7 +165,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor):
 							continue
 	headers = {'user-agent': agent}
 	cookies = {'': cookie} 			
-	if len(proxip) == 0:
+	if len(proxip) == 0: # Obtencion del hash del archivo README
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
@@ -188,7 +187,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor):
 		
 	
 	
-	f = open('versions','rb')		
+	f = open('versions','rb')	 # Comparacion de los hashes, con la lista de hashes por defecto	
 	reader = csv.reader(f,delimiter=',')
 			
 	for element in elements:
@@ -199,20 +198,20 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor):
 			except:
 				continue
 	
-	cnt = Counter(average)
+	cnt = Counter(average) # Calculo de la version que mas veces se repite
 	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 		v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
 		print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(v, 'green')
-	files(arg,verbose,v,proxip,proxport,tor)
+	files(arg,verbose,v,proxip,proxport,tor) # Obtencion de plugins y temas
 	f.close()
 
-def files(arg, verbose,version,cookie,agent,proxip,proxport,tor):
+def files(arg, verbose,version,cookie,agent,proxip,proxport,tor): # Obtencion de plugins y temas
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
 
 	for row in reader:
 		try:
-			if int(verbose) == 3:
+			if int(verbose) == 3: # Busqueda de archivos de configuracion visibles
 				if 'Readme' in row[1] and 'Moodle' in row[0]: 
 					readme = arg + row[2]
 					headers = {'user-agent': agent}
@@ -237,7 +236,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor):
 					else:
 						continue
 		
-				elif 'Change' in row[1] and 'Moodle' in row[0]:
+				elif 'Change' in row[1] and 'Moodle' in row[0]: # Busqueda de archivos de configuracion visibles
 					changeLog = arg +  row[2]
 				
 					headers = {'user-agent': agent}
@@ -264,7 +263,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor):
 			else:
 				pass
 				
-			if 'Plugin' in row[1] and 'Moodle' in row[0]:
+			if 'Plugin' in row[1] and 'Moodle' in row[0]: # Busqueda de los plugins
 				plugin = arg + row[2]
 				headers = {'user-agent': agent}
 				cookies = {'': cookie} 
@@ -281,7 +280,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor):
 					proxies = {'http' : proxy, 'https' : proxy,}
 					req = requests.get(plugin,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 				
-				if req.status_code == 200:
+				if req.status_code == 200: # Obtencion de la version del plugin
 					up = re.sub(r'\/upgrade.txt','',row[2])
 					begin = re.sub(r'^\/','',up)
 					regex = re.compile(r'(===)(.*)(===)')
@@ -335,7 +334,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor):
 		res = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 	
 	webpage = html.fromstring(res.text)
-	theme =  webpage.xpath('//link[@rel="shortcut icon"]/@href')
+	theme =  webpage.xpath('//link[@rel="shortcut icon"]/@href') # Busqueda del tema a partir del favicon
 	
 	for element in theme:
 		if '=' in element:
@@ -364,7 +363,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor):
 	vuln(version,verbose)
 	sys.exit
 		
-def vuln(version,verbose):
+def vuln(version,verbose): # Listado de vulnerabilidades obtenidas a partir de la version del gestor de contenidos
 	f = open('vuln','rb')
 	reader = csv.reader(f,delimiter=',')
 	

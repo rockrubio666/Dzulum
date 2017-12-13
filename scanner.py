@@ -1,24 +1,24 @@
 #!/usr/bin/python
 
-import argparse
+import argparse #Utilizado para generar el menu
 import sys
 import os
-import git 
-from ojs import *
+import git # Utilizado para actualizar la herramienta
+from ojs import * 
 from moodle import *
 from crawlerHead import *
 from crawler import *
 from bruteforce import *
 from brutehttp import *
-from multiprocessing import Process
+from multiprocessing import Process #  Utilizado para realizar la ejecucion de los programas de forma paralela
 arg = ''
 
 
 def getParams(arg):
 	bforce = []	
 	pvalues = []
-	parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
-	description=(
+	parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, 
+	description=( 						# Descripcion de las opciones de la herramienta
 	'''				Vulnerability scanner for Moodle and OJS
 -----------------------------------------------------------------------------------------------
  * Agent: Lets to specify the User Agent use it in the requests, e.g: -a 'Thunderstruck'
@@ -52,6 +52,7 @@ def getParams(arg):
  * Verbose: Shows differents depuration levels, from 1 to 3, e.g: -v 3	'''),
 	epilog = 'Enjoy it! ')
 
+# Opciones de la herramienta
 	parser.add_argument('-a', '--Agent',metavar='Set User Agent', help='User Agent value')
 	parser.add_argument('-B', '--Bruteforce',metavar='Login,UserField,PassField,User,Password,UsersFile,PassFile,Message',help='Login = Url Login, User = It could be optional, Password = It could be optional, UsersFile = It could be optional, PassFile = It could be optional')
 	parser.add_argument('-b', '--bruteFile',metavar='RequestFile,User,Password,UsersFile,PassFile,Message',help=' User = It could be optional, Password = It could be optional, UsersFile = It could be optional, PassFile = It could be optional')
@@ -65,33 +66,33 @@ def getParams(arg):
 	parser.add_argument('-v','--verbose', metavar='Number', nargs = '?',help='Verbose Level 1-3', default = 1)
 	options = parser.parse_args()
 	
-	if len(sys.argv) == 1 :
+	if len(sys.argv) == 1 : # Para recibir mas de un argumento
 		print parser.print_help()
 		sys.exit(2)
 
-	if int(options.verbose)	>= 4 or int(options.verbose) == 0:
+	if int(options.verbose)	>= 4 or int(options.verbose) == 0: # Nivel de depuracion maximo = 3
 		print parser.print_help()
 		sys.exit(2)
 	
-	if options.verbose is None:
+	if options.verbose is None: # Si no se especifica la opcion -v, se establece por defecto 1
 		options.verbose = 1
 
-	if not (options.ojs or options.moodle):
+	if not (options.ojs or options.moodle): # Validacion para que se realice el escaneo 
 		print parser.print_help()
 		sys.exit(2)
 		
-	if options.Crawler == True and options.crawlerHead in sys.argv:
+	if options.Crawler == True and options.crawlerHead in sys.argv: # Validacion para solo usar un crawler
 		print parser.print_help()
 	
-	if options.Bruteforce in sys.argv and options.bruteFile in sys.argv:
+	if options.Bruteforce in sys.argv and options.bruteFile in sys.argv: # Validacion para solo usar un bruteforce
 		print parser.print_help()
 		sys.exit(2)
 	
-	if options.proxy in sys.argv and options.tor == True:
+	if options.proxy in sys.argv and options.tor == True: # Validacion para solo usar proxy o tor
 		print parser.print_help()
 		sys.exit(2)	
 		
-	if len(sys.argv) >= 2:
+	if len(sys.argv) >= 2: # Actualizacion de la herramienta
 		update = raw_input('Do yo want to update the databases? [Y/N] ') or 'N'
 		if 'Y' in update or 'y' in update:
 			cwd = os.getcwd()		
@@ -102,24 +103,24 @@ def getParams(arg):
 			print 'No updated'
 			pass
 	
-	if options.proxy in sys.argv:
+	if options.proxy in sys.argv: # Se separa la dir ip y el puerto
 		for element in options.proxy.split(','):
 			pvalues.append(element)
 	else:
 		pvalues.append('')
 		pvalues.append('')
 	
-	if options.ojs in sys.argv:
+	if options.ojs in sys.argv: # Se manda a llamar la funcion del archivo
 		p1 = Process(target = ojs,args = (options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor))
 		p1.start()
 		p1.join()
 		
-	if options.moodle in sys.argv:
+	if options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
 		p2 = Process(target = moodle, args = (options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor))
 		p2.start()
 		p2.join()
 			
-	if options.crawlerHead in sys.argv and options.ojs in sys.argv:
+	if options.crawlerHead in sys.argv and options.ojs in sys.argv: # Se manda a llamar la funcion del archivo
 		p3 = Process(target = crawlerHead, args =(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor))
 		p3.start()
 		p3.join()
@@ -129,7 +130,7 @@ def getParams(arg):
 		p3.join()
 	
 	
-	if options.Bruteforce in sys.argv and options.moodle in sys.argv:
+	if options.Bruteforce in sys.argv and options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
 		for element in options.Bruteforce.split(','):
 			bforce.append(element)
 		url = options.moodle + bforce[0]
@@ -145,14 +146,14 @@ def getParams(arg):
 		p4.start()
 		p4.join()
 			
-	if options.bruteFile in sys.argv:
+	if options.bruteFile in sys.argv: # Se manda a llamar la funcion del archivo
 		for element in options.bruteFile.split(','):
 			bforce.append(element)	
 		p5 = Process(target = checkFile, args = (bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor))
 		p5.start()
 		p5.join()
 
-	if options.Crawler == True and options.moodle in sys.argv:
+	if options.Crawler == True and options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
 		p6 = Process(target = crawler, args = (options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor))
 		p6.start()
 		p6.join()

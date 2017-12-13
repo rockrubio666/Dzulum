@@ -1,38 +1,38 @@
 #!/usr/bin/python
 
-import hashlib
-import re
-import sys
-import csv
-import requests
-from lxml import etree
-from lxml import html
-import wget
+import hashlib # Utilizado para obtener los hashes
+import re # Utilizado para las regex
+import sys 
+import csv #Utilizado para leer los archivos
+import requests # Utilizado para realizar las peticiones
+from lxml import etree #Utilizado para obtener los enlaces y archivos del sitio
+from lxml import html # Utilizado para obtener los enlaces y archivos del sitio
+import wget # Descarga los archivos necesarios
 import os
-from collections import Counter
+from collections import Counter # Obtiene el promedio de las versiones
 import operator
 from termcolor import colored
-import socks
-import socket
+import socks # Tor
+import socket # Tor
 
 def ojs(arg,verbose,cookie,agent,proxip,proxport,tor):
 	
 	
 	requests.packages.urllib3.disable_warnings()
 	if len(proxip) == 0:
-		if tor == True:
+		if tor == True: # USo de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
 			req = requests.get(arg,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
 		else:
 			req = requests.get(arg,verify=False)
-	else:
+	else: # Uso de proxy
 		proxy = proxip  + ':' + proxport
 		proxies = {'http' : proxy, 'https' : proxy,}
 		req = requests.post(arg,proxies = {'http':proxy},verify=False)
 		
-	if cookie is None:
+	if cookie is None: # Obtiene la cookie de sesion
 		for key,value in req.headers.iteritems():
 			if 'set-cookie' in key:
 				regex = re.compile(r'(OJSSID=)((.*);)')
@@ -68,7 +68,7 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor):
 		req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 	
 	page_source =  req.text
-	regex = re.compile(r'(.*)(name="generator") content="(.*)"(.*)')
+	regex = re.compile(r'(.*)(name="generator") content="(.*)"(.*)') # Se busca la meta etiqueta que contiene la version
 	match = regex.search(page_source)
 
 	if 'Open Journal Systems' in match.group():
@@ -87,16 +87,16 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor):
 				print "Version del sitio encontrada en:" + colored(match.group(),'green')
 			
 	except:
-		version(arg,verbose,cookie,agent,proxip,proxport,tor)
+		version(arg,verbose,cookie,agent,proxip,proxport,tor) #Si no existe la meta etiqueta, busca en los archivos por defecto
 	
-	files(arg,verbose,match.group(3),cookie,agent,proxip,proxport,tor)
+	files(arg,verbose,match.group(3),cookie,agent,proxip,proxport,tor) # Si existe la version, busca los plugins
 	
 	
-def version(arg,verbose,cookie,agent,proxip,proxport,tor):
+def version(arg,verbose,cookie,agent,proxip,proxport,tor): # Obtencion de la version mediante archivos
 	m = hashlib.md5()
 	elements = []
 	average = []
-	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href']
+	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href'] # Busca js, enlaces, imagenes y favicon
 	
 	requests.packages.urllib3.disable_warnings()					
 	
@@ -118,7 +118,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor):
 	webpage = html.fromstring(req.content)
 	dom = re.sub(r'(http|https)://','',arg)
 
-	for i in range(0,len(listFind)):
+	for i in range(0,len(listFind)): # Busca los js, enlaces, imagenes y favicon del sitio
 		for link in webpage.xpath(listFind[i]):
 			if dom in link:
 				headers = {'user-agent': agent}
@@ -136,7 +136,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor):
 					proxies = {'http' : proxy, 'https' : proxy,}
 					req = requests.get(link,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 				
-				if req.status_code == 200 and i in range(2,3):
+				if req.status_code == 200 and i in range(2,3): # Si es una imagen o favicon, se descarga y obtiene el hash
 					try:
 						filename = wget.download(link, bar=None)
 						m.update(filename)
@@ -146,7 +146,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor):
 					except:
 						continue
 				
-				else:
+				else: #Si es un js, se obtiene el hash
 					try:
 						m.update(req.text)
 						hs =  m.hexdigest()
@@ -157,7 +157,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor):
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
 			
-	for element in elements:
+	for element in elements: # Se realiza la comparacion con los valores que se tienen de sitios por defecto
 		for row in reader:
 			try:
 				if element in row[2] and 'Ojs' in row[0]:
@@ -166,14 +166,14 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor):
 				continue
 	f.close()
 
-	cnt = Counter(average)
+	cnt = Counter(average) # Se realiza el promedio para determinar la version
 	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 		v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
 		print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(v, 'green')
 	files(arg,verbose,v,cookie,agent,proxip,proxport,tor)
 	
 	
-def files(arg,verbose,version,cookie,agent,proxip,proxport,tor):
+def files(arg,verbose,version,cookie,agent,proxip,proxport,tor): #Obtencion de plugins y temas
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
 
@@ -183,7 +183,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor):
 	
 	for row in reader:
 		try:
-			if 'Plugin' in row[1] and 'Ojs' in row[0]:
+			if 'Plugin' in row[1] and 'Ojs' in row[0]: # Se buscan plugins por defecto de los gestores de contenido
 				plugin = arg + '/plugins' + row[2]
 				
 				headers = {'user-agent': agent}
@@ -201,7 +201,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor):
 					proxies = {'http' : proxy, 'https' : proxy,}
 					req = requests.get(plugin,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 					
-				if req.status_code == 200:
+				if req.status_code == 200: # Si existe el archivo, obtiene el nombre del plugin y la version
 					plugName = re.compile(r'=== (.*)')
 					pN = plugName.search(req.text)
 					plugVers = re.compile(r'(===) (Version(.*))')
@@ -224,7 +224,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor):
 					except:
 						continue
 					
-					regex = re.compile(r'(.*)\/(.*)\/README(.*)')
+					regex = re.compile(r'(.*)\/(.*)\/README(.*)') # Archivos de configuracion visibles
 					match = regex.search(plugin)
 					try:
 						if match.group():
@@ -263,7 +263,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor):
 						continue
 					
 			
-				elif 'Change' in row[1] and 'Ojs' in row[0]:		
+				elif 'Change' in row[1] and 'Ojs' in row[0]:	# Archivos de configuracion visibles
 					changeLog = arg + '/docs/release-notes/ChangeLog-' + row[2]
 				
 					headers = {'user-agent': agent}
@@ -286,7 +286,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor):
 					else:
 						continue
 	
-				elif 'Robots' in row[1] and 'Ojs' in row[0]:
+				elif 'Robots' in row[1] and 'Ojs' in row[0]: # Archivos de configuracion visibles
 				
 					headers = {'user-agent': agent}
 					cookies = {'': cookie}
@@ -329,7 +329,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor):
 		req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 	
 	webpage = html.fromstring(req.content)
-	for i in range(0,len(listThemes)):
+	for i in range(0,len(listThemes)): # Busqueda de los temas instalados en el sitio
 		for link in webpage.xpath(listThemes[i]):
 			if 'theme' in link or 'journals' in link or 'themes' in link:
 				tmp.append(link)
@@ -337,13 +337,13 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor):
 				continue
 				
 	for element in range(0,len(tmp)):
-		if 'default' in tmp[element]:
+		if 'default' in tmp[element]: # Tema por defecto
 			if int(verbose) == 1:
 				print colored('Default Theme', 'green')
 			elif int(verbose) == 2 or int(verbose) == 3:
 				print colored( 'Default Theme', 'green') + ' Path: ' + colored(tmp[element], 'green')
 			element + i
-		elif 'journals' in tmp[element]:
+		elif 'journals' in tmp[element]: #Tema journal
 			regex = re.compile(r'(.*)\/(.*)\.css')
 			match = regex.search(tmp[element])
 			try:
@@ -357,7 +357,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor):
 					element + 1
 			except:
 				pass
-		elif 'theme' in tmp[element]:
+		elif 'theme' in tmp[element]: 
 			regex = re.compile(r'(.*)\/(.*)\.css')
 			match = regex.search(tmp[element])
 			try:
@@ -368,7 +368,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor):
 						print 'Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
 			except:
 				pass	
-		elif 'bootstrap' in tmp[element]:
+		elif 'bootstrap' in tmp[element]: # Tema creado con bootstrap
 			regex = re.compile(r'(.*)\/(.*)\.css')
 			match = regex.search(tmp[element])
 			try:
@@ -383,7 +383,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor):
 			sys.exit
 	vuln(version,verbose)
 
-def vuln(version,verbose):
+def vuln(version,verbose): # A partir de la version, se listan las posibles vulnerabilidades
 	f = open('vuln','rb')
 	reader = csv.reader(f,delimiter=',')
 	
