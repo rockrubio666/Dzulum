@@ -1,13 +1,12 @@
 #!/usr/bin/python
-import re
-import requests
+import re # Utilizado para regex
+import requests # Utilizado para realizar las peticiones
 import sys
-import argparse
-from lxml import etree
-from lxml import html
+from lxml import etree # Utilizado para la obtencion de enlaces y js
+from lxml import html # Utilizado para la obtencion de enlaces y js
 from termcolor import colored
-import socket
-import socks
+import socket # Tor
+import socks # Tor
 
 visited = []
 toVisit = []
@@ -17,19 +16,19 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor):
 	
 	requests.packages.urllib3.disable_warnings()
 	if len(proxip) == 0:
-		if tor == True:
+		if tor == True: # Peticiones a traves de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
 			req = requests.get(arg,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
 		else:
 			req = requests.get(arg,verify=False)
-	else:
+	else: # Peticiones a traves de proxy
 		proxy = proxip  + ':' + proxport
 		proxies = {'http' : proxy, 'https' : proxy,}
 		req = requests.get(arg,proxies = {'http':proxy},verify=False)
 		
-	if cookie is None:
+	if cookie is None: # Obtencion de la cookie de sesion
 		for key,value in req.headers.iteritems():
 			if 'set-cookie' in key:
 				regex = re.compile(r'(OJSSID=)((.*);)')
@@ -57,7 +56,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor):
 	print 'Consulta del sitio: ' + colored(arg, 'green')
 	if 'http://' in arg or 'https://' in arg: # Valida si tiene http(s)
 		# Lista para encontrar elementos
-		listFind = [ '//a/@href',  '//script/@src']
+		listFind = [ '//a/@href',  '//script/@src'] # Busqueda de enlaces y js
 		
 		# Peticiones
 		try:
@@ -90,7 +89,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor):
 		i = 0
 		site =  re.sub(r'(http|https)://','',arg)
 		
-		for i in range(0,len(listFind)):
+		for i in range(0,len(listFind)): # Obtiene los enlaces y js
 			for link in webpage.xpath(listFind[i]):
 				if site in link: # Para los enlaces que contienen el nombre de dominio
 					regex = re.compile(r'(.*)\.js') #Si el enlace contiene js se agrega a una lista que no se consulta
@@ -132,7 +131,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor):
 							regex = re.compile(r'20[0-6]')
 							status = regex.search(str(r.status_code))
 							try:
-								if status.group():
+								if status.group(): # Si el codigo de estado es 200, lo agrega a una lista para una posterior consulta
 									if complete not in toVisit and complete not in visited:
 										print 'Link: ' + colored(complete,'blue')
 										toVisit.append(complete)

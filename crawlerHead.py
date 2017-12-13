@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
-import requests
-import re
+import requests # Utilizado para hacer las peticiones
+import re # Utilizado para regex
 import sys
 import os
-from lxml.html import fromstring
+from lxml.html import fromstring # Utilizado para exztraer los enlaces
 from termcolor import colored
-import socket
-import socks
+import socket # Tor
+import socks # Tor
 
 	
 
@@ -16,18 +16,18 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor):
 	requests.packages.urllib3.disable_warnings()
 	if len(proxip) == 0:
 		if tor == True:
-			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050) # Peticiones a traves de tor
 			socket.socket = socks.socksocket
 			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
 			req = requests.get(url,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
 		else:
 			req = requests.get(url,verify=False)
-	else:
+	else: # Peticiones a traves del proxy
 		proxy = proxip  + ':' + proxport
 		proxies = {'http' : proxy, 'https' : proxy,}
 		req = requests.get(url,proxies = {'http':proxy},verify=False)
 	
-	if cookie is None:
+	if cookie is None: # Obtencion de la cookie de sesion
 		for key,value in req.headers.iteritems():
 			if 'set-cookie' in key:
 				regex = re.compile(r'(OJSSID=)((.*);)')
@@ -144,11 +144,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor):
 				else:
 					continue
 		except:
-			reg = re.compile(r'30[0-7]')
+			reg = re.compile(r'30[0-7]') # Sie l codigo de estado es 300
 			m3 = reg.search(str(res.status_code))
 			try:
 				if m3.group():
-					if len(fake) == 20:
+					if len(fake) == 20: # Y la lista de enlaces redirigidos es = 20, se detiene la ejecucion
 						print 'Execution stopped for those links: '
 						for element in fake:
 							print colored(element, 'cyan')
@@ -171,11 +171,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor):
 								proxies = {'http' : proxy, 'https' : proxy,}
 								r = requests.get(indexOf,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
 								
-							if r.status_code == 200 and '<title>Index of' in r.content:
+							if r.status_code == 200 and '<title>Index of' in r.content: # Siel codigo de estado es 300, se verifica si muestra index of
 								print "Index of: " + colored(r.url, 'green') + " Status code: " + colored(r.status_code, 'yellow')
 							elif r.status_code == 200:
-								print "Resource exists: " + colored(r.url, 'green') + " Status code: " + colored(r.status_code, 'yellow')
-							elif r.status_code == 403:
+								print "Resource exists: " + colored(r.url, 'green') + " Status code: " + colored(r.status_code, 'yellow') # O si el codigo de estado es 200
+							elif r.status_code == 403: # Si es un forbidden, se vuelve a pasar la lista de sitios
 								if os.path.exists(f):
 									fo = open(f, 'r')
 									for line in fo:
