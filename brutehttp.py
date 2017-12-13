@@ -371,12 +371,12 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 				cookies = {'': cookie} 
 				if len(proxip) == 0:
 					if tor == True:
-					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
-					socket.socket = socks.socksocket
-					proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-					r = requests.post(url,data = payload, cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
-				else:
-					r = requests.post(url, data = payload,cookies = cookies, headers = headers, verify=False)
+						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+						socket.socket = socks.socksocket
+						proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
+						r = requests.post(url,data = payload, cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+					else:
+						r = requests.post(url, data = payload,cookies = cookies, headers = headers, verify=False)
 				else:
 					proxy = proxip  + ':' + proxport
 					proxies = {'http' : proxy, 'https' : proxy,}
