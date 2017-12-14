@@ -2,6 +2,7 @@
 import re # Utilizado para regex
 import requests # Utilizado para realizar las peticiones
 import sys
+import time
 from lxml import etree # Utilizado para la obtencion de enlaces y js
 from lxml import html # Utilizado para la obtencion de enlaces y js
 from termcolor import colored
@@ -12,8 +13,8 @@ visited = []
 toVisit = []
 
 
-def crawler(arg,verbose,cookie,agent,proxip,proxport,tor):
-	
+def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report):
+	l = []
 	requests.packages.urllib3.disable_warnings()
 	if len(proxip) == 0:
 		if tor == True: # Peticiones a traves de tor
@@ -98,6 +99,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor):
 						if js.group() not in visited:
 							if int(verbose) == 2 or int(verbose) == 3:
 								print 'Link: ' + colored(js.group(),'blue')
+								l.append('Link: ' + js.group())
 							visited.append(link)
 					except:
 						regex = re.compile(r'(.*)\?(.*)') # Quita las variables despues de ?
@@ -106,10 +108,12 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor):
 							if match.group():
 								if match.group(1) not in toVisit and match.group(1) not in visited:
 									print 'Link: ' + colored(match.group(1),'blue')
+									l.append('Link: ' + match.group(1))
 									toVisit.append(match.group(1))
 						except:
 							if link not in toVisit and link not in visited: #Si el enlace no tiene variables
 								print 'Link: ' + colored(link,'blue')
+								l.append( 'Link: ' + link)
 								toVisit.append(link)
 					
 				else: #Otros enlaces Ej:'/'
@@ -134,6 +138,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor):
 								if status.group(): # Si el codigo de estado es 200, lo agrega a una lista para una posterior consulta
 									if complete not in toVisit and complete not in visited:
 										print 'Link: ' + colored(complete,'blue')
+										l.append('Link: ' + complete)
 										toVisit.append(complete)
 							except:
 								continue
@@ -147,7 +152,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor):
 			http =  re.sub(r'(^)','http://',arg)
 			crawler(http)
 			exit(2)
-	
+	rep(report,l)
 	#for element in range(len(toVisit)):
 	#	visited.append(toVisit[element])
 	#	print colored(toVisit[element], 'blue')
@@ -156,4 +161,15 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor):
 		#crawler(toVisit[element])
 	
 	
-
+def rep(list1,list2):
+	for value in list1:
+		if list1.index(value) == 0:
+			t = time.strftime('%d-%m-%Y')
+			h = time.strftime('%H:%M:%S')
+			fo = open(('CrawlerReport_' + t + '_'+ h + '.txt'), 'wb')
+			fo.write('Results from the site\n')
+			for element in list2:
+				fo.write(element + '\n')
+			fo.close()
+		else:
+			pass

@@ -11,14 +11,15 @@ import wget # Descarga los archivos necesarios
 import os
 from collections import Counter # Obtiene el promedio de las versiones
 import operator
+import time
 from termcolor import colored
 import socks # Tor
 import socket # Tor
 import text
 
 
-def ojs(arg,verbose,cookie,agent,proxip,proxport,tor):
-	
+def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
+	l = []
 	
 	requests.packages.urllib3.disable_warnings()
 	if len(proxip) == 0:
@@ -82,26 +83,24 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor):
 		if match.group():		
 			if int(verbose) == 1:
 				print "Site Version: " + colored(match.group(3),'green')
-				try:
-					textreport(match.group(3))
-					pass
-				except:
-					'errpr'
+				l.append("Site Version: " + match.group(3))
+				
 			elif int(verbose) == 2:
 				print "Site version: " + colored(arg, 'green') + " is: " + colored(match.group(3),'green')
-				
+				l.append("Site version: " + arg + " is: " + match.group(3))
 			elif int(verbose) == 3:
 				print "Site version: " + colored(arg, 'green') + " is: " + colored(match.group(3),'green')
-				print "Site version found in:" + colored(match.group(),'green')
+				print "Site version found it in:" + colored(match.group(),'green')
+				l.append("Site version: " + arg + " is: " + match.group(3) + 'Found it in: ' + match.group())
 				
 			
 	except:
-		version(arg,verbose,cookie,agent,proxip,proxport,tor) #Si no existe la meta etiqueta, busca en los archivos por defecto
+		version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l) #Si no existe la meta etiqueta, busca en los archivos por defecto
 	
-	files(arg,verbose,match.group(3),cookie,agent,proxip,proxport,tor) # Si existe la version, busca los plugins
+	files(arg,verbose,match.group(3),cookie,agent,proxip,proxport,tor,report,l) # Si existe la version, busca los plugins
 	
 	
-def version(arg,verbose,cookie,agent,proxip,proxport,tor): # Obtencion de la version mediante archivos
+def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l): # Obtencion de la version mediante archivos
 	m = hashlib.md5()
 	elements = []
 	average = []
@@ -179,10 +178,11 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor): # Obtencion de la ver
 	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 		v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
 		print '\nVersion getting from configuration files: ' + colored(v, 'green')
-	files(arg,verbose,v,cookie,agent,proxip,proxport,tor)
+		l.append('\nVersion getting from configuration files: ' + v)
+	files(arg,verbose,v,cookie,agent,proxip,proxport,tor,report,l)
 	
 	
-def files(arg,verbose,version,cookie,agent,proxip,proxport,tor): #Obtencion de plugins y temas
+def files(arg,verbose,version,cookie,agent,proxip,proxport,tor,report,l): #Obtencion de plugins y temas
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
 
@@ -221,15 +221,21 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor): #Obtencion de p
 								if pV.group():
 									if int(verbose) == 1:
 										print "Plugin Name: " + colored(pN.group(1),'green')
+										l.append("Plugin Name: " + pN.group(1))
+										
 									elif int(verbose) == 2:
 										print "Plugin, Name: " + colored(pN.group(1),'green') + ' ,Path: ' + colored(plugin, 'green')
+										l.append("Plugin, Name: " + pN.group(1) + ' ,Path: ' + plugin)
 									elif int(verbose) == 3:
 										print "Plugin, Name: " + colored(pN.group(1), 'green') + ' ,Path: ' + colored(plugin, 'green') + " " + colored(pV.group(2), 'blue')
+										l.append("Plugin, Name: " + pN.group(1) + ' ,Path: ' + plugin + " " + pV.group(2))
 							except:
 								if int(verbose) == 1:
 									print "Plugin Name: " + colored(pN.group(1), 'green') 
+									l.append("Plugin Name: " + pN.group(1))
 								elif int(verbose) == 2 or int(verbose) == 3:
 									print "Plugin, Name: " + colored(pN.group(1), 'green') + ' ,Path: ' + colored(plugin, 'green')		
+									l.append("Plugin, Name: " + pN.group(1) + ' ,Path: ' + plugin)
 					except:
 						continue
 					
@@ -239,8 +245,10 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor): #Obtencion de p
 						if match.group():
 							if int(verbose) == 1:
 								print "Plugin Name: " + colored(match.group(2),'green')
+								l.append("Plugin Name: " + match.group(2))
 							elif int(verbose) == 2 or int(verbose) == 3:
 								print "Plugin, Name: " + colored(match.group(2), 'green') + ' ,Path: ' + colored(plugin, 'green')
+								l.append( "Plugin, Name: " + match.group(2) + ' ,Path: ' + plugin)
 					except:
 						continue
 				
@@ -268,6 +276,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor): #Obtencion de p
 				
 					if req.status_code == 200:
 						print 'README file: ' + colored(readme, 'green')
+						l.append('README file: ' + readme)
 					else:
 						continue
 					
@@ -292,6 +301,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor): #Obtencion de p
 	
 					if req.status_code == 200:
 						print 'ChangeLog: ' + colored(changeLog,'green')
+						l.append('ChangeLog: ' + changeLog)
 					else:
 						continue
 	
@@ -314,6 +324,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor): #Obtencion de p
 	
 					if req.status_code == 200:
 						print 'Robots file: ' + colored(req.url, 'green')
+						l.append('Robots file: ' + req.url)
 					else:
 						continue
 			else:
@@ -349,8 +360,10 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor): #Obtencion de p
 		if 'default' in tmp[element]: # Tema por defecto
 			if int(verbose) == 1:
 				print colored('Default Theme', 'green')
+				l.append('Default Theme')
 			elif int(verbose) == 2 or int(verbose) == 3:
 				print colored( 'Default Theme', 'green') + ' Path: ' + colored(tmp[element], 'green')
+				l.append('Default Theme' + ' Path: ' + tmp[element])
 			element + i
 		elif 'journals' in tmp[element]: #Tema journal
 			regex = re.compile(r'(.*)\/(.*)\.css')
@@ -359,10 +372,13 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor): #Obtencion de p
 				if match.group():
 					if int(verbose) == 1:
 						print colored('Customize Theme ', 'green')
+						l.append('Customize Theme ')
 					elif int(verbose) == 2:
 						print colored('Customize Theme, Name: ' + match.group(2), 'green')
+						l.append('Customize Theme, Name: ' + match.group(2))
 					elif int(verbose) == 3:	
 						print 'Customize Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
+						l.append('Customize Theme, Name: ' + match.group(2) + ', Path: ' + tmp[element])
 					element + 1
 			except:
 				pass
@@ -373,8 +389,10 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor): #Obtencion de p
 				if match.group():
 					if int(verbose) == 1:
 						print 'Theme, Name: ' + colored(match.group(2),'green')
+						l.append('Theme, Name: ' + match.group(2))
 					elif int(verbose) == 2 or int(verbose) == 3:	
 						print 'Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
+						l.append( 'Theme, Name: ' + match.group(2) + ', Path: ' + tmp[element])
 			except:
 				pass	
 		elif 'bootstrap' in tmp[element]: # Tema creado con bootstrap
@@ -383,16 +401,18 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor): #Obtencion de p
 			try:
 				if match.group():	
 					if int(verbose) == 1:
-						print 'Theme, Name: ' + colored(match.group(2))
+						print 'Theme, Name: ' + colored(match.group(2),'green')
+						l.append('Theme, Name: ' + match.group(2))
 					elif int(verbose) == 2 or int(verbose) == 3:
 						print 'Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
+						l.append('Theme, Name: ' + match.group(2) + ', Path: ' + tmp[element])
 			except:
 				pass	
 		else:
 			sys.exit
-	vuln(version,verbose)
+	vuln(version,verbose,report,l)
 
-def vuln(version,verbose): # A partir de la version, se listan las posibles vulnerabilidades
+def vuln(version,verbose,report,l): # A partir de la version, se listan las posibles vulnerabilidades
 	f = open('vuln','rb')
 	reader = csv.reader(f,delimiter=',')
 	
@@ -400,13 +420,29 @@ def vuln(version,verbose): # A partir de la version, se listan las posibles vuln
 		if 'Ojs' in row[0] and row[1] in version:
 			if int(verbose) == 1:
 				print "Vulnerability Link: " + colored(row[3],'green')
+				l.append( "Vulnerability Link: " + row[3])
 			elif int(verbose) == 2 or int(verbose) == 3:
 				print "Vulnerability Name: " + colored(row[2],'green') + ' ,Vulnerability Link: ' + colored(row[3],'green')
+				l.append( "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3])
 	f.close()
+	rep(report,l)
 	
 
-#def rep(gal):
-	#report('','nepencio')
+def rep(list1,list2):
+	for value in list1:
+		if list1.index(value) == 0:
+			t = time.strftime('%d-%m-%Y')
+			h = time.strftime('%H:%M:%S')
+			fo = open(('OJSReport_' + t + '_'+ h + '.txt'), 'wb')
+			fo.write('Results from the site\n')
+			for element in list2:
+				fo.write(element + '\n')
+			fo.close()
+		else:
+			pass
+
 	
 	
+	
+
 

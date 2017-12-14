@@ -4,6 +4,7 @@ import requests # Utilizado para hacer las peticiones
 import re # Utilizado para regex
 import sys
 import os
+import time
 from lxml.html import fromstring # Utilizado para exztraer los enlaces
 from termcolor import colored
 import socket # Tor
@@ -11,8 +12,8 @@ import socks # Tor
 
 	
 
-def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor):
-
+def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
+	pene = []
 	requests.packages.urllib3.disable_warnings()
 	if len(proxip) == 0:
 		if tor == True:
@@ -140,6 +141,9 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor):
 					sites.append(element)
 					if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 						print "Resource exists: " + colored(element, 'green') + " Status code: " + colored(res.status_code, 'yellow')
+						pene.append("Resource exists: " + element + " Status code: " + res.status_code)
+						pene.append('asd')
+						
 						
 				else:
 					continue
@@ -173,8 +177,10 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor):
 								
 							if r.status_code == 200 and '<title>Index of' in r.content: # Siel codigo de estado es 300, se verifica si muestra index of
 								print "Index of: " + colored(r.url, 'green') + " Status code: " + colored(r.status_code, 'yellow')
+								pene.append("Index of: " + r.url + " Status code: " + r.status_code)
 							elif r.status_code == 200:
 								print "Resource exists: " + colored(r.url, 'green') + " Status code: " + colored(r.status_code, 'yellow') # O si el codigo de estado es 200
+								pene.append( "Resource exists: " + r.url + " Status code: " + r.status_code)
 							elif r.status_code == 403: # Si es un forbidden, se vuelve a pasar la lista de sitios
 								if os.path.exists(f):
 									fo = open(f, 'r')
@@ -198,6 +204,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor):
 		
 										if rn.status_code == 200:
 											print "Resource exists: " + colored(rn.url, 'green') + " Status code: " + colored(rn.status_code, 'yellow')
+											pene.append("Resource exists: " + rn.url + " Status code: " + rn.status_code)
 									fo.close()
 								else:
 									print "File not found"
@@ -209,3 +216,18 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor):
 						
 			except:
 				pass
+	
+	rep(report,pene)
+	
+def rep(list1,list2):
+	for value in list1:
+		if list1.index(value) == 0:
+			t = time.strftime('%d-%m-%Y')
+			h = time.strftime('%H:%M:%S')
+			fo = open(('CrawlerReport_' + t + '_'+ h + '.txt'), 'wb')
+			fo.write('Results from the site\n')
+			for element in list2:
+				fo.write(element + '\n')
+			fo.close()
+		else:
+			pass

@@ -8,6 +8,7 @@ from lxml import etree # Utilizado para obtener los enlaces, imagenes, etc.
 from lxml import html # Utilizado para obtener los enlaces, imagenes, etc.
 import wget # Utilizado para descargar las imagenes
 import os 
+import time
 from collections import Counter # Utilizado para obtener el promedio de las versiones
 import operator
 from termcolor import colored
@@ -17,8 +18,9 @@ import socket #Tor
 
 plugins = ['']
 
-def moodle(arg, verbose,cookie,agent,proxip,proxport,tor): # Version
+def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 # Si el argumento tiene http(s)
+	l = []
 	requests.packages.urllib3.disable_warnings()
 	
 	if len(proxip) == 0:
@@ -79,18 +81,22 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor): # Version
 				if match.group(): #Si es un numero de version
 					if int(verbose) == 1:
 						print 'Version site: ' + colored(match.group(1),'green')
+						l.append('Version site: ' + match.group(1))
 					elif int(verbose) == 2:
-						print "Version site: " + colored(arg,'green') + "ies: " + colored(match.group(1),'green')
+						print "Version site: " + colored(arg,'green') + "is: " + colored(match.group(1),'green')
+						l.append("Version site: " + arg + "is: " + match.group(1))
 					elif int(verbose) == 3:
-						print "Version site found in: " + colored(upgrade.url,'green')
-					files(arg,verbose,match.group(1),cookie,agent,proxip,proxport,tor) # Si existe el archivo se obtienen los plugins y el tema
+						print "Version site: " + colored(arg,'green') + "is: " + colored(match.group(1),'green')
+						print "Version site found it in: " + colored(upgrade.url,'green')
+						l.append("Version site: " + arg + "is: " + match.group(1) + "Found it in: " + upgrade.url)
+					files(arg,verbose,match.group(1),cookie,agent,proxip,proxport,tor,report,l) # Si existe el archivo se obtienen los plugins y el tema
 				
 					
 			except:
 				exit(2)
 		
 		else: #Si no lo tiene
-			version(arg,verbose,cookie,agent,proxip,proxport,tor) # Si no se obtiene la version a partir del archivo, se obtiene a partir de los archivos por defecto
+			version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l) # Si no se obtiene la version a partir del archivo, se obtiene a partir de los archivos por defecto
 			
 			
 # Si no tiene http(s) se pega a la direccion
@@ -100,7 +106,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor): # Version
 		exit(2)
 		
 
-def version(arg,verbose,cookie,agent,proxip,proxport,tor):	 # Obtencion de la version a partir de archivos
+def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l):	 # Obtencion de la version a partir de archivos
 	m = hashlib.md5()
 	elements = []
 	average = []
@@ -202,10 +208,11 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor):	 # Obtencion de la ve
 	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 		v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
 		print '\nVersion getting from configuration files: ' + colored(v, 'green')
-	files(arg,verbose,v,proxip,proxport,tor) # Obtencion de plugins y temas
+		l.append('\nVersion getting from configuration files: ' + v)
+	files(arg,verbose,v,proxip,proxport,tor,report,l) # Obtencion de plugins y temas
 	f.close()
 
-def files(arg, verbose,version,cookie,agent,proxip,proxport,tor): # Obtencion de plugins y temas
+def files(arg, verbose,version,cookie,agent,proxip,proxport,tor,report,l): # Obtencion de plugins y temas
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
 
@@ -231,8 +238,10 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor): # Obtencion de
 				
 					if req.status_code == 200:
 						print 'README file: ' + colored(readme, 'green')
+						l.append('README file: ' + readme)
 					elif req.status_code == 403:
 						print 'Forbidden README: ' + colored(readme, 'green')
+						l.append('Forbidden README: ' + readme)
 					else:
 						continue
 		
@@ -256,8 +265,10 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor): # Obtencion de
 				
 					if req.status_code == 200:
 						print 'ChangeLog: ' + colored(changeLog,'green')
+						l.append('ChangeLog: ' + changeLog)
 					elif req.status_code == 403:
 						print 'Forbidden ChangeLog: ' + colored(changeLog,'green')
+						l.append('Forbidden ChangeLog: ' + changeLog)
 					else:
 						continue
 			else:
@@ -292,15 +303,20 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor): # Obtencion de
 							if complex(match.group(2)):
 								if int(verbose) == 1:
 									print "Plugin Name: " + colored(begin, 'green')
+									l.append( "Plugin Name: " + begin)
 								elif int(verbose) == 2:
 									print "Plugin Name: " + colored(begin, 'green') + ', Path: ' + colored(path,'green')
+									l.append( "Plugin Name: " + begin + ', Path: ' + path)
 								elif int(verbose) == 3:
 									print "Plugin Name: " + colored(begin, 'green') + ', Path: ' + colored(path, 'green') + ' ,Version: ' + colored(match.group(2),'blue')
+									l.append( "Plugin Name: " + begin + ', Path: ' + path + ' ,Version: ' + match.group(2))
 						except:
 							if int(verbose) == 1:
 								print "Plugin Name: " + colored(begin, 'green')
+								l.append( "Plugin Name: " + begin)
 							elif int(verbose) == 2 or int(verbose) == 3:
 								print "Plugin Name: " + colored(begin, 'green') + ', Path: ' + colored(path, 'green')
+								l.append("Plugin Name: " + begin + ', Path: ' + path)
 					except:
 						continue
 		
@@ -310,6 +326,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor): # Obtencion de
 					plug = re.sub(r'/upgrade.txt','',one)
 					if int(verbose) == 3:
 						print "Forbidden Plugin,  Name: " + colored(plug, 'yellow') + ', Path: ' + colored(path, 'green')
+						l.append("Forbidden Plugin,  Name: " + plug + ', Path: ' + path)
 						continue
 					else:
 						continue
@@ -344,8 +361,10 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor): # Obtencion de
 				if match.group():
 					if int(verbose) == 1:
 						print "Theme Name: " + colored(match.group(3), 'green')
+						l.append("Theme Name: " + match.group(3))
 					elif int(verbose) == 2 or int(verbose) == 3:
 						print "Theme Name: " + colored(match.group(3), 'green') + ', Path: ' + colored(element, 'green')
+						l.append("Theme Name: " + match.group(3) + ', Path: ' + element)
 			except:
 				pass
 		else:
@@ -355,15 +374,18 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor): # Obtencion de
 				if match.group():
 					if int(verbose) == 1:
 						print "Theme Name: " + colored(match.group(2),'green')
+						l.append( "Theme Name: " + match.group(2))
 					elif int(verbose) == 2 or int(verbose) == 3:
 						print "Theme Name: " + colored(match.group(2), 'green') + ', Path: ' + colored(match.group(1) + '/' + match.group(2), 'green')
+						l.append("Theme Name: " + match.group(2) + ', Path: ' + match.group(1) + '/' + match.group(2))
 			except:
 				if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 					print "Theme Name: " + colored(match.group(2), 'green')
-	vuln(version,verbose)
+					l.append("Theme Name: " + match.group(2))
+	vuln(version,verbose,report,l)
 	sys.exit
 		
-def vuln(version,verbose): # Listado de vulnerabilidades obtenidas a partir de la version del gestor de contenidos
+def vuln(version,verbose,report,l): # Listado de vulnerabilidades obtenidas a partir de la version del gestor de contenidos
 	f = open('vuln','rb')
 	reader = csv.reader(f,delimiter=',')
 	
@@ -371,7 +393,28 @@ def vuln(version,verbose): # Listado de vulnerabilidades obtenidas a partir de l
 		if 'Moodle' in row[0] and row[1] in version:
 			if int(verbose) == 1:
 				print "Vulnerability Link: " + colored(row[3],'green')
+				l.append( "Vulnerability Link: " + row[3])
 			elif int(verbose) == 2 or int(verbose) == 3:
-				print "Vulnerability Name: " + colored(row[2],'green') + ' ,Vulnerability Link: ' + colored(row[3],'green')
+				l.append("Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + colored(row[3]))
 	f.close()
+	rep(report,l)
 	
+def rep(list1,list2):
+	for value in list1:
+		if list1.index(value) == 0:
+			t = time.strftime('%d-%m-%Y')
+			h = time.strftime('%H:%M:%S')
+			fo = open(('MoodleReport_' + t + '_'+ h + '.txt'), 'wb')
+			fo.write('Results from the site\n')
+			for element in list2:
+				fo.write(element + '\n')
+			fo.close()
+		else:
+			pass
+
+	
+	
+	
+
+
+
