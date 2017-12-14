@@ -14,6 +14,8 @@ import operator
 from termcolor import colored
 import socks # Tor
 import socket # Tor
+import text
+
 
 def ojs(arg,verbose,cookie,agent,proxip,proxport,tor):
 	
@@ -79,12 +81,19 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor):
 	try:
 		if match.group():		
 			if int(verbose) == 1:
-				print "la version del sitio es: " + colored(match.group(3),'green')
+				print "Site Version: " + colored(match.group(3),'green')
+				try:
+					textreport(match.group(3))
+					pass
+				except:
+					'errpr'
 			elif int(verbose) == 2:
-				print "La version del sitio: " + colored(arg, 'green') + " es: " + colored(match.group(3),'green')
+				print "Site version: " + colored(arg, 'green') + " is: " + colored(match.group(3),'green')
+				
 			elif int(verbose) == 3:
-				print "La version del sitio: " + colored(arg, 'green') + " es: " + colored(match.group(3),'green')
-				print "Version del sitio encontrada en:" + colored(match.group(),'green')
+				print "Site version: " + colored(arg, 'green') + " is: " + colored(match.group(3),'green')
+				print "Site version found in:" + colored(match.group(),'green')
+				
 			
 	except:
 		version(arg,verbose,cookie,agent,proxip,proxport,tor) #Si no existe la meta etiqueta, busca en los archivos por defecto
@@ -169,7 +178,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor): # Obtencion de la ver
 	cnt = Counter(average) # Se realiza el promedio para determinar la version
 	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 		v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
-		print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(v, 'green')
+		print '\nVersion getting from configuration files: ' + colored(v, 'green')
 	files(arg,verbose,v,cookie,agent,proxip,proxport,tor)
 	
 	
@@ -394,5 +403,10 @@ def vuln(version,verbose): # A partir de la version, se listan las posibles vuln
 			elif int(verbose) == 2 or int(verbose) == 3:
 				print "Vulnerability Name: " + colored(row[2],'green') + ' ,Vulnerability Link: ' + colored(row[3],'green')
 	f.close()
+	
+
+#def rep(gal):
+	#report('','nepencio')
+	
 	
 

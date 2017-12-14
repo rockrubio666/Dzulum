@@ -107,49 +107,49 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 	if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 		if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content:
 			if int(verbose) == 1:
-				print colored('Ataque no exitoso ', 'red')
+				print colored('Attack not successfully  ', 'red')
 			elif int (verbose) == 2:
-				print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow')
+				print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow')
 			elif int(verbose) == 3:
-				print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
+				print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
 		else:
 			if int(verbose) == 1:
-				print colored('Ataque exitoso ', 'green')
+				print colored('Successful attack ', 'green')
 			elif int(verbose) == 2:
-				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue')
+				print colored('Successful attack with: ', 'green') + 'User: ' + colored(user,'blue')
 			elif int(verbose) == 3:
-				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
+				print colored('Successful attack with: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
 	
 	elif list[0] == list[1] and list[0] == list[2]: # Si el Content-Lenght es igual
 		if int(len(r.content)) == list[0] and mbefore in r.content:
 			if int(verbose) == 1:
-				print colored('Ataque no exitoso ', 'red')
+				print colored('Attack not successfully  ', 'red')
 			elif int (verbose) == 2:
-				print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow')
+				print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow')
 			elif int(verbose) == 3:
-				print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
+				print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
 		else:
 			if int(verbose) == 1:
-				print colored('Ataque exitoso ', 'green')
+				print colored('Successful attack ', 'green')
 			elif int(verbose) == 2:
-				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue')
+				print colored('Successful attack with: ', 'green') + 'User: ' + colored(user,'blue')
 			elif int(verbose) == 3:
-				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
+				print colored('Successful attack with: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
 	else: # Si no se puede determinar mediante content-lenght
 		if mbefore in r.text:
 			if int(verbose) == 1:
-				print colored('Ataque no exitoso ', 'red')
+				print colored('Attack not successfully  ', 'red')
 			elif int (verbose) == 2:
-				print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow')
+				print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow')
 			elif int(verbose) == 3:
-				print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
+				print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
 		else:
 			if int(verbose) == 1:
-				print colored('Ataque exitoso ', 'green')
+				print colored('Successful attack ', 'green')
 			elif int(verbose) == 2:
-				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue')
+				print colored('Successful attack with: ', 'green') + 'User: ' + colored(user,'blue')
 			elif int(verbose) == 3:
-				print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
+				print colored('Successful attack with: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
 		
 		
 def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,list,tor):
@@ -187,50 +187,50 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 				if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content:
 					if int(verbose) == 1:
-						print colored('Ataque no exitoso ', 'red')
+						print colored('Attack not successfully  ', 'red')
 					elif int (verbose) == 2:
-						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
+						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
 					elif int(verbose) == 3:
-						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
+						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
 				else:
 					if int(verbose) == 1:
-						print colored('Ataque exitoso ', 'green')
+						print colored('Successful attack ', 'green')
 					elif int(verbose) == 2:
-						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
+						print colored('Successful attack with: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
 					elif int(verbose) == 3:
-						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
+						print colored('Successful attack with: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
 	
 			elif list[0] == list[1] and list[0] == list[2]: # Si el Content-Lenght es igual
 				if int(len(r.content)) == list[0] or mbefore in r.content:
 					if int(verbose) == 1:
-						print colored('Ataque no exitoso ', 'red')
+						print colored('Attack not successfully  ', 'red')
 					elif int (verbose) == 2:
-						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
+						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
 					elif int(verbose) == 3:
-						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
+						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
 				else:
 					if int(verbose) == 1:
-						print colored('Ataque exitoso ', 'green')
+						print colored('Successful attack ', 'green')
 					elif int(verbose) == 2:
-						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
+						print colored('Successful attack with: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
 					elif int(verbose) == 3:
-						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
+						print colored('Successful attack with: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
 	
 			else: # Si no se puede determinar mediante content-lenght
 				if mbefore in r.text:
 					if int(verbose) == 1:
-						print colored('Ataque no exitoso ', 'red')
+						print colored('Attack not successfully  ', 'red')
 					elif int (verbose) == 2:
-						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
+						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
 					elif int(verbose) == 3:
-						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
+						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
 				else:
 					if int(verbose) == 1:
-						print colored('Ataque exitoso ', 'green')
+						print colored('Successful attack ', 'green')
 					elif int(verbose) == 2:
-						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
+						print colored('Successful attack with: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
 					elif int(verbose) == 3:
-						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
+						print colored('Successful attack with: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(pwd,'blue')
 	
 
 def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,list,tor):
@@ -267,50 +267,50 @@ def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ve
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 				if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content:
 					if int(verbose) == 1:
-						print colored('Ataque no exitoso ', 'red')
+						print colored('Attack not successfully  ', 'red')
 					elif int (verbose) == 2:
-						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow')
+						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow')
 					elif int(verbose) == 3:
-						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
+						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
 				else:
 					if int(verbose) == 1:
-						print colored('Ataque exitoso ', 'green')
+						print colored('Successful attack ', 'green')
 					elif int(verbose) == 2:
-						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue')
+						print colored('Successful attack with: ', 'green') + 'User: ' + colored(user,'blue')
 					elif int(verbose) == 3:
-						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
+						print colored('Successful attack with: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
 			
 			elif list[0] == list[1] and list[0] == list[2]: # Si el Content-Lenght es igual
 				if int(len(r.content)) == list[0] and mbefore in r.content:
 					if int(verbose) == 1:
-						print colored('Ataque no exitoso ', 'red')
+						print colored('Attack not successfully  ', 'red')
 					elif int (verbose) == 2:
-						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow')
+						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow')
 					elif int(verbose) == 3:
-						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
+						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
 				else:
 					if int(verbose) == 1:
-						print colored('Ataque exitoso ', 'green')
+						print colored('Successful attack ', 'green')
 					elif int(verbose) == 2:
-						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue')
+						print colored('Successful attack with: ', 'green') + 'User: ' + colored(user,'blue')
 					elif int(verbose) == 3:
-						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
+						print colored('Successful attack with: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
 					
 			else: # Si no se puede determinar mediante content-lenght
 				if mbefore in r.text:
 					if int(verbose) == 1:
-						print colored('Ataque no exitoso ', 'red')
+						print colored('Attack not successfully ', 'red')
 					elif int (verbose) == 2:
-						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow')
+						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow')
 					elif int(verbose) == 3:
-						print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
+						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
 				else:
 					if int(verbose) == 1:
-						print colored('Ataque exitoso ', 'green')
+						print colored('Successful attack  ', 'green')
 					elif int(verbose) == 2:
-						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue')
+						print colored('Successful attack with: ', 'green') + 'User: ' + colored(user,'blue')
 					elif int(verbose) == 3:
-						print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
+						print colored('Successful attack with: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(passwords[i].rstrip('\n'),'blue')
 
 	
 def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,list,tor): # Carga de payload
@@ -360,20 +360,20 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 				if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 					if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content:
 						if int(verbose) == 1:
-							print colored('Ataque no exitoso ', 'red')
+							print colored('Attack not successfully  ', 'red')
 						elif int (verbose) == 2:
-							print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
+							print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
 						elif int(verbose) == 3:
-							print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
+							print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
 						
 						j + 1
 					else:
 						if int(verbose) == 1:
-							print colored('Ataque exitoso ', 'green')
+							print colored('Successful attack ', 'green')
 						elif int(verbose) == 2:
-							print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
+							print colored('Successful attack with: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
 						elif int(verbose) == 3:
-							print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')
+							print colored('Successful attack with: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')
 
 						
 						j + 1
@@ -381,33 +381,33 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 				elif list[0] == list[1] and list[0] == list[2]: # Si el Content-Lenght es igual
 					if int(len(r.content)) == list[0] and mbefore in r.content:
 						if int(verbose) == 1:
-							print colored('Ataque no exitoso ', 'red')
+							print colored('Attack not successfully  ', 'red')
 						elif int (verbose) == 2:
-							print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
+							print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
 						elif int(verbose) == 3:
-							print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
+							print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
 						j + 1
 					else:
 						if int(verbose) == 1:
-							print colored('Ataque exitoso ', 'green')
+							print colored('Successful attack ', 'green')
 						elif int(verbose) == 2:
-							print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
+							print colored('Successful attack with: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
 						elif int(verbose) == 3:
-							print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')
+							print colored('Successful attack with: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')
 						j + 1	
 				else: # Si no se puede determinar mediante content-lenght
 					if mbefore in r.text:
 						if int(verbose) == 1:
-							print colored('Ataque no exitoso ', 'red')
+							print colored('Attack not successfully  ', 'red')
 						elif int (verbose) == 2:
-							print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
+							print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow')
 						elif int(verbose) == 3:
-							print colored('Ataque no exitoso con: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
+							print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
 					else:
 						if int(verbose) == 1:
-							print colored('Ataque exitoso ', 'green')
+							print colored('Successful attack ', 'green')
 						elif int(verbose) == 2:
-							print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
+							print colored('Successful attack with: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue')
 						elif int(verbose) == 3:
-							print colored('Ataque exitoso con: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')	
+							print colored('Successful attack with: ', 'green') + 'User: ' + colored(users[i].rstrip('\n'),'blue') + ' Password: ' + colored(passwords[j].rstrip('\n'),'blue')	
 		i + 1	

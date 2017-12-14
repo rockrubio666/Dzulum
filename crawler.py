@@ -53,7 +53,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor):
 		pass
 	
 	print colored("Beginning Crawling", 'blue')
-	print 'Consulta del sitio: ' + colored(arg, 'green')
+	print 'Querying the site: ' + colored(arg, 'green')
 	if 'http://' in arg or 'https://' in arg: # Valida si tiene http(s)
 		# Lista para encontrar elementos
 		listFind = [ '//a/@href',  '//script/@src'] # Busqueda de enlaces y js
@@ -81,7 +81,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor):
 			webpage = html.fromstring(res.content)
 			
 		except:
-			print "Error, no se pudo consultar el sitio"
+			print "Error, site can't query"
 			sys.exit(2)
 			
 		

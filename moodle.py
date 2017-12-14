@@ -78,11 +78,11 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor): # Version
 			try:
 				if match.group(): #Si es un numero de version
 					if int(verbose) == 1:
-						print 'Version del sitio: ' + colored(match.group(1),'green')
+						print 'Version site: ' + colored(match.group(1),'green')
 					elif int(verbose) == 2:
-						print "La version del sitio: " + colored(arg,'green') + " es: " + colored(match.group(1),'green')
+						print "Version site: " + colored(arg,'green') + "ies: " + colored(match.group(1),'green')
 					elif int(verbose) == 3:
-						print "Version del sitio encontrada en: " + colored(upgrade.url,'green')
+						print "Version site found in: " + colored(upgrade.url,'green')
 					files(arg,verbose,match.group(1),cookie,agent,proxip,proxport,tor) # Si existe el archivo se obtienen los plugins y el tema
 				
 					
@@ -201,7 +201,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor):	 # Obtencion de la ve
 	cnt = Counter(average) # Calculo de la version que mas veces se repite
 	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 		v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
-		print '\nVersion del sitio aproximada mediante archivos de configuracion: ' + colored(v, 'green')
+		print '\nVersion getting from configuration files: ' + colored(v, 'green')
 	files(arg,verbose,v,proxip,proxport,tor) # Obtencion de plugins y temas
 	f.close()
 
