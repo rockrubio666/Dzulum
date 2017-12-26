@@ -274,9 +274,7 @@ def ban(numMeme,numColor):
 			    `/++-                                                          `yyymyyhs`   
 			                                                                     :ydys-     
      
-     """
-                            
-			'w','2','s','4','g','h','7','j','0']
+     """]
     
 	print colored(meme[numMeme],colors[numColor])
 
