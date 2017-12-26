@@ -4,17 +4,18 @@ import argparse #Utilizado para generar el menu
 import sys
 import os
 import git # Utilizado para actualizar la herramienta
+from termcolor import colored
+import random
+from banner import *
 from ojs import * 
 from moodle import *
 from crawlerHead import *
 from crawler import *
 from bruteforce import *
 from brutehttp import *
-from rp import *
 from multiprocessing import Process #  Utilizado para realizar la ejecucion de los programas de forma paralela
-arg = ''
-
-
+arg = ''  
+		
 def getParams(arg):
 	bforce = []	
 	pvalues = []
@@ -114,38 +115,9 @@ def getParams(arg):
 			pass
 	
 	if len(sys.argv) >= 3:
-		print """
-					                      
-                 `..........``````````.-.``                 
-           ``..-...`                    `..-.`              
-          .-.`                              .-.`            
-        `-.                                   `--...`       
-       `-`                                 .-..````---.`    
-      `-.                                 -.`    `-:-:--`   
-      ..                                 `-       .-----.   
-      -`                                 `-        ```.-`   
-     `.           ````......`             ..         `..    
-     ..         `.-.-------...            `..`````....`     
-     -`        ..```.-----.  ..             `.......-       
-     -`        -`    `````   ..         ```       `-`       
-     -.        -.           `-` ``````.--.-`      -.        
-     .-        `.-`     ``...``.-.-`.-``..-`    `..         
-     `-`         `......-.`   .-` .` .``.-`   `.-`          
-      `-.                      `........`   `...            
-       `..`                              `...`              
-         `...`                      `....```                
-            `..`              ```.....-.                    
-            `.`              `..```   -`                    
-          ...`                        .`   ````````         
-         ..`    `.  `........         -```--...--.-.`       
-        ..      `----.     `.-        --... ``  -` .-`      
-        -.                   -`       ..    .-..-`  -.      
-       .--`                  ..       `-     ```    ..      
-      .. `.-....`..`         -.       `-..`...`   `..       
-     ..      ``..``........-..         ..   `......`        
-     `               ````````           `                   
-        
-        """
+			numMeme = random.randint(0,10)
+			numColor = random.randint(0,7)
+			ban(1,numColor)
 	
 	if options.proxy in sys.argv: # Se separa la dir ip y el puerto
 		for element in options.proxy.split(','):
