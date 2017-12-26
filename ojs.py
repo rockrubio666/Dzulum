@@ -15,7 +15,7 @@ import time
 from termcolor import colored
 import socks # Tor
 import socket # Tor
-import text
+
 
 
 def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
