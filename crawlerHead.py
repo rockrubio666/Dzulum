@@ -13,9 +13,13 @@ import socks # Tor
 	
 
 def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
+	proxy = proxip  + ':' + proxport
+	proxies = {'http' : proxy, 'https' : proxy,}
+		
+	
 	l = []
 	requests.packages.urllib3.disable_warnings()
-	if len(proxip) == 0:
+	if len(proxy) == 1:
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050) # Peticiones a traves de tor
 			socket.socket = socks.socksocket
@@ -24,9 +28,10 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 		else:
 			req = requests.get(url,verify=False)
 	else: # Peticiones a traves del proxy
-		proxy = proxip  + ':' + proxport
-		proxies = {'http' : proxy, 'https' : proxy,}
-		req = requests.get(url,proxies = {'http':proxy},verify=False)
+		try:
+			req = requests.get(url,proxies = proxies,verify=False)
+		except requests.exceptions.ConnectionError:
+			sys.exit(2)
 	
 	if cookie is None: # Obtencion de la cookie de sesion
 		for key,value in req.headers.iteritems():
@@ -88,7 +93,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 	requests.packages.urllib3.disable_warnings() # Se revisa el location que devuelve con el recurso que no exite
 	headers = {'user-agent': agent}
 	cookies = {'': cookie} 
-	if len(proxip) == 0:
+	if len(proxy) == 1:
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
@@ -97,9 +102,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 		else:
 			req = requests.head(resources[0], cookies = cookies, headers = headers, verify=False)
 	else:
-		proxy = proxip  + ':' + proxport
-		proxies = {'http' : proxy, 'https' : proxy,}
-		req = requests.head(resources[0],cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+		req = requests.head(resources[0],cookies = cookies, headers = headers,proxies = proxies,verify=False)
 			
 	
 	fake.append(req.url)
@@ -119,7 +122,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 		
 		headers = {'user-agent': agent}
 		cookies = {'': cookie} 
-		if len(proxip) == 0:
+		if len(proxy) == 1:
 			if tor == True:
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 				socket.socket = socks.socksocket
@@ -129,9 +132,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 				res = requests.head(other, cookies = cookies, headers = headers, verify=False)
 			res.connection.close()
 		else:
-			proxy = proxip  + ':' + proxport
-			proxies = {'http' : proxy, 'https' : proxy,}
-			res = requests.head(other,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+			res = requests.head(other,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 			res.connection.close()
 		
 		regex = re.compile(r'20[0-6]')
@@ -163,7 +164,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 							indexOf = res.url + '/'
 							headers = {'user-agent': agent}
 							cookies = {'': cookie} 
-							if len(proxip) == 0:
+							if len(proxy) == 1:
 								if tor == True:
 									socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)	
 									socket.socket = socks.socksocket
@@ -172,9 +173,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 								else:
 									r = requests.get(indexOf,cookies=cookies,headers=headers,verify=False)
 							else:
-								proxy = proxip  + ':' + proxport
-								proxies = {'http' : proxy, 'https' : proxy,}
-								r = requests.get(indexOf,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+								r = requests.get(indexOf,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 								
 							if r.status_code == 200 and '<title>Index of' in r.content: # Siel codigo de estado es 300, se verifica si muestra index of
 								print "Index of: " + colored(r.url, 'green') + " Status code: " + colored(r.status_code, 'yellow')
@@ -189,7 +188,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 										new = r.url + line
 										headers = {'user-agent': agent}
 										cookies = {'': cookie} 
-										if len(proxip) == 0:
+										if len(proxy) == 1:
 											if tor == True:
 												socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 												socket.socket = socks.socksocket
@@ -198,9 +197,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 											else:
 												rn = requests.head(new.rstrip('\n'),cookies=cookies,headers=headers,verify=False)
 										else:
-											proxy = proxip  + ':' + proxport
-											proxies = {'http' : proxy, 'https' : proxy,}
-											rn = requests.head(new.strip('\n'),cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+											rn = requests.head(new.strip('\n'),cookies = cookies, headers = headers,proxies = proxies,verify=False)
 			
 		
 										if rn.status_code == 200:

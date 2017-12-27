@@ -14,9 +14,12 @@ toVisit = []
 
 
 def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report):
+	proxy = proxip  + ':' + proxport
+	proxies = {'http' : proxy, 'https' : proxy,}
+	
 	l = []
 	requests.packages.urllib3.disable_warnings()
-	if len(proxip) == 0:
+	if len(proxy) == 1:
 		if tor == True: # Peticiones a traves de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
@@ -25,9 +28,10 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 		else:
 			req = requests.get(arg,verify=False)
 	else: # Peticiones a traves de proxy
-		proxy = proxip  + ':' + proxport
-		proxies = {'http' : proxy, 'https' : proxy,}
-		req = requests.get(arg,proxies = {'http':proxy},verify=False)
+		try:
+			req = requests.get(arg,proxies = proxies,verify=False)
+		except requests.exceptions.ConnectionError:
+			sys.exit(2)
 		
 	if cookie is None: # Obtencion de la cookie de sesion
 		for key,value in req.headers.iteritems():
@@ -65,7 +69,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 			
 			headers = {'user-agent': agent}
 			cookies = {'': cookie} 
-			if len(proxip) == 0:
+			if len(proxy) == 1:
 				if tor == True:
 					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 					socket.socket = socks.socksocket
@@ -74,9 +78,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 				else:
 					res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 			else:
-				proxy = proxip  + ':' + proxport
-				proxies = {'http' : proxy, 'https' : proxy,}
-				req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+				req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 			
 			page_source = res.text
 			webpage = html.fromstring(res.content)
