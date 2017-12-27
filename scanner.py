@@ -121,7 +121,22 @@ def getParams(arg):
 	
 	if options.proxy in sys.argv: # Se separa la dir ip y el puerto
 		for element in options.proxy.split(','):
-			pvalues.append(element)
+			if '.' in element:
+				try:
+					socket.inet_aton(element)
+					pvalues.append(element)
+				except:
+					print 'It could be a wrong IP address, please check it.'
+					sys.exit(2)
+				
+			else:
+				if int(element) > 65535:
+					print "Por number not valid"
+					sys.exit(2)
+				else:
+					pvalues.append(element)
+			
+			
 	else:
 		pvalues.append('')
 		pvalues.append('')
@@ -134,9 +149,9 @@ def getParams(arg):
 		
 	
 	if options.ojs in sys.argv: # Se manda a llamar la funcion del archivo
-		p1 = Process(target = ojs,args = (options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))
-		p1.start()
-		p1.join()
+		#p1 = Process(target = ojs,args = (options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))
+		ojs(options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		
 		
 	if options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
 		p2 = Process(target = moodle, args = (options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))

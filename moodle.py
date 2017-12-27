@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python	
 
 import re # Utilizado para las regex
 import sys
@@ -20,10 +20,13 @@ plugins = ['']
 
 def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 # Si el argumento tiene http(s)
+	proxy = proxip  + ':' + proxport
+	proxies = {'http' : proxy, 'https' : proxy,}
+	
 	l = []
 	requests.packages.urllib3.disable_warnings()
 	
-	if len(proxip) == 0:
+	if len(proxy) == 1:
 		if tor == True: # Peticiones a traves de Tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
@@ -32,9 +35,11 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 		else:
 			req = requests.get(arg,verify=False)
 	else: # Peticiones a traves del proxy
-		proxy = proxip  + ':' + proxport
-		proxies = {'http' : proxy, 'https' : proxy,}
-		req = requests.get(arg,proxies = {'http':proxy},verify=False)
+		try:
+			req = requests.post(arg,proxies = proxies,verify=False)
+		except requests.exceptions.ConnectionError:
+			print 'There\'s a problem with the proxy connection, please check it and try again :D '
+			sys.exit(2)
 	
 	if cookie is None: # Obtencion de la cookie de sesion
 		for key,value in req.headers.iteritems():
@@ -61,7 +66,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 	
 		headers = {'user-agent': agent}
 		cookies = {'': cookie}
-		if len(proxip) == 0:
+		if len(proxy) == 1:
 			if tor == True:
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 				socket.socket = socks.socksocket
@@ -70,9 +75,8 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 			else:
 				upgrade = requests.get(arg + '/lib/upgrade.txt', cookies = cookies, headers = headers,verify=False)
 		else:
-			proxy = proxip  + ':' + proxport
-			proxies = {'http' : proxy, 'https' : proxy,} # Busqueda del archivo upgrade.txt, que contiene la version del sitio
-			upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+
+			upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,proxies = proxies,verify=False)
 						
 		if int(upgrade.status_code) == 200: #Si tiene el archivo upgrade
 			regex = re.compile(r'===(.*)===')
@@ -89,14 +93,14 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 						print "Version site: " + colored(arg,'green') + "is: " + colored(match.group(1),'green')
 						print "Version site found it in: " + colored(upgrade.url,'green')
 						l.append("Version site: " + arg + "is: " + match.group(1) + "Found it in: " + upgrade.url)
-					files(arg,verbose,match.group(1),cookie,agent,proxip,proxport,tor,report,l) # Si existe el archivo se obtienen los plugins y el tema
+					files(arg,verbose,match.group(1),cookie,agent,proxy,proxies,tor,report,l) # Si existe el archivo se obtienen los plugins y el tema
 				
 					
 			except:
 				exit(2)
 		
 		else: #Si no lo tiene
-			version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l) # Si no se obtiene la version a partir del archivo, se obtiene a partir de los archivos por defecto
+			version(arg,verbose,cookie,agent,proxy,proxies,tor,report,l) # Si no se obtiene la version a partir del archivo, se obtiene a partir de los archivos por defecto
 			
 			
 # Si no tiene http(s) se pega a la direccion
@@ -106,7 +110,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 		exit(2)
 		
 
-def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l):	 # Obtencion de la version a partir de archivos
+def version(arg,verbose,cookie,agent,proxy,proxies,tor,report,l):	 # Obtencion de la version a partir de archivos
 	m = hashlib.md5()
 	elements = []
 	average = []
@@ -117,7 +121,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l):	 # Obtencion
 	headers = {'user-agent': agent}
 	cookies = {'': cookie} 
 	
-	if len(proxip) == 0:
+	if len(proxy) == 1:
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
@@ -126,9 +130,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l):	 # Obtencion
 		else:
 			res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 	else:
-		proxy = proxip  + ':' + proxport
-		proxies = {'http' : proxy, 'https' : proxy,}
-		res = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+		res = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 		
 	webpage = html.fromstring(res.content)
 	dom = re.sub(r'(http|https)://','',arg)
@@ -139,7 +141,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l):	 # Obtencion
 				if link.startswith('http'):	
 					headers = {'user-agent': agent}
 					cookies = {'': cookie} 
-					if len(proxip) == 0:
+					if len(proxy) == 1:
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
@@ -148,9 +150,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l):	 # Obtencion
 						else:
 							req = requests.get(link, cookies = cookies, headers = headers, verify=False)
 					else:
-						proxy = proxip  + ':' + proxport
-						proxies = {'http' : proxy, 'https' : proxy,}
-						req = requests.get(link,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+						req = requests.get(link,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 						
 					if req.status_code == 200 and i in range(2,3): # Si existen las imagenes, se descargan y se obtiene el hash
 						try:
@@ -171,7 +171,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l):	 # Obtencion
 							continue
 	headers = {'user-agent': agent}
 	cookies = {'': cookie} 			
-	if len(proxip) == 0: # Obtencion del hash del archivo README
+	if len(proxy) == 1: # Obtencion del hash del archivo README
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
@@ -180,9 +180,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l):	 # Obtencion
 		else:
 			readme = requests.get(arg + '/README.txt', cookies = cookies, headers = headers, verify=False)
 	else:
-		proxy = proxip  + ':' + proxport
-		proxies = {'http' : proxy, 'https' : proxy,}
-		readme = requests.get(arg + '/README.txt',cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+		readme = requests.get(arg + '/README.txt',cookies = cookies, headers = headers,proxies = proxies,verify=False)
 	if readme.status_code == 200:
 		try:
 			m.update(readme.text)
@@ -209,10 +207,10 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l):	 # Obtencion
 		v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
 		print '\nVersion getting from configuration files: ' + colored(v, 'green')
 		l.append('\nVersion getting from configuration files: ' + v)
-	files(arg,verbose,v,proxip,proxport,tor,report,l) # Obtencion de plugins y temas
+	files(arg,verbose,v,proxy,proxies,tor,report,l) # Obtencion de plugins y temas
 	f.close()
 
-def files(arg, verbose,version,cookie,agent,proxip,proxport,tor,report,l): # Obtencion de plugins y temas
+def files(arg, verbose,version,cookie,agent,proxy,proxies,tor,report,l): # Obtencion de plugins y temas
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
 
@@ -223,7 +221,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor,report,l): # Obt
 					readme = arg + row[2]
 					headers = {'user-agent': agent}
 					cookies = {'': cookie} 
-					if len(proxip) == 0:
+					if len(proxy) == 1:
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
@@ -232,9 +230,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor,report,l): # Obt
 						else:
 							req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
 					else:
-						proxy = proxip  + ':' + proxport
-						proxies = {'http' : proxy, 'https' : proxy,}
-						req = requests.get(readme,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+						req = requests.get(readme,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 				
 					if req.status_code == 200:
 						print 'README file: ' + colored(readme, 'green')
@@ -250,7 +246,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor,report,l): # Obt
 				
 					headers = {'user-agent': agent}
 					cookies = {'': cookie} 
-					if len(proxip) == 0:
+					if len(proxy) == 1:
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
@@ -259,9 +255,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor,report,l): # Obt
 						else:
 							req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
 					else:
-						proxy = proxip  + ':' + proxport
-						proxies = {'http' : proxy, 'https' : proxy,}
-						req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+						req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 				
 					if req.status_code == 200:
 						print 'ChangeLog: ' + colored(changeLog,'green')
@@ -278,7 +272,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor,report,l): # Obt
 				plugin = arg + row[2]
 				headers = {'user-agent': agent}
 				cookies = {'': cookie} 
-				if len(proxip) == 0:
+				if len(proxy) == 1:
 					if tor == True:
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
@@ -287,9 +281,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor,report,l): # Obt
 					else:
 						req = requests.get(plugin, cookies = cookies, headers = headers, verify=False)
 				else:
-					proxy = proxip  + ':' + proxport
-					proxies = {'http' : proxy, 'https' : proxy,}
-					req = requests.get(plugin,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+					req = requests.get(plugin,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 				
 				if req.status_code == 200: # Obtencion de la version del plugin
 					up = re.sub(r'\/upgrade.txt','',row[2])
@@ -337,7 +329,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor,report,l): # Obt
 	
 	headers = {'user-agent': agent}
 	cookies = {'': cookie} 
-	if len(proxip) == 0:
+	if len(proxy) == 1:
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
@@ -346,9 +338,7 @@ def files(arg, verbose,version,cookie,agent,proxip,proxport,tor,report,l): # Obt
 		else:
 			res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 	else:
-		proxy = proxip  + ':' + proxport
-		proxies = {'http' : proxy, 'https' : proxy,}
-		res = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+		res = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 	
 	webpage = html.fromstring(res.text)
 	theme =  webpage.xpath('//link[@rel="shortcut icon"]/@href') # Busqueda del tema a partir del favicon
@@ -411,10 +401,5 @@ def rep(list1,list2):
 			fo.close()
 		else:
 			pass
-
-	
-	
-	
-
 
 

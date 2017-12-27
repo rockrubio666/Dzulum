@@ -17,12 +17,17 @@ import socks # Tor
 import socket # Tor
 
 
-
 def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
+	proxy = proxip  + ':' + proxport
+	
+	proxies = {'http' : proxy, 'https' : proxy,}
+	
 	l = []
 	
 	requests.packages.urllib3.disable_warnings()
-	if len(proxip) == 0:
+	
+	
+	if len(proxy) == 1:
 		if tor == True: # USo de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
@@ -30,10 +35,12 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 			req = requests.get(arg,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
 		else:
 			req = requests.get(arg,verify=False)
-	else: # Uso de proxy
-		proxy = proxip  + ':' + proxport
-		proxies = {'http' : proxy, 'https' : proxy,}
-		req = requests.post(arg,proxies = {'http':proxy},verify=False)
+	else: # Uso de proxy	
+		try:
+			req = requests.post(arg,proxies = proxies,verify=False)
+		except requests.exceptions.ConnectionError:
+			print 'There\'s a problem with the proxy connection, please check it and try again :D '
+			sys.exit(2)
 		
 	if cookie is None: # Obtiene la cookie de sesion
 		for key,value in req.headers.iteritems():
@@ -57,30 +64,29 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 	cookies = {'': cookie}
 	
 	
-	if len(proxip) == 0:
+	if len(proxy) == 1:
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
 			req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
-		elif tor == False:
+		else:
 			req = requests.get(arg, cookies = cookies, headers = headers,verify=False)
 	else:
-		proxy = proxip  + ':' + proxport
-		proxies = {'http' : proxy, 'https' : proxy,}
-		req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+		req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+		
 	
 	page_source =  req.text
 	regex = re.compile(r'(.*)(name="generator") content="(.*)"(.*)') # Se busca la meta etiqueta que contiene la version
 	match = regex.search(page_source)
 
-	if 'Open Journal Systems' in match.group():
-		pass
-	else:
-		print colored('The site: ','yellow') + colored(match.group(3),'blue') + colored(' It could not be an OJS','yellow')
-		sys.exit(2)
 	try:
 		if match.group():		
+			if 'Open Journal Systems' in match.group():
+				pass
+			else:
+				print colored('The site: ','yellow') + colored(match.group(3),'blue') + colored(' It could not be an OJS','yellow')
+				sys.exit(2)
 			if int(verbose) == 1:
 				print "Site Version: " + colored(match.group(3),'green')
 				l.append("Site Version: " + match.group(3))
@@ -95,12 +101,12 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 				
 			
 	except:
-		version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l) #Si no existe la meta etiqueta, busca en los archivos por defecto
+		version(arg,verbose,cookie,agent,proxy,proxies,tor,report,l) #Si no existe la meta etiqueta, busca en los archivos por defecto
 	
-	files(arg,verbose,match.group(3),cookie,agent,proxip,proxport,tor,report,l) # Si existe la version, busca los plugins
+	files(arg,verbose,match.group(3),cookie,agent,proxy,proxies,tor,report,l) # Si existe la version, busca los plugins
 	
 	
-def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l): # Obtencion de la version mediante archivos
+def version(arg,verbose,cookie,agent,proxy,proxies,tor,report,l): # Obtencion de la version mediante archivos
 	m = hashlib.md5()
 	elements = []
 	average = []
@@ -110,18 +116,18 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l): # Obtencion 
 	
 	headers = {'user-agent': agent}
 	cookies = {'': cookie}
-	if len(proxip) == 0:
+	if len(proxy) == 1:
+		print 'here'
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
 			req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
 		else:
+			print 'here'
 			req = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 	else:
-		proxy = proxip  + ':' + proxport
-		proxies = {'http' : proxy, 'https' : proxy,}
-		req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+		req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 	
 	webpage = html.fromstring(req.content)
 	dom = re.sub(r'(http|https)://','',arg)
@@ -131,7 +137,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l): # Obtencion 
 			if dom in link:
 				headers = {'user-agent': agent}
 				cookies = dict(cookies_are=cookie) 
-				if len(proxip) == 0:
+				if len(proxy) == 1:
 					if tor == True:
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
@@ -140,9 +146,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l): # Obtencion 
 					else:
 						req = requests.get(link, cookies = cookies, headers = headers, verify=False)
 				else:
-					proxy = proxip  + ':' + proxport
-					proxies = {'http' : proxy, 'https' : proxy,}
-					req = requests.get(link,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+					req = requests.get(link,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 				
 				if req.status_code == 200 and i in range(2,3): # Si es una imagen o favicon, se descarga y obtiene el hash
 					try:
@@ -169,6 +173,7 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l): # Obtencion 
 		for row in reader:
 			try:
 				if element in row[2] and 'Ojs' in row[0]:
+					print element
 					average.append(row[1])
 			except:
 				continue
@@ -179,10 +184,10 @@ def version(arg,verbose,cookie,agent,proxip,proxport,tor,report,l): # Obtencion 
 		v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
 		print '\nVersion getting from configuration files: ' + colored(v, 'green')
 		l.append('\nVersion getting from configuration files: ' + v)
-	files(arg,verbose,v,cookie,agent,proxip,proxport,tor,report,l)
+	files(arg,verbose,v,cookie,agent,proxy,proxies,tor,report,l)
 	
 	
-def files(arg,verbose,version,cookie,agent,proxip,proxport,tor,report,l): #Obtencion de plugins y temas
+def files(arg,verbose,version,cookie,agent,proxy,proxies,tor,report,l): #Obtencion de plugins y temas
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
 
@@ -197,7 +202,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor,report,l): #Obten
 				
 				headers = {'user-agent': agent}
 				cookies = {'': cookie}
-				if len(proxip) == 0:
+				if len(proxy) == 1:
 					if tor == True:
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
@@ -206,9 +211,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor,report,l): #Obten
 					else:
 						req = requests.get(plugin, cookies = cookies, headers = headers, verify=False)
 				else:
-					proxy = proxip  + ':' + proxport
-					proxies = {'http' : proxy, 'https' : proxy,}
-					req = requests.get(plugin,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+					req = requests.get(plugin,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 					
 				if req.status_code == 200: # Si existe el archivo, obtiene el nombre del plugin y la version
 					plugName = re.compile(r'=== (.*)')
@@ -261,7 +264,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor,report,l): #Obten
 				
 					headers = {'user-agent': agent}
 					cookies = {'': cookie}
-					if len(proxip) == 0:
+					if len(proxy) == 1:
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
@@ -270,9 +273,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor,report,l): #Obten
 						else:
 							req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
 					else:
-						proxy = proxip  + ':' + proxport
-						proxies = {'http' : proxy, 'https' : proxy,}
-						req = requests.get(readme,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+						req = requests.get(readme,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 				
 					if req.status_code == 200:
 						print 'README file: ' + colored(readme, 'green')
@@ -286,7 +287,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor,report,l): #Obten
 				
 					headers = {'user-agent': agent}
 					cookies = {'': cookie}
-					if len(proxip) == 0:
+					if len(proxy) == 1:
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
@@ -295,9 +296,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor,report,l): #Obten
 						else:
 							req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
 					else:
-						proxy = proxip  + ':' + proxport
-						proxies = {'http' : proxy, 'https' : proxy,}
-						req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+						req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 	
 					if req.status_code == 200:
 						print 'ChangeLog: ' + colored(changeLog,'green')
@@ -309,7 +308,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor,report,l): #Obten
 				
 					headers = {'user-agent': agent}
 					cookies = {'': cookie}
-					if len(proxip) == 0:
+					if len(proxy) == 1:
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
@@ -318,9 +317,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor,report,l): #Obten
 						else:
 							req = requests.get(arg + row[2], cookies = cookies, headers = headers, verify=False)
 					else:
-						proxy = proxip  + ':' + proxport
-						proxies = {'http' : proxy, 'https' : proxy,}
-						req = requests.get(arg + row[2],cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+						req = requests.get(arg + row[2],cookies = cookies, headers = headers,proxies = proxies,verify=False)
 	
 					if req.status_code == 200:
 						print 'Robots file: ' + colored(req.url, 'green')
@@ -335,7 +332,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor,report,l): #Obten
 	
 	headers = {'user-agent': agent}
 	cookies = {'': cookie} 
-	if len(proxip) == 0:
+	if len(proxy) == 1:
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
@@ -344,9 +341,7 @@ def files(arg,verbose,version,cookie,agent,proxip,proxport,tor,report,l): #Obten
 		else:
 			req = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 	else:
-		proxy = proxip  + ':' + proxport
-		proxies = {'http' : proxy, 'https' : proxy,}
-		req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+		req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 	
 	webpage = html.fromstring(req.content)
 	for i in range(0,len(listThemes)): # Busqueda de los temas instalados en el sitio
