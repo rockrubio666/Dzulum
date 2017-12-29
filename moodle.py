@@ -28,8 +28,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 		if tor == True: # Peticiones a traves de Tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-			req = requests.get(arg,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+			req = requests.get(arg,verify=False)
 		else:
 			req = requests.get(arg,verify=False)
 	else: # Peticiones a traves del proxy
@@ -68,8 +67,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 			if tor == True:
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 				socket.socket = socks.socksocket
-				proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-				upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+				upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,verify=False)
 			else:
 				upgrade = requests.get(arg + '/lib/upgrade.txt', cookies = cookies, headers = headers,verify=False)
 		else:
@@ -123,8 +121,7 @@ def version(arg,verbose,cookie,agent,proxy,proxies,tor,report,l):	 # Obtencion d
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-			res = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+			res = requests.get(arg,cookies = cookies, headers = headers,verify=False)
 		else:
 			res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 	else:
@@ -143,8 +140,7 @@ def version(arg,verbose,cookie,agent,proxy,proxies,tor,report,l):	 # Obtencion d
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
-							proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-							req = requests.get(link,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+							req = requests.get(link,cookies = cookies, headers = headers,verify=False)
 						else:
 							req = requests.get(link, cookies = cookies, headers = headers, verify=False)
 					else:
@@ -173,8 +169,7 @@ def version(arg,verbose,cookie,agent,proxy,proxies,tor,report,l):	 # Obtencion d
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-			readme = requests.get(arg + '/README.txt',cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+			readme = requests.get(arg + '/README.txt',cookies = cookies, headers = headers,verify=False)
 		else:
 			readme = requests.get(arg + '/README.txt', cookies = cookies, headers = headers, verify=False)
 	else:
@@ -223,8 +218,7 @@ def files(arg, verbose,version,cookie,agent,proxy,proxies,tor,report,l): # Obten
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
-							proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-							req = requests.get(readme,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+							req = requests.get(readme,cookies = cookies, headers = headers,verify=False)
 						else:
 							req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
 					else:
@@ -248,8 +242,7 @@ def files(arg, verbose,version,cookie,agent,proxy,proxies,tor,report,l): # Obten
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
-							proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-							req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+							req = requests.get(changeLog,cookies = cookies, headers = headers,verify=False)
 						else:
 							req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
 					else:
@@ -274,8 +267,7 @@ def files(arg, verbose,version,cookie,agent,proxy,proxies,tor,report,l): # Obten
 					if tor == True:
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
-						proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-						req = requests.get(plugin,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+						req = requests.get(plugin,cookies = cookies, headers = headers,verify=False)
 					else:
 						req = requests.get(plugin, cookies = cookies, headers = headers, verify=False)
 				else:
@@ -331,8 +323,7 @@ def files(arg, verbose,version,cookie,agent,proxy,proxies,tor,report,l): # Obten
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-			req = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+			res = requests.get(arg,cookies = cookies, headers = headers,verify=False)
 		else:
 			res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 	else:
@@ -370,6 +361,7 @@ def files(arg, verbose,version,cookie,agent,proxy,proxies,tor,report,l): # Obten
 				if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 					print "Theme Name: " + colored(match.group(2), 'green')
 					l.append("Theme Name: " + match.group(2))
+	
 	vuln(version,verbose,report,l)
 	sys.exit
 		
@@ -383,7 +375,8 @@ def vuln(version,verbose,report,l): # Listado de vulnerabilidades obtenidas a pa
 				print "Vulnerability Link: " + colored(row[3],'green')
 				l.append( "Vulnerability Link: " + row[3])
 			elif int(verbose) == 2 or int(verbose) == 3:
-				l.append("Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + colored(row[3]))
+				l.append("Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3])
+				print "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + colored(row[3],'green')
 	f.close()
 	rep(report,l)
 	
