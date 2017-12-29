@@ -39,8 +39,10 @@ def checkFile(reqFile,user,pwd,userFile,passFile,message,verbose,cookie,agent,pr
 		if tor == True: # Peticiones a traves de Tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-			req = requests.get(url,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+			try:
+				req = requests.get(url,verify=False)
+			except:
+				sys.exit(2)
 		else:
 			req = requests.get(url,verify=False)
 	else: # Peticiones a traves del proxy
@@ -85,8 +87,7 @@ def checkFile(reqFile,user,pwd,userFile,passFile,message,verbose,cookie,agent,pr
 			if tor == True:
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 				socket.socket = socks.socksocket
-				proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-				req = requests.post(url,payload, cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+				req = requests.post(url,payload, cookies = cookies, headers = headers,verify=False)
 			else:
 				req = requests.post(url,payload, cookies = cookies, headers = headers, verify=False)
 		else:
@@ -121,8 +122,7 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-			r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+			r = requests.post(url,payload,cookies = cookies, headers = headers,verify=False)
 		else:
 			r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
 	else:
@@ -216,8 +216,7 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 				if tor == True:
 					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 					socket.socket = socks.socksocket
-					proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-					r = requests.post(url, data = payload, cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+					r = requests.post(url, data = payload, cookies = cookies, headers = headers,verify=False)
 				else:
 					r = requests.post(url, data = payload,cookies = cookies, headers = headers, verify=False)
 			else:

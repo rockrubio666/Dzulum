@@ -140,7 +140,11 @@ def version(arg,verbose,cookie,agent,proxy,proxies,tor,report,l):	 # Obtencion d
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
-							req = requests.get(link,cookies = cookies, headers = headers,verify=False)
+							try:
+								req = requests.get(link,cookies = cookies, headers = headers,verify=False)
+							except:
+								print 'It seems that we have problems using Tor :(, you could try with proxy option instead of'
+								sys.exit(2)
 						else:
 							req = requests.get(link, cookies = cookies, headers = headers, verify=False)
 					else:

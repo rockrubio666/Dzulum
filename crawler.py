@@ -22,8 +22,10 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 		if tor == True: # Peticiones a traves de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-			req = requests.get(arg,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+			try:
+				req = requests.get(arg,verify=False)
+			except:
+				sys.exit(2)
 		else:
 			req = requests.get(arg,verify=False)
 	else: # Peticiones a traves de proxy
@@ -71,9 +73,8 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 			if len(proxy) == 1:
 				if tor == True:
 					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
-					socket.socket = socks.socksocket
-					proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-					res = requests.get(arg,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+					socket.socket = socks.socksocket					
+					res = requests.get(arg,cookies = cookies, headers = headers,verify=False)
 				else:
 					res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
 			else:

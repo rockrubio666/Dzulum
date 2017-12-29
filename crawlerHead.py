@@ -21,8 +21,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050) # Peticiones a traves de tor
 			socket.socket = socks.socksocket
-			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-			req = requests.get(url,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+			try:
+				req = requests.get(url,verify=False)
+			except:
+				sys.exit(2)
+			
 		else:
 			req = requests.get(url,verify=False)
 	else: # Peticiones a traves del proxy
@@ -95,8 +98,8 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-			req = requests.head(resources[0],cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+			print  requests.get('http://httpbin.org/ip').content
+			req = requests.head(resources[0],cookies = cookies, headers = headers,verify=False)
 		else:
 			req = requests.head(resources[0], cookies = cookies, headers = headers, verify=False)
 	else:
@@ -124,8 +127,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 			if tor == True:
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 				socket.socket = socks.socksocket
-				proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-				res = requests.get(other,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+				res = requests.get(other,cookies = cookies, headers = headers,verify=False)
 			else:
 				res = requests.head(other, cookies = cookies, headers = headers, verify=False)
 			res.connection.close()
@@ -142,8 +144,6 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 					if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 						print "Resource exists: " + colored(element, 'green') + " Status code: " + colored(res.status_code, 'yellow')
 						l.append("Resource exists: " + element + " Status code: " + str(res.status_code))
-						
-						
 						
 				else:
 					continue
@@ -166,8 +166,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 								if tor == True:
 									socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)	
 									socket.socket = socks.socksocket
-									proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-									r = requests.get(indexOf,cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+									r = requests.get(indexOf,cookies = cookies, headers = headers,verify=False)
 								else:
 									r = requests.get(indexOf,cookies=cookies,headers=headers,verify=False)
 							else:
@@ -190,8 +189,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 											if tor == True:
 												socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 												socket.socket = socks.socksocket
-												proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
-												rn = requests.head(new.rstrip('\n'),cookies = cookies, headers = headers,proxies = {'http': 'socks5://127.0.0.1:9050'},verify=False)
+												rn = requests.head(new.rstrip('\n'),cookies = cookies, headers = headers,verify=False)
 											else:
 												rn = requests.head(new.rstrip('\n'),cookies=cookies,headers=headers,verify=False)
 										else:

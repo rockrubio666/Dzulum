@@ -28,7 +28,11 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 		if tor == True: # USo de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			req = requests.get(arg,verify=False)
+			try:
+				req = requests.get(arg,verify=False)
+			except:
+				print 'It seems that we have problems using Tor :(, you could try with proxy option instead of'
+				sys.exit(2)
 		else:
 			req = requests.get(arg,verify=False)
 	else: # Uso de proxy	
