@@ -152,51 +152,46 @@ def getParams(arg):
 		
 		
 	if options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
-		p2 = Process(target = moodle, args = (options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))
-		p2.start()
-		p2.join()
+		#p2 = Process(target = moodle, args = (options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))
+		moodle(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		#p2.start()
+		#p2.join()
 			
 	if options.crawlerHead in sys.argv and options.ojs in sys.argv: # Se manda a llamar la funcion del archivo
-		p3 = Process(target = crawlerHead, args =(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))
-		p3.start()
-		p3.join()
+		#p3 = Process(target = crawlerHead, args =(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))
+		crawlerHead(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		
 	elif options.crawlerHead in sys.argv and options.moodle in sys.argv:
-		p3 = Process(target = crawlerHead, args =(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))
-		p3.start()
-		p3.join()
+		crawlerHead(options.moodle,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		
 	
 	
 	if options.Bruteforce in sys.argv and options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
 		for element in options.Bruteforce.split(','):
 			bforce.append(element)
 		url = options.moodle + bforce[0]
-		p4 = Process(target = check,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))
-		p4.start()
-		p4.join()
+		check(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		
 		
 	elif options.Bruteforce in sys.argv and options.ojs in sys.argv:
 		for element in options.Bruteforce.split(','):
 			bforce.append(element)
 		url = options.ojs + bforce[0]
-		p4 = Process(target = check,args =(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))
-		p4.start()
-		p4.join()
+		check(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		
 			
 	if options.bruteFile in sys.argv: # Se manda a llamar la funcion del archivo
 		for element in options.bruteFile.split(','):
 			bforce.append(element)	
-		p5 = Process(target = checkFile, args = (bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))
-		p5.start()
-		p5.join()
+		checkFile(bforce[0],bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		
 
 	if options.Crawler == True and options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
-		p6 = Process(target = crawler, args = (options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))
-		p6.start()
-		p6.join()
+		crawler(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		
 	elif options.Crawler == True and options.ojs in sys.argv:
-		p6 = Process(target = crawler, args = (options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))
-		p6.start()
-		p6.join()
+		crawler(options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		
 	
 	
 
