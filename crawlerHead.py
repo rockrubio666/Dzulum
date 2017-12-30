@@ -48,16 +48,19 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 						try:
 							if match.group():
 								cookie = re.sub(r';(.*)','',match.group(3))
+								cookies = {'': cookie}
 						except:
 							print 'nio'
 	
 	else:
-		pass
+		jar = cookie.split(',')
+		cookies = {jar[0]:jar[1]}
 		
 	if agent is None:
 		agent = 'Mozilla/5.0 (PLAYSTATION 3;3.55)'
+		headers = {'user-agent': agent}
 	else:
-		pass
+		headers = {'user-agent': agent}
 		
 	print colored('\nBeginning Crawling with Head request', 'green')
 	fake = []
@@ -92,13 +95,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 			print "File not found"
 
 	requests.packages.urllib3.disable_warnings() # Se revisa el location que devuelve con el recurso que no exite
-	headers = {'user-agent': agent}
-	cookies = {'': cookie} 
 	if len(proxy) == 1:
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			print  requests.get('http://httpbin.org/ip').content
+			#print  requests.get('http://httpbin.org/ip').content
 			req = requests.head(resources[0],cookies = cookies, headers = headers,verify=False)
 		else:
 			req = requests.head(resources[0], cookies = cookies, headers = headers, verify=False)
@@ -121,8 +122,6 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 		other  = element.rstrip()
 		requests.packages.urllib3.disable_warnings()					
 		
-		headers = {'user-agent': agent}
-		cookies = {'': cookie} 
 		if len(proxy) == 1:
 			if tor == True:
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
@@ -160,8 +159,6 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 					else:
 						if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 							indexOf = res.url + '/'
-							headers = {'user-agent': agent}
-							cookies = {'': cookie} 
 							if len(proxy) == 1:
 								if tor == True:
 									socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)	
@@ -183,8 +180,6 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 									fo = open(f, 'r')
 									for line in fo:
 										new = r.url + line
-										headers = {'user-agent': agent}
-										cookies = {'': cookie} 
 										if len(proxy) == 1:
 											if tor == True:
 												socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)

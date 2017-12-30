@@ -46,76 +46,63 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 				try:
 					if match.group():
 						cookie = re.sub(r';(.*)','',match.group(3))
+						cookies = {'': cookie}
 				except:
 					print 'nio'
 	else:
-		pass
+		jar = cookie.split(',')
+		cookies = {jar[0]:jar[1]}
 		
 	if agent is None:
 		agent = 'Mozilla/5.0 (PLAYSTATION 3;3.55)'
+		headers = {'user-agent': agent}
 	else:
-		pass
+		headers = {'user-agent': agent}
 
 	m = hashlib.md5()
 	
-	if 'http://' in arg or 'https://' in arg:
-		requests.packages.urllib3.disable_warnings()
-	
-		headers = {'user-agent': agent}
-		cookies = {'': cookie}
-		if len(proxy) == 1:
-			if tor == True:
-				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
-				socket.socket = socks.socksocket
-				upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,verify=False)
-			else:
-				upgrade = requests.get(arg + '/lib/upgrade.txt', cookies = cookies, headers = headers,verify=False)
+	if len(proxy) == 1:
+		if tor == True:
+			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+			socket.socket = socks.socksocket
+			upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,verify=False)
 		else:
-
-			upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,proxies = proxies,verify=False)
+			upgrade = requests.get(arg + '/lib/upgrade.txt', cookies = cookies, headers = headers,verify=False)
+	else:
+		upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,proxies = proxies,verify=False)
 						
-		if int(upgrade.status_code) == 200: #Si tiene el archivo upgrade
-			regex = re.compile(r'===(.*)===')
-			match = regex.search(upgrade.text)
-			try:
-				if match.group(): #Si es un numero de version
-					if int(verbose) == 1:
-						print 'Version site: ' + colored(match.group(1),'green')
-						l.append('Version site: ' + match.group(1))
-					elif int(verbose) == 2:
-						print "Version site: " + colored(arg,'green') + "is: " + colored(match.group(1),'green')
-						l.append("Version site: " + arg + "is: " + match.group(1))
-					elif int(verbose) == 3:
-						print "Version site: " + colored(arg,'green') + "is: " + colored(match.group(1),'green')
-						print "Version site found it in: " + colored(upgrade.url,'green')
-						l.append("Version site: " + arg + "is: " + match.group(1) + "Found it in: " + upgrade.url)
-					files(arg,verbose,match.group(1),cookie,agent,proxy,proxies,tor,report,l) # Si existe el archivo se obtienen los plugins y el tema
+	if int(upgrade.status_code) == 200: #Si tiene el archivo upgrade
+		regex = re.compile(r'===(.*)===')
+		match = regex.search(upgrade.text)
+		try:
+			if match.group(): #Si es un numero de version
+				if int(verbose) == 1:
+					print 'Version site: ' + colored(match.group(1),'green')
+					l.append('Version site: ' + match.group(1))
+				elif int(verbose) == 2:
+					print "Version site: " + colored(arg,'green') + "is: " + colored(match.group(1),'green')
+					l.append("Version site: " + arg + "is: " + match.group(1))
+				elif int(verbose) == 3:
+					print "Version site: " + colored(arg,'green') + "is: " + colored(match.group(1),'green')
+					print "Version site found it in: " + colored(upgrade.url,'green')
+					l.append("Version site: " + arg + "is: " + match.group(1) + "Found it in: " + upgrade.url)
+				files(arg,verbose,match.group(1),cookies,headers,proxy,proxies,tor,report,l) # Si existe el archivo se obtienen los plugins y el tema
 				
 					
-			except:
-				exit(2)
+		except:
+			exit(2)
 		
-		else: #Si no lo tiene
-			version(arg,verbose,cookie,agent,proxy,proxies,tor,report,l) # Si no se obtiene la version a partir del archivo, se obtiene a partir de los archivos por defecto
-			
-			
-# Si no tiene http(s) se pega a la direccion
-	else:
-		http =  re.sub(r'(^)','http://',arg)
-		moodle(http)
-		exit(2)
-		
+	else: #Si no lo tiene
+		version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l) # Si no se obtiene la version a partir del archivo, se obtiene a partir de los archivos por defecto
+					
 
-def version(arg,verbose,cookie,agent,proxy,proxies,tor,report,l):	 # Obtencion de la version a partir de archivos
+def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l):	 # Obtencion de la version a partir de archivos
 	m = hashlib.md5()
 	elements = []
 	average = []
 	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href'] # Busqueda de imagenes, favicon, hojas de estilo y js
 	
 	requests.packages.urllib3.disable_warnings()					
-	
-	headers = {'user-agent': agent}
-	cookies = {'': cookie} 
 	
 	if len(proxy) == 1:
 		if tor == True:
@@ -134,8 +121,6 @@ def version(arg,verbose,cookie,agent,proxy,proxies,tor,report,l):	 # Obtencion d
 		for link in webpage.xpath(listFind[i]):
 			if dom in link:
 				if link.startswith('http'):	
-					headers = {'user-agent': agent}
-					cookies = {'': cookie} 
 					if len(proxy) == 1:
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
@@ -167,8 +152,7 @@ def version(arg,verbose,cookie,agent,proxy,proxies,tor,report,l):	 # Obtencion d
 							elements.append(hs)
 						except:
 							continue
-	headers = {'user-agent': agent}
-	cookies = {'': cookie} 			
+	
 	if len(proxy) == 1: # Obtencion del hash del archivo README
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
@@ -204,10 +188,10 @@ def version(arg,verbose,cookie,agent,proxy,proxies,tor,report,l):	 # Obtencion d
 		v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
 		print '\nVersion getting from configuration files: ' + colored(v, 'green')
 		l.append('\nVersion getting from configuration files: ' + v)
-	files(arg,verbose,v,proxy,proxies,tor,report,l) # Obtencion de plugins y temas
+	files(arg,verbose,v,cookies,headers,proxy,proxies,tor,report,l) # Obtencion de plugins y temas
 	f.close()
 
-def files(arg, verbose,version,cookie,agent,proxy,proxies,tor,report,l): # Obtencion de plugins y temas
+def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,l): # Obtencion de plugins y temas
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
 
@@ -216,8 +200,6 @@ def files(arg, verbose,version,cookie,agent,proxy,proxies,tor,report,l): # Obten
 			if int(verbose) == 3: # Busqueda de archivos de configuracion visibles
 				if 'Readme' in row[1] and 'Moodle' in row[0]: 
 					readme = arg + row[2]
-					headers = {'user-agent': agent}
-					cookies = {'': cookie} 
 					if len(proxy) == 1:
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
@@ -240,8 +222,6 @@ def files(arg, verbose,version,cookie,agent,proxy,proxies,tor,report,l): # Obten
 				elif 'Change' in row[1] and 'Moodle' in row[0]: # Busqueda de archivos de configuracion visibles
 					changeLog = arg +  row[2]
 				
-					headers = {'user-agent': agent}
-					cookies = {'': cookie} 
 					if len(proxy) == 1:
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
@@ -265,8 +245,6 @@ def files(arg, verbose,version,cookie,agent,proxy,proxies,tor,report,l): # Obten
 				
 			if 'Plugin' in row[1] and 'Moodle' in row[0]: # Busqueda de los plugins
 				plugin = arg + row[2]
-				headers = {'user-agent': agent}
-				cookies = {'': cookie} 
 				if len(proxy) == 1:
 					if tor == True:
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
@@ -321,8 +299,6 @@ def files(arg, verbose,version,cookie,agent,proxy,proxies,tor,report,l): # Obten
 			continue	
 	f.close()		
 	
-	headers = {'user-agent': agent}
-	cookies = {'': cookie} 
 	if len(proxy) == 1:
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)

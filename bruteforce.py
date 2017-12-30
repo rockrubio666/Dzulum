@@ -47,23 +47,24 @@ def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbo
 						try:
 							if match.group():
 								cookie = re.sub(r';(.*)','',match.group(3))
+								cookies = {'': cookie}
 						except:
 							print 'nio'
 	
 	else:
-		pass
+		jar = cookie.split(',')
+		cookies = {jar[0]:jar[1]}
 		
 	if agent is None:
 		agent = 'Mozilla/5.0 (PLAYSTATION 3;3.55)'
+		headers = {'user-agent': agent}
 	else:
-		pass
+		headers = {'user-agent': agent}
 
 	
 	requests.packages.urllib3.disable_warnings()	
 	for element in b: # REalizacion de las peticiones para ver que devuelve el sitio
 		payload = {userField : element, passField: ''}
-		headers = {'user-agent': agent}
-		cookies = {'': cookie} 
 		if len(proxy) == 1:
 			if tor == True:
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
@@ -76,23 +77,21 @@ def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbo
 		a.append(len(r.content))
 	
 	if len(userFile) == 0 and len(pwdFile) == 0 and len(user) > 0 and len(pwd) > 0 : # Sin archivos
-		single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,a,tor,report)
+		single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,a,tor,report)
 	elif len(user) == 0 and len(pwd) == 0 and len(userFile) > 0 and len(pwdFile) > 0: # Ambos archvios
-		doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,a,tor,report)
+		doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,a,tor,report)
 	elif len(user) == 0 and len(pwdFile) == 0 and len(pwd) > 0 and len(userFile) > 0: # Archivo de usuarios
-		usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,a,tor,report)
+		usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,a,tor,report)
 	elif len(pwd) == 0 and len(userFile) == 0 and len(user) > 0 and len(pwdFile) > 0: # Archivo de passwords
-		passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,a,tor,report)
+		passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,a,tor,report)
 		
-def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,list,tor,report):
+def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,list,tor,report):
 	l = []
 	mbefore = message
 	requests.packages.urllib3.disable_warnings()		
 		
 	payload = { userField : user, passField: pwd} # Carga del payload
 	
-	headers = {'user-agent': agent}
-	cookies = {'': cookie} 
 	if len(proxy) == 1:
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
@@ -170,7 +169,7 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 		
 	rep(report,l)
 		
-def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,list,tor,report):
+def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,list,tor,report):
 	l = []
 	users = []
 	requests.packages.urllib3.disable_warnings()		
@@ -187,8 +186,6 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 				
 			#Login
 			payload = { userField : users[i].rstrip('\n'), passField: pwd} # Carga del payload
-			headers = {'user-agent': agent}
-			cookies = {'': cookie} 
 			if len(proxy) == 1:
 				if tor == True:
 					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
@@ -266,7 +263,7 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 						l.append('Successful attack with: ' + 'User: ' + users[i].rstrip('\n') + ' Password: ' + pwd)
 	rep(report,l)
 
-def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,list,tor,report):
+def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,list,tor,report):
 	l = []
 	passwords = []
 	requests.packages.urllib3.disable_warnings()		
@@ -283,8 +280,6 @@ def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ve
 		
 			#Login
 			payload = { userField : user, passField: passwords[i].rstrip('\n')} # Carga de payload
-			headers = {'user-agent': agent}
-			cookies = {'': cookie} 
 			if len(proxy) == 1:
 				if tor == True:
 					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
@@ -362,7 +357,7 @@ def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ve
 						l.append('Successful attack with: ' + 'User: ' + user + ' Password: ' + passwords[i].rstrip('\n'))
 	rep(report, l)
 	
-def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxy,proxies,list,tor,report): # Ambos archivos
+def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,list,tor,report): # Ambos archivos
 	l = []
 	users = []
 	passwords = []
@@ -391,8 +386,6 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 				#Login
 				
 				payload = { userField : users[i].rstrip('\n'), passField: passwords[j].rstrip('\n')}
-				headers = {'user-agent': agent}
-				cookies = {'': cookie} 
 				if len(proxy) == 1:
 					if tor == True:
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)

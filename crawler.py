@@ -48,15 +48,19 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 						try:
 							if match.group():
 								cookie = re.sub(r';(.*)','',match.group(3))
+								cookies = {'': cookie}
 						except:
 							print 'nio'
 				
 	else:
-		pass
+		jar = cookie.split(',')
+		cookies = {jar[0]:jar[1]}
+		
 	if agent is None:
 		agent = 'Mozilla/5.0 (PLAYSTATION 3;3.55)'
+		headers = {'user-agent': agent}
 	else:
-		pass
+		headers = {'user-agent': agent}
 	
 	print colored("Beginning Crawling", 'blue')
 	print 'Querying the site: ' + colored(arg, 'green')
@@ -67,9 +71,6 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 		# Peticiones
 		try:
 			requests.packages.urllib3.disable_warnings()					
-			
-			headers = {'user-agent': agent}
-			cookies = {'': cookie} 
 			if len(proxy) == 1:
 				if tor == True:
 					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
@@ -124,8 +125,6 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 					try:
 						if diagonal.group():
 							complete =  arg + link
-							headers = {'user-agent': agent}
-							cookies = {'': cookie} 
 							if len(proxip) == 0:
 								r = requests.head(complete, cookies = cookies, headers = headers, verify=False)
 							else:
