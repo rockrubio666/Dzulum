@@ -54,7 +54,7 @@ def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbo
 		pass
 		
 	if agent is None:
-		agent = 'Kakeando'
+		agent = 'Mozilla/5.0 (PLAYSTATION 3;3.55)'
 	else:
 		pass
 

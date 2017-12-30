@@ -73,7 +73,7 @@ def checkFile(reqFile,user,pwd,userFile,passFile,message,verbose,cookie,agent,pr
 		pass
 		
 	if agent is None:
-		agent = 'Kakeando'
+		agent = 'Mozilla/5.0 (PLAYSTATION 3;3.55)'
 	else:
 		pass
 	

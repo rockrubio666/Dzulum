@@ -52,7 +52,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 		pass
 		
 	if agent is None:
-		agent = 'Kakeando'
+		agent = 'Mozilla/5.0 (PLAYSTATION 3;3.55)'
 	else:
 		pass
 
