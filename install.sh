@@ -10,7 +10,7 @@ else
 	echo 'Could the installer remove all files of privoxy and try it again? [y/n]'
 	read privoxy
 	if [ "$privoxy" = "$s" ];then
-		apt-get remove prixovy -y
+		apt-get --purge remove prixovy -y
 		apt-get install prixovy -y
 		sed -i 's/^#\(.*\)forward-socks5\(.*\)127.0.0.1/	 forward-socks5   \/               127.0.0.1:9050 \./g' /etc/privoxy/config
 		if /etc/init.d/privoxy restart; then
@@ -31,8 +31,8 @@ else
 	echo 'Could the installer remove all files of tor and try it again? [y/n]'
 	read tor
 	if [ "$tor" = "$s" ];then
-		apt-get remove prixovy -y
-		apt-get install prixovy -y
+		apt-get remove --purge tor -y
+		apt-get install tor -y
 		sed -i 's/^#\(.*\)ControlPort/ControlPort/g' /etc/tor/torrc
 		sed -i 's/^#\(.*\)CookieAuthentication/CookieAuthentication/g' /etc/tor/torrc
 		if /etc/init.d/tor restart; then
