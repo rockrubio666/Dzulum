@@ -17,6 +17,19 @@ import random
 
 def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 	
+	if 'http' in arg:
+		pass
+		if 'index.php' in arg:
+			ind = raw_input('If you don\'t introduce the principal page, you couldn\'t get enough evidence. Do yo want to continue? [y/N] ') or 'N'
+			if 'Y' in ind or 'y' in ind:
+				pass
+			else:
+				print colored('Check the URL and try again :D ', 'green')
+				sys.exit(2)
+	else:
+		print colored('The URL doesn\'t have http or https, please check it and try again :D ','green')
+		sys.exit(2)
+	
 	proxy = proxip  + ':' + proxport	
 	proxies = {'http' : proxy, 'https' : proxy,}
 	
@@ -29,17 +42,47 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			try:
-				req = requests.get(arg,verify=False)
-			except:
-				print 'It seems that we have problems using Tor :(, you could try with proxy option instead of'
+				req = requests.get(arg,verify=False,timeout=5)
+			except requests.RequestException:
+				error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down.
+		- It seems that we have problems using Tor :(
+"""
+				print colored(error,'green')
 				sys.exit(2)
-		else:
-			req = requests.get(arg,verify=False)
+			
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
+		else: # Sin anonimato
+			try:
+				req = requests.get(arg,verify=False,timeout=5)
+			except requests.RequestException:
+				error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+"""
+				print colored(error,'green')
+				sys.exit(2)
+			
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
+				
 	else: # Uso de proxy	
 		try:
-			req = requests.post(arg,proxies = proxies,verify=False)
-		except requests.exceptions.ConnectionError:
-			print 'There\'s a problem with the proxy connection, please check it and try again :D '
+			req = requests.post(arg,proxies = proxies,verify=False,timeout=5)
+		except requests.RequestException:
+			error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+		- There\'s a problem with the proxy connection
+"""
+			print colored(error,'green')
 			sys.exit(2)
 
 	if cookie is None: # Obtiene la cookie de sesion
@@ -72,24 +115,38 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			req = requests.get(arg,cookies = cookies, headers = headers,verify=False)
+			try:
+				req = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=5)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for Tor response, please try again','green')
+				sys.exit(2)
 		else:
-			req = requests.get(arg, cookies = cookies, headers = headers,verify=False)
+			try:
+				req = requests.get(arg, cookies = cookies, headers = headers,verify=False,timeout=5)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
 	else:
-		req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+		try:
+			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+		except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for proxy response, please try again','green')
+				sys.exit(2)
 		
 	
+	
 	page_source =  req.text
+	if '/lib/pkp/js' in page_source:
+		pass
+	else:
+		print colored('The site: ','yellow') +  colored(arg, 'blue') + colored(' isn\'t an OJS','yellow')
+		sys.exit(2)
+		
 	regex = re.compile(r'(.*)(name="generator") content="(.*)"(.*)') # Se busca la meta etiqueta que contiene la version
 	match = regex.search(page_source)
 
 	try:
 		if match.group():		
-			if 'Open Journal Systems' in match.group():
-				pass
-			else:
-				print colored('The site: ','yellow') + colored(match.group(3),'blue') + colored(' It could not be an OJS','yellow')
-				sys.exit(2)
 			if int(verbose) == 1:
 				print "Site Version: " + colored(match.group(3),'green')
 				l.append("Site Version: " + match.group(3))
@@ -120,11 +177,23 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			req = requests.get(arg,cookies = cookies, headers = headers,verify=False)
+			try:
+				req = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=5)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for Tor response, please try again','green')
+				sys.exit(2)
 		else:
-			req = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+			try:
+				req = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=5)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
 	else:
-		req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+		try:
+			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+		except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for proxy response, please try again','green')
+				sys.exit(2)
 	
 	webpage = html.fromstring(req.content)
 	dom = re.sub(r'(http|https)://','',arg)
@@ -136,11 +205,23 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion
 					if tor == True:
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
-						req = requests.get(link,cookies = cookies, headers = headers,verify=False)
+						try:
+							req = requests.get(link,cookies = cookies, headers = headers,verify=False,timeout=5)
+						except requests.exceptions.TimeoutError:
+							print colored('Too many time waiting for Tor response, please try again','green')
+							sys.exit(2)
 					else:
-						req = requests.get(link, cookies = cookies, headers = headers, verify=False)
+						try:
+							req = requests.get(link, cookies = cookies, headers = headers, verify=False,timeout=5)
+						except requests.exceptions.TimeoutError:
+							print colored('Too many time waiting for response, please try again','green')
+							sys.exit(2)
 				else:
-					req = requests.get(link,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+					try:
+						req = requests.get(link,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+					except requests.exceptions.TimeoutError:
+						print colored('Too many time waiting for proxy response, please try again','green')
+						sys.exit(2)
 				
 				if req.status_code == 200 and i in range(2,3): # Si es una imagen o favicon, se descarga y obtiene el hash
 					try:
@@ -167,7 +248,6 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion
 		for row in reader:
 			try:
 				if element in row[2] and 'Ojs' in row[0]:
-					print element
 					average.append(row[1])
 			except:
 				continue
@@ -194,17 +274,27 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 			if 'Plugin' in row[1] and 'Ojs' in row[0]: # Se buscan plugins por defecto de los gestores de contenido
 				plugin = arg + '/plugins' + row[2]
 				
-				#headers = {'user-agent': agent}
-				#cookies = {'': cookie}
 				if len(proxy) == 1:
 					if tor == True:
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
-						req = requests.get(plugin,cookies = cookies, headers = headers,verify=False)
+						try:
+							req = requests.get(plugin,cookies = cookies, headers = headers,verify=False,timeout=5)
+						except requests.exceptions.TimeoutError:
+							print colored('Too many time waiting for Tor response, please try again','green')
+							sys.exit(2)
 					else:
-						req = requests.get(plugin, cookies = cookies, headers = headers, verify=False)
+						try:
+							req = requests.get(plugin, cookies = cookies, headers = headers, verify=False,timeout=5)
+						except requests.exceptions.TimeoutError:
+							print colored('Too many time waiting for response, please try again','green')
+							sys.exit(2)
 				else:
-					req = requests.get(plugin,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+					try:
+						req = requests.get(plugin,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+					except requests.exceptions.TimeoutError:
+						print colored('Too many time waiting for proxy response, please try again','green')
+						sys.exit(2)
 					
 				if req.status_code == 200: # Si existe el archivo, obtiene el nombre del plugin y la version
 					plugName = re.compile(r'=== (.*)')
@@ -255,17 +345,27 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 				if 'Readme' in row[1] and 'Ojs' in row[0]:
 					readme = arg + '/docs/release-notes/README-' + row[2]
 				
-					#headers = {'user-agent': agent}
-					#cookies = {'': cookie}
 					if len(proxy) == 1:
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
-							req = requests.get(readme,cookies = cookies, headers = headers,verify=False)
+							try:
+								req = requests.get(readme,cookies = cookies, headers = headers,verify=False,timeout=5)
+							except requests.exceptions.TimeoutError:
+								print colored('Too many time waiting for Tor response, please try again','green')
+								sys.exit(2)
 						else:
-							req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
+							try:
+								req = requests.get(readme, cookies = cookies, headers = headers, verify=False,timeout=5)
+							except requests.exceptions.TimeoutError:
+								print colored('Too many time waiting for response, please try again','green')
+								sys.exit(2)
 					else:
-						req = requests.get(readme,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+						try:
+							req = requests.get(readme,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+						except requests.exceptions.TimeoutError:
+							print colored('Too many time waiting for proxy response, please try again','green')
+							sys.exit(2)
 				
 					if req.status_code == 200:
 						print 'README file: ' + colored(readme, 'green')
@@ -277,17 +377,27 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 				elif 'Change' in row[1] and 'Ojs' in row[0]:	# Archivos de configuracion visibles
 					changeLog = arg + '/docs/release-notes/ChangeLog-' + row[2]
 				
-					headers = {'user-agent': agent}
-					cookies = {'': cookie}
 					if len(proxy) == 1:
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
-							req = requests.get(changeLog,cookies = cookies, headers = headers,verify=False)
+							try:
+								req = requests.get(changeLog,cookies = cookies, headers = headers,verify=False,timeout=5)
+							except requests.exceptions.TimeoutError:
+								print colored('Too many time waiting for Tor response, please try again','green')
+								sys.exit(2)
 						else:
-							req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
+							try:
+								req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False,timeout=5)
+							except requests.exceptions.TimeoutError:
+								print colored('Too many time waiting for response, please try again','green')
+								sys.exit(2)
 					else:
-						req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+						try:
+							req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+						except requests.exceptions.TimeoutError:
+							print colored('Too many time waiting for proxy response, please try again','green')
+							sys.exit(2)
 	
 					if req.status_code == 200:
 						print 'ChangeLog: ' + colored(changeLog,'green')
@@ -297,17 +407,27 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 	
 				elif 'Robots' in row[1] and 'Ojs' in row[0]: # Archivos de configuracion visibles
 				
-					#headers = {'user-agent': agent}
-					#cookies = {'': cookie}
 					if len(proxy) == 1:
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
-							req = requests.get(arg + row[2],cookies = cookies, headers = headers,verify=False)
+							try:
+								req = requests.get(arg + row[2],cookies = cookies, headers = headers,verify=False,timeout=5)
+							except requests.exceptions.TimeoutError:
+								print colored('Too many time waiting for Tor response, please try again','green')
+								sys.exit(2)
 						else:
-							req = requests.get(arg + row[2], cookies = cookies, headers = headers, verify=False)
+							try:
+								req = requests.get(arg + row[2], cookies = cookies, headers = headers, verify=False,timeout=5)
+							except requests.exceptions.TimeoutError:
+								print colored('Too many time waiting for response, please try again','green')
+								sys.exit(2)
 					else:
-						req = requests.get(arg + row[2],cookies = cookies, headers = headers,proxies = proxies,verify=False)
+						try:
+							req = requests.get(arg + row[2],cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+						except requests.exceptions.TimeoutError:
+							print colored('Too many time waiting for proxy response, please try again','green')
+							sys.exit(2)
 	
 					if req.status_code == 200:
 						print 'Robots file: ' + colored(req.url, 'green')
@@ -320,17 +440,27 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 			continue
 	f.close()
 	
-	#headers = {'user-agent': agent}
-	#cookies = {'': cookie} 
 	if len(proxy) == 1:
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			req = requests.get(arg,cookies = cookies, headers = headers,verify=False)
+			try:
+				req = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=5)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for Tor response, please try again','green')
+				sys.exit(2)
 		else:
-			req = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+			try:
+				req = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=5)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
 	else:
-		req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+		try:
+			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+		except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for proxy response, please try again','green')
+				sys.exit(2)
 	
 	webpage = html.fromstring(req.content)
 	for i in range(0,len(listThemes)): # Busqueda de los temas instalados en el sitio
@@ -424,9 +554,3 @@ def rep(list1,list2):
 			fo.close()
 		else:
 			pass
-
-	
-	
-	
-
-
