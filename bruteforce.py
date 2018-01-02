@@ -7,6 +7,7 @@ from termcolor import colored
 import re # Utilizado para regex
 import socket # Tor
 import socks # Tor
+import random
 
 def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,tor,report):
 	b = ['','1','12']
@@ -33,23 +34,22 @@ def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbo
 		except requests.exceptions.ConnectionError:
 			sys.exit(2)
 	
-	if cookie is None: # Obtencion de la cookie de sesion
+	if cookie is None: # Obtiene la cookie de sesion
 		for key,value in req.headers.iteritems():
-			if 'set-cookie' in key:
-				regex = re.compile(r'(OJSSID=)((.*);)')
-				match = regex.search(value)
-				try:
-					if match.group():
-						cookie = re.sub(r';(.*)','',match.group(2))
-				except:
-						regex = re.compile(r'((.*)=)((.*);)')
-						match = regex.search(value)
-						try:
-							if match.group():
-								cookie = re.sub(r';(.*)','',match.group(3))
-								cookies = {'': cookie}
-						except:
-							print 'nio'
+			if key.startswith('set-cookie'):
+				previous = value.split(';')[0].split('=')
+				cookies = {previous[0] : previous[1]}
+			else:
+				pass
+		
+		if cookie is None:
+			alp = ['a','b','c','d','e','f','g','h','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6','7','8','9','0']
+			cook = []
+			while len(cook) < 26:
+				cook.append(random.choice(alp))
+			c =  "".join(str(element) for element in cook)
+			cookies = {'Random_Cookie' : c}
+
 	
 	else:
 		jar = cookie.split(',')

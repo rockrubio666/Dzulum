@@ -13,6 +13,7 @@ from termcolor import colored
 import csv # Utilizado para leer los archivos que contienen los hashes
 import socks #Tor
 import socket #Tor
+import random
 
 plugins = ['']
 
@@ -37,18 +38,24 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 		except requests.exceptions.ConnectionError:
 			print 'There\'s a problem with the proxy connection, please check it and try again :D '
 			sys.exit(2)
-	
-	if cookie is None: # Obtencion de la cookie de sesion
+
+
+	if cookie is None: # Obtiene la cookie de sesion
 		for key,value in req.headers.iteritems():
-			if 'set-cookie' in key:
-				regex = re.compile(r'((.*)=)((.*);)')
-				match = regex.search(value)
-				try:
-					if match.group():
-						cookie = re.sub(r';(.*)','',match.group(3))
-						cookies = {'': cookie}
-				except:
-					print 'nio'
+			if key.startswith('set-cookie'):
+				previous = value.split(';')[0].split('=')
+				cookies = {previous[0] : previous[1]}
+			else:
+				pass
+		
+		if cookie is None:
+			alp = ['a','b','c','d','e','f','g','h','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6','7','8','9','0']
+			cook = []
+			while len(cook) < 26:
+				cook.append(random.choice(alp))
+			c =  "".join(str(element) for element in cook)
+			cookies = {'Random_Cookie' : c}
+
 	else:
 		jar = cookie.split(',')
 		cookies = {jar[0]:jar[1]}
