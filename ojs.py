@@ -166,6 +166,7 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 	
 	
 def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion de la version mediante archivos
+	print colored('We\'re trying to get the version through default files, please wait','green')
 	m = hashlib.md5()
 	elements = []
 	average = []
@@ -255,10 +256,14 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion
 
 	cnt = Counter(average) # Se realiza el promedio para determinar la version
 	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
-		v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
-		print '\nVersion getting from configuration files: ' + colored(v, 'green')
-		l.append('\nVersion getting from configuration files: ' + v)
-	files(arg,verbose,v,cookies,headers,proxy,proxies,tor,report,l)
+		try:
+			v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
+			print '\nVersion getting from configuration files: ' + colored(v, 'green')
+			l.append('\nVersion getting from configuration files: ' + v)
+			files(arg,verbose,v,cookies,headers,proxy,proxies,tor,report,l)
+		except ValueError:
+			print colored('Sorry, It couldn\'y get the version of the OJS :(','green')
+			sys.exit(2)
 	
 	
 def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obtencion de plugins y temas
