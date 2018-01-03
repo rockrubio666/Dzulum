@@ -18,12 +18,31 @@ import random
 plugins = ['']
 
 def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
-# Si el argumento tiene http(s)
+	requests.packages.urllib3.disable_warnings()
+	
+	if 'http' in arg:
+		req = requests.get(arg,verify=False)
+		if '.php' in arg:
+			ind = raw_input('If you don\'t introduce the principal page, you couldn\'t get enough evidence. Do yo want to continue? [y/N] ') or 'N'
+			if 'Y' in ind or 'y' in ind:
+				pass
+			else:
+				print colored('Check the URL and try again :D ', 'green')
+				sys.exit(2)
+		if 'yui_combo' in req.text:
+			pass
+		else:
+			print colored('The site: ','green') + colored(arg,'yellow') + colored(' isn\'t a moodle','green')
+			sys.exit(2)
+	else:
+		print colored('The URL doesn\'t have http or https, please check it and try again :D ','green')
+		sys.exit(2)
+		
 	proxy = proxip  + ':' + proxport
 	proxies = {'http' : proxy, 'https' : proxy,}
 	
 	l = []
-	requests.packages.urllib3.disable_warnings()
+	
 	
 	if len(proxy) == 1:
 		if tor == True: # Peticiones a traves de Tor
@@ -83,17 +102,21 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 		match = regex.search(upgrade.text)
 		try:
 			if match.group(): #Si es un numero de version
-				if int(verbose) == 1:
-					print 'Version site: ' + colored(match.group(1),'green')
-					l.append('Version site: ' + match.group(1))
-				elif int(verbose) == 2:
-					print "Version site: " + colored(arg,'green') + "is: " + colored(match.group(1),'green')
-					l.append("Version site: " + arg + "is: " + match.group(1))
-				elif int(verbose) == 3:
-					print "Version site: " + colored(arg,'green') + "is: " + colored(match.group(1),'green')
-					print "Version site found it in: " + colored(upgrade.url,'green')
-					l.append("Version site: " + arg + "is: " + match.group(1) + "Found it in: " + upgrade.url)
-				files(arg,verbose,match.group(1),cookies,headers,proxy,proxies,tor,report,l) # Si existe el archivo se obtienen los plugins y el tema
+				if 'Slideshow section start here' in match.group(1):
+					version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l)
+					sys.exit(2)
+				else:
+					if int(verbose) == 1:
+						print 'Version site: ' + colored(match.group(1),'green')
+						l.append('Version site: ' + match.group(1))
+					elif int(verbose) == 2:
+						print "Version site: " + colored(arg,'green') + "is: " + colored(match.group(1),'green')
+						l.append("Version site: " + arg + "is: " + match.group(1))
+					elif int(verbose) == 3:
+						print "Version site: " + colored(arg,'green') + "is: " + colored(match.group(1),'green')
+						print "Version site found it in: " + colored(upgrade.url,'green')
+						l.append("Version site: " + arg + "is: " + match.group(1) + "Found it in: " + upgrade.url)
+					files(arg,verbose,match.group(1),cookies,headers,proxy,proxies,tor,report,l) # Si existe el archivo se obtienen los plugins y el tema
 				
 					
 		except:
@@ -104,6 +127,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 					
 
 def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l):	 # Obtencion de la version a partir de archivos
+	print colored('We\'re trying to get the version through default files, please wait','green')
 	m = hashlib.md5()
 	elements = []
 	average = []
@@ -192,11 +216,15 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l):	 # Obtencio
 	
 	cnt = Counter(average) # Calculo de la version que mas veces se repite
 	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
-		v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
-		print '\nVersion getting from configuration files: ' + colored(v, 'green')
-		l.append('\nVersion getting from configuration files: ' + v)
-	files(arg,verbose,v,cookies,headers,proxy,proxies,tor,report,l) # Obtencion de plugins y temas
-	f.close()
+		try:
+			v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
+			print '\nVersion getting from configuration files: ' + colored(v, 'green')
+			l.append('\nVersion getting from configuration files: ' + v)
+			files(arg,verbose,v,cookies,headers,proxy,proxies,tor,report,l) # Obtencion de plugins y temas
+			f.close()
+		except ValueError:
+			print colored('Sorry,It couldn\'t get the version of the moodle :(', 'green')
+			sys.exit(2)
 
 def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,l): # Obtencion de plugins y temas
 	f = open('versions','rb')
@@ -268,26 +296,26 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,l): # Ob
 					regex = re.compile(r'(===)(.*)(===)')
 					match = regex.search(req.text)
 					try:
+						path = re.sub(r'upgrade.txt','',plugin)
 						if match.group():
-							path = re.sub(r'upgrade.txt','',plugin)
-						try:
-							if complex(match.group(2)):
+							try:
+								if complex(match.group(2)):
+									if int(verbose) == 1:
+										print "Plugin Name: " + colored(begin, 'green')
+										l.append( "Plugin Name: " + begin)
+									elif int(verbose) == 2:
+										print "Plugin Name: " + colored(begin, 'green') + ', Path: ' + colored(path,'green')
+										l.append( "Plugin Name: " + begin + ', Path: ' + path)
+									elif int(verbose) == 3:
+										print "Plugin Name: " + colored(begin, 'green') + ', Path: ' + colored(path, 'green') + ' ,Version: ' + colored(match.group(2),'blue')
+										l.append( "Plugin Name: " + begin + ', Path: ' + path + ' ,Version: ' + match.group(2))
+							except:
 								if int(verbose) == 1:
 									print "Plugin Name: " + colored(begin, 'green')
 									l.append( "Plugin Name: " + begin)
-								elif int(verbose) == 2:
-									print "Plugin Name: " + colored(begin, 'green') + ', Path: ' + colored(path,'green')
-									l.append( "Plugin Name: " + begin + ', Path: ' + path)
-								elif int(verbose) == 3:
-									print "Plugin Name: " + colored(begin, 'green') + ', Path: ' + colored(path, 'green') + ' ,Version: ' + colored(match.group(2),'blue')
-									l.append( "Plugin Name: " + begin + ', Path: ' + path + ' ,Version: ' + match.group(2))
-						except:
-							if int(verbose) == 1:
-								print "Plugin Name: " + colored(begin, 'green')
-								l.append( "Plugin Name: " + begin)
-							elif int(verbose) == 2 or int(verbose) == 3:
-								print "Plugin Name: " + colored(begin, 'green') + ', Path: ' + colored(path, 'green')
-								l.append("Plugin Name: " + begin + ', Path: ' + path)
+								elif int(verbose) == 2 or int(verbose) == 3:
+									print "Plugin Name: " + colored(begin, 'green') + ', Path: ' + colored(path, 'green')
+									l.append("Plugin Name: " + begin + ', Path: ' + path)
 					except:
 						continue
 		
