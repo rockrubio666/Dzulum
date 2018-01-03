@@ -48,15 +48,50 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 		if tor == True: # Peticiones a traves de Tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			req = requests.get(arg,verify=False)
+			try:
+				req = requests.get(arg,verify=False,timeout=10)
+			except requests.RequestException:
+				error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down.
+		- It seems that we have problems using Tor :(
+"""
+				print colored(error,'green')
+				sys.exit(2)
+			
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
+
 		else:
-			req = requests.get(arg,verify=False)
+			try:
+				req = requests.get(arg,verify=False,timeout=10)
+			except requests.RequestException:
+				error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+"""
+				print colored(error,'green')
+				sys.exit(2)
+			
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
 	else: # Peticiones a traves del proxy
 		try:
-			req = requests.post(arg,proxies = proxies,verify=False)
-		except requests.exceptions.ConnectionError:
-			print 'There\'s a problem with the proxy connection, please check it and try again :D '
+			req = requests.post(arg,proxies = proxies,verify=False,timeout=10)
+		except requests.RequestException:
+			error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+		- There\'s a problem with the proxy connection
+"""
+			print colored(error,'green')
 			sys.exit(2)
+
 
 
 	if cookie is None: # Obtiene la cookie de sesion
@@ -91,11 +126,23 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,verify=False)
+			try:
+				upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,verify=False,timeout=10)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for Tor response, please try again','green')
+				sys.exit(2)
 		else:
-			upgrade = requests.get(arg + '/lib/upgrade.txt', cookies = cookies, headers = headers,verify=False)
+			try:
+				upgrade = requests.get(arg + '/lib/upgrade.txt', cookies = cookies, headers = headers,verify=False,timeout=10)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for Tor response, please try again','green')
+				sys.exit(2)
 	else:
-		upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,proxies = proxies,verify=False)
+		try:
+			upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
+		except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for Tor response, please try again','green')
+				sys.exit(2)
 						
 	if int(upgrade.status_code) == 200: #Si tiene el archivo upgrade
 		regex = re.compile(r'===(.*)===')
@@ -130,6 +177,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l):	 # Obtencio
 	print colored('We\'re trying to get the version through default files, please wait','green')
 	m = hashlib.md5()
 	elements = []
+	
 	average = []
 	listFind = [ '//script/@src', '//head/link[@rel="stylesheet"]/@href', '//img/@src','//link[@rel="shortcut icon"]/@href'] # Busqueda de imagenes, favicon, hojas de estilo y js
 	
@@ -139,11 +187,23 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l):	 # Obtencio
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			res = requests.get(arg,cookies = cookies, headers = headers,verify=False)
+			try:
+				res = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=10)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for Tor response, please try again','green')
+				sys.exit(2)
 		else:
-			res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+			try:
+				res = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=10)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for Tor response, please try again','green')
+				sys.exit(2)
 	else:
-		res = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+		try:
+			res = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
+		except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for Tor response, please try again','green')
+				sys.exit(2)
 		
 	webpage = html.fromstring(res.content)
 	dom = re.sub(r'(http|https)://','',arg)
@@ -157,14 +217,22 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l):	 # Obtencio
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
 							try:
-								req = requests.get(link,cookies = cookies, headers = headers,verify=False)
+								req = requests.get(link,cookies = cookies, headers = headers,verify=False,timeout=10)
 							except:
 								print 'It seems that we have problems using Tor :(, you could try with proxy option instead of'
 								sys.exit(2)
 						else:
-							req = requests.get(link, cookies = cookies, headers = headers, verify=False)
+							try:
+								req = requests.get(link, cookies = cookies, headers = headers, verify=False,timeout=10)
+							except requests.exceptions.TimeoutError:
+								print colored('Too many time waiting for Tor response, please try again','green')
+								sys.exit(2)
 					else:
-						req = requests.get(link,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+						try:
+							req = requests.get(link,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
+						except requests.exceptions.TimeoutError:
+							print colored('Too many time waiting for Tor response, please try again','green')
+							sys.exit(2)
 						
 					if req.status_code == 200 and i in range(2,3): # Si existen las imagenes, se descargan y se obtiene el hash
 						try:
@@ -188,11 +256,23 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l):	 # Obtencio
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			readme = requests.get(arg + '/README.txt',cookies = cookies, headers = headers,verify=False)
+			try:
+				readme = requests.get(arg + '/README.txt',cookies = cookies, headers = headers,verify=False,timeout=10)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for Tor response, please try again','green')
+				sys.exit(2)
 		else:
-			readme = requests.get(arg + '/README.txt', cookies = cookies, headers = headers, verify=False)
+			try:
+				readme = requests.get(arg + '/README.txt', cookies = cookies, headers = headers, verify=False,timeout=10)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for Tor response, please try again','green')
+				sys.exit(2)
 	else:
-		readme = requests.get(arg + '/README.txt',cookies = cookies, headers = headers,proxies = proxies,verify=False)
+		try:
+			readme = requests.get(arg + '/README.txt',cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
+		except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for Tor response, please try again','green')
+				sys.exit(2)
 	if readme.status_code == 200:
 		try:
 			m.update(readme.text)
@@ -215,16 +295,21 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l):	 # Obtencio
 				continue
 	
 	cnt = Counter(average) # Calculo de la version que mas veces se repite
+		
+		
 	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 		try:
 			v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
-			print '\nVersion getting from configuration files: ' + colored(v, 'green')
-			l.append('\nVersion getting from configuration files: ' + v)
-			files(arg,verbose,v,cookies,headers,proxy,proxies,tor,report,l) # Obtencion de plugins y temas
-			f.close()
-		except ValueError:
-			print colored('Sorry,It couldn\'t get the version of the moodle :(', 'green')
+		except:
+			print colored('Sorry, It couldn\'t get the version of the Moodle, please try again later :(','green')
 			sys.exit(2)
+		
+		print '\nVersion getting from configuration files: ' + colored(v, 'green')
+		l.append('\nVersion getting from configuration files: ' + v)
+		files(arg,verbose,v,cookies,headers,proxy,proxies,tor,report,l) # Obtencion de plugins y temas
+		f.close()
+		
+		
 
 def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,l): # Obtencion de plugins y temas
 	f = open('versions','rb')
@@ -239,11 +324,23 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,l): # Ob
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
-							req = requests.get(readme,cookies = cookies, headers = headers,verify=False)
+							try:
+								req = requests.get(readme,cookies = cookies, headers = headers,verify=False,timeout=10)
+							except requests.exceptions.TimeoutError:
+								print colored('Too many time waiting for Tor response, please try again','green')
+								sys.exit(2)
 						else:
-							req = requests.get(readme, cookies = cookies, headers = headers, verify=False)
+							try:
+								req = requests.get(readme, cookies = cookies, headers = headers, verify=False,timeout=10)
+							except requests.exceptions.TimeoutError:
+								print colored('Too many time waiting for Tor response, please try again','green')
+								sys.exit(2)
 					else:
-						req = requests.get(readme,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+						try:
+							req = requests.get(readme,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
+						except requests.exceptions.TimeoutError:
+							print colored('Too many time waiting for Tor response, please try again','green')
+							sys.exit(2)
 				
 					if req.status_code == 200:
 						print 'README file: ' + colored(readme, 'green')
@@ -261,11 +358,23 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,l): # Ob
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
-							req = requests.get(changeLog,cookies = cookies, headers = headers,verify=False)
+							try:
+								req = requests.get(changeLog,cookies = cookies, headers = headers,verify=False,timeout=10)
+							except requests.exceptions.TimeoutError:
+								print colored('Too many time waiting for Tor response, please try again','green')
+								sys.exit(2)
 						else:
-							req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False)
+							try:
+								req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False,timeout=10)
+							except requests.exceptions.TimeoutError:
+								print colored('Too many time waiting for Tor response, please try again','green')
+								sys.exit(2)
 					else:
-						req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+						try:
+							req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
+						except requests.exceptions.TimeoutError:
+							print colored('Too many time waiting for Tor response, please try again','green')
+							sys.exit(2)
 				
 					if req.status_code == 200:
 						print 'ChangeLog: ' + colored(changeLog,'green')
@@ -284,11 +393,23 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,l): # Ob
 					if tor == True:
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
-						req = requests.get(plugin,cookies = cookies, headers = headers,verify=False)
+						try:
+							req = requests.get(plugin,cookies = cookies, headers = headers,verify=False,timeout=10)
+						except requests.exceptions.TimeoutError:
+							print colored('Too many time waiting for Tor response, please try again','green')
+							sys.exit(2)
 					else:
-						req = requests.get(plugin, cookies = cookies, headers = headers, verify=False)
+						try:
+							req = requests.get(plugin, cookies = cookies, headers = headers, verify=False,timeout=10)
+						except requests.exceptions.TimeoutError:
+							print colored('Too many time waiting for Tor response, please try again','green')
+							sys.exit(2)
 				else:
-					req = requests.get(plugin,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+					try:
+						req = requests.get(plugin,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
+					except requests.exceptions.TimeoutError:
+						print colored('Too many time waiting for Tor response, please try again','green')
+						sys.exit(2)
 				
 				if req.status_code == 200: # Obtencion de la version del plugin
 					up = re.sub(r'\/upgrade.txt','',row[2])
@@ -338,11 +459,23 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,l): # Ob
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			res = requests.get(arg,cookies = cookies, headers = headers,verify=False)
+			try:
+				res = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=10)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for Tor response, please try again','green')
+				sys.exit(2)
 		else:
-			res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
+			try:
+				res = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=10)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for Tor response, please try again','green')
+				sys.exit(2)
 	else:
-		res = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+		try:
+			res = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
+		except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for Tor response, please try again','green')
+				sys.exit(2)
 	
 	webpage = html.fromstring(res.text)
 	theme =  webpage.xpath('//link[@rel="shortcut icon"]/@href') # Busqueda del tema a partir del favicon
@@ -385,13 +518,17 @@ def vuln(version,verbose,report,l): # Listado de vulnerabilidades obtenidas a pa
 	reader = csv.reader(f,delimiter=',')
 	
 	for row in reader:
-		if 'Moodle' in row[0] and row[1] in version:
-			if int(verbose) == 1:
-				print "Vulnerability Link: " + colored(row[3],'green')
-				l.append( "Vulnerability Link: " + row[3])
-			elif int(verbose) == 2 or int(verbose) == 3:
-				l.append("Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3])
-				print "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + colored(row[3],'green')
+		try:
+			if 'Moodle' in row[0] and row[1] in version:
+				if int(verbose) == 1:
+					print "Vulnerability Link: " + colored(row[3],'green')
+					l.append( "Vulnerability Link: " + row[3])
+				elif int(verbose) == 2 or int(verbose) == 3:
+					l.append("Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3])
+					print "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + colored(row[3],'green')
+	
+		except IndexError:
+			sys.exit(2)
 	f.close()
 	rep(report,l)
 	
@@ -407,5 +544,3 @@ def rep(list1,list2):
 			fo.close()
 		else:
 			pass
-
-
