@@ -42,7 +42,7 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			try:
-				req = requests.get(arg,verify=False,timeout=5)
+				req = requests.get(arg,verify=False,timeout=10)
 			except requests.RequestException:
 				error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
@@ -58,7 +58,7 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 				sys.exit(2)
 		else: # Sin anonimato
 			try:
-				req = requests.get(arg,verify=False,timeout=5)
+				req = requests.get(arg,verify=False,timeout=10)
 			except requests.RequestException:
 				error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
@@ -74,7 +74,7 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 				
 	else: # Uso de proxy	
 		try:
-			req = requests.post(arg,proxies = proxies,verify=False,timeout=5)
+			req = requests.post(arg,proxies = proxies,verify=False,timeout=10)
 		except requests.RequestException:
 			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
@@ -116,19 +116,19 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			try:
-				req = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=5)
+				req = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=10)
 			except requests.exceptions.TimeoutError:
 				print colored('Too many time waiting for Tor response, please try again','green')
 				sys.exit(2)
 		else:
 			try:
-				req = requests.get(arg, cookies = cookies, headers = headers,verify=False,timeout=5)
+				req = requests.get(arg, cookies = cookies, headers = headers,verify=False,timeout=10)
 			except requests.exceptions.TimeoutError:
 				print colored('Too many time waiting for response, please try again','green')
 				sys.exit(2)
 	else:
 		try:
-			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
 		except requests.exceptions.TimeoutError:
 				print colored('Too many time waiting for proxy response, please try again','green')
 				sys.exit(2)
@@ -179,19 +179,19 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			try:
-				req = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=5)
+				req = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=10)
 			except requests.exceptions.TimeoutError:
 				print colored('Too many time waiting for Tor response, please try again','green')
 				sys.exit(2)
 		else:
 			try:
-				req = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=5)
+				req = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=10)
 			except requests.exceptions.TimeoutError:
 				print colored('Too many time waiting for response, please try again','green')
 				sys.exit(2)
 	else:
 		try:
-			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
 		except requests.exceptions.TimeoutError:
 				print colored('Too many time waiting for proxy response, please try again','green')
 				sys.exit(2)
@@ -207,19 +207,19 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
 						try:
-							req = requests.get(link,cookies = cookies, headers = headers,verify=False,timeout=5)
+							req = requests.get(link,cookies = cookies, headers = headers,verify=False,timeout=10)
 						except requests.exceptions.TimeoutError:
 							print colored('Too many time waiting for Tor response, please try again','green')
 							sys.exit(2)
 					else:
 						try:
-							req = requests.get(link, cookies = cookies, headers = headers, verify=False,timeout=5)
+							req = requests.get(link, cookies = cookies, headers = headers, verify=False,timeout=10)
 						except requests.exceptions.TimeoutError:
 							print colored('Too many time waiting for response, please try again','green')
 							sys.exit(2)
 				else:
 					try:
-						req = requests.get(link,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+						req = requests.get(link,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
 					except requests.exceptions.TimeoutError:
 						print colored('Too many time waiting for proxy response, please try again','green')
 						sys.exit(2)
@@ -258,13 +258,13 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion
 	if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 		try:
 			v = max(cnt.iteritems(),key=operator.itemgetter(1))[0]
-			print '\nVersion getting from configuration files: ' + colored(v, 'green')
-			l.append('\nVersion getting from configuration files: ' + v)
-			files(arg,verbose,v,cookies,headers,proxy,proxies,tor,report,l)
 		except ValueError:
-			print colored('Sorry, It couldn\'y get the version of the OJS :(','green')
+			print colored('Sorry, It couldn\'t get the version of the OJS, please try again later :(','green')
 			sys.exit(2)
-	
+		print '\nVersion getting from configuration files: ' + colored(v, 'green')
+		l.append('\nVersion getting from configuration files: ' + v)
+		files(arg,verbose,v,cookies,headers,proxy,proxies,tor,report,l)
+		
 	
 def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obtencion de plugins y temas
 	f = open('versions','rb')
@@ -284,19 +284,19 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
 						try:
-							req = requests.get(plugin,cookies = cookies, headers = headers,verify=False,timeout=5)
+							req = requests.get(plugin,cookies = cookies, headers = headers,verify=False,timeout=10)
 						except requests.exceptions.TimeoutError:
 							print colored('Too many time waiting for Tor response, please try again','green')
 							sys.exit(2)
 					else:
 						try:
-							req = requests.get(plugin, cookies = cookies, headers = headers, verify=False,timeout=5)
+							req = requests.get(plugin, cookies = cookies, headers = headers, verify=False,timeout=10)
 						except requests.exceptions.TimeoutError:
 							print colored('Too many time waiting for response, please try again','green')
 							sys.exit(2)
 				else:
 					try:
-						req = requests.get(plugin,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+						req = requests.get(plugin,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
 					except requests.exceptions.TimeoutError:
 						print colored('Too many time waiting for proxy response, please try again','green')
 						sys.exit(2)
@@ -355,19 +355,19 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
 							try:
-								req = requests.get(readme,cookies = cookies, headers = headers,verify=False,timeout=5)
+								req = requests.get(readme,cookies = cookies, headers = headers,verify=False,timeout=10)
 							except requests.exceptions.TimeoutError:
 								print colored('Too many time waiting for Tor response, please try again','green')
 								sys.exit(2)
 						else:
 							try:
-								req = requests.get(readme, cookies = cookies, headers = headers, verify=False,timeout=5)
+								req = requests.get(readme, cookies = cookies, headers = headers, verify=False,timeout=10)
 							except requests.exceptions.TimeoutError:
 								print colored('Too many time waiting for response, please try again','green')
 								sys.exit(2)
 					else:
 						try:
-							req = requests.get(readme,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+							req = requests.get(readme,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
 						except requests.exceptions.TimeoutError:
 							print colored('Too many time waiting for proxy response, please try again','green')
 							sys.exit(2)
@@ -387,19 +387,19 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
 							try:
-								req = requests.get(changeLog,cookies = cookies, headers = headers,verify=False,timeout=5)
+								req = requests.get(changeLog,cookies = cookies, headers = headers,verify=False,timeout=10)
 							except requests.exceptions.TimeoutError:
 								print colored('Too many time waiting for Tor response, please try again','green')
 								sys.exit(2)
 						else:
 							try:
-								req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False,timeout=5)
+								req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False,timeout=10)
 							except requests.exceptions.TimeoutError:
 								print colored('Too many time waiting for response, please try again','green')
 								sys.exit(2)
 					else:
 						try:
-							req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+							req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
 						except requests.exceptions.TimeoutError:
 							print colored('Too many time waiting for proxy response, please try again','green')
 							sys.exit(2)
@@ -417,19 +417,19 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
 							try:
-								req = requests.get(arg + row[2],cookies = cookies, headers = headers,verify=False,timeout=5)
+								req = requests.get(arg + row[2],cookies = cookies, headers = headers,verify=False,timeout=10)
 							except requests.exceptions.TimeoutError:
 								print colored('Too many time waiting for Tor response, please try again','green')
 								sys.exit(2)
 						else:
 							try:
-								req = requests.get(arg + row[2], cookies = cookies, headers = headers, verify=False,timeout=5)
+								req = requests.get(arg + row[2], cookies = cookies, headers = headers, verify=False,timeout=10)
 							except requests.exceptions.TimeoutError:
 								print colored('Too many time waiting for response, please try again','green')
 								sys.exit(2)
 					else:
 						try:
-							req = requests.get(arg + row[2],cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+							req = requests.get(arg + row[2],cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
 						except requests.exceptions.TimeoutError:
 							print colored('Too many time waiting for proxy response, please try again','green')
 							sys.exit(2)
@@ -450,19 +450,19 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			try:
-				req = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=5)
+				req = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=10)
 			except requests.exceptions.TimeoutError:
 				print colored('Too many time waiting for Tor response, please try again','green')
 				sys.exit(2)
 		else:
 			try:
-				req = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=5)
+				req = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=10)
 			except requests.exceptions.TimeoutError:
 				print colored('Too many time waiting for response, please try again','green')
 				sys.exit(2)
 	else:
 		try:
-			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=5)
+			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
 		except requests.exceptions.TimeoutError:
 				print colored('Too many time waiting for proxy response, please try again','green')
 				sys.exit(2)
@@ -536,13 +536,16 @@ def vuln(version,verbose,report,l): # A partir de la version, se listan las posi
 	reader = csv.reader(f,delimiter=',')
 	
 	for row in reader:
-		if 'Ojs' in row[0] and row[1] in version:
-			if int(verbose) == 1:
-				print "Vulnerability Link: " + colored(row[3],'green')
-				l.append( "Vulnerability Link: " + row[3])
-			elif int(verbose) == 2 or int(verbose) == 3:
-				print "Vulnerability Name: " + colored(row[2],'green') + ' ,Vulnerability Link: ' + colored(row[3],'green')
-				l.append( "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3])
+		try:
+			if 'Ojs' in row[0] and row[1] in version:
+				if int(verbose) == 1:
+					print "Vulnerability Link: " + colored(row[3],'green')
+					l.append( "Vulnerability Link: " + row[3])
+				elif int(verbose) == 2 or int(verbose) == 3:
+					print "Vulnerability Name: " + colored(row[2],'green') + ' ,Vulnerability Link: ' + colored(row[3],'green')
+					l.append( "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3])
+		except IndexError:
+			sys.exit(2)
 	f.close()
 	rep(report,l)
 	
