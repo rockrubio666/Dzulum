@@ -164,20 +164,18 @@ def getParams(arg):
 	elif options.crawlerHead in sys.argv and options.moodle in sys.argv:
 		crawlerHead(options.moodle,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
 		
-	
-	
 	if options.Bruteforce in sys.argv and options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
 		for element in options.Bruteforce.split(','):
 			bforce.append(element)
 		url = options.moodle + bforce[0]
-		check(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		check(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
 		
 		
 	elif options.Bruteforce in sys.argv and options.ojs in sys.argv:
 		for element in options.Bruteforce.split(','):
 			bforce.append(element)
 		url = options.ojs + bforce[0]
-		check(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],bforce[6],bforce[7],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		check(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
 		
 			
 	if options.bruteFile in sys.argv: # Se manda a llamar la funcion del archivo

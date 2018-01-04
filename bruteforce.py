@@ -48,16 +48,40 @@ Advices to check the arguments:
 			socket.socket = socks.socksocket
 			try:
 				req = requests.get(url,verify=False)
-			except:
+			except requests.exceptions.ConnectionError:
+				print colored('It can\'t contact with the login page','green')
+				sys.exit(2)
+			except requests.RequestException:
+				print colored('It can\'t contact with the login page','green')
+				sys.exit(2)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
 				sys.exit(2)
 		else:
-			req = requests.get(url,verify=False)
+			try:
+				req = requests.get(url,verify=False)
+			except requests.exceptions.ConnectionError:
+				print colored('It can\'t contact with the login page','green')
+				sys.exit(2)
+			except requests.RequestException:
+				print colored('It can\'t contact with the login page','green')
+				sys.exit(2)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
 	else: # Peticiones a traves de proxy
 		try:
 			req = requests.get(url,proxies = proxies,verify=False)
 		except requests.exceptions.ConnectionError:
+			print colored('It can\'t contact with the login page','green')
 			sys.exit(2)
-	
+		except requests.RequestException:
+			print colored('It can\'t contact with the login page','green')
+			sys.exit(2)
+		except requests.exceptions.TimeoutError:
+			print colored('Too many time waiting for response, please try again','green')
+			sys.exit(2)
+				
 	if cookie is None: # Obtiene la cookie de sesion
 		for key,value in req.headers.iteritems():
 			if key.startswith('set-cookie'):
@@ -93,11 +117,41 @@ Advices to check the arguments:
 			if tor == True:
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 				socket.socket = socks.socksocket
-				r = requests.post(url,payload,cookies = cookies, headers = headers,verify=False)
+				try:
+					r = requests.post(url,payload,cookies = cookies, headers = headers,verify=False)
+				except requests.exceptions.ConnectionError:
+					print colored('It can\'t contact with the login page','green')
+					sys.exit(2)
+				except requests.RequestException:
+					print colored('It can\'t contact with the login page','green')
+					sys.exit(2)
+				except requests.exceptions.TimeoutError:
+					print colored('Too many time waiting for response, please try again','green')
+					sys.exit(2)
 			else:
-				r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
+				try:
+					r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
+				except requests.exceptions.ConnectionError:
+					print colored('It can\'t contact with the login page','green')
+					sys.exit(2)
+				except requests.RequestException:
+					print colored('It can\'t contact with the login page','green')
+					sys.exit(2)
+				except requests.exceptions.TimeoutError:
+					print colored('Too many time waiting for response, please try again','green')
+					sys.exit(2)
 		else:
-			r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+			try:
+				r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+			except requests.exceptions.ConnectionError:
+				print colored('It can\'t contact with the login page','green')
+				sys.exit(2)
+			except requests.RequestException:
+				print colored('It can\'t contact with the login page','green')
+				sys.exit(2)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
 		a.append(len(r.content))
 	
 	
@@ -144,11 +198,41 @@ def single(url, userField, passField, user, pwd, message,verbose,cookies,headers
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			r = requests.post(url,payload,cookies = cookies, headers = headers,verify=False)
+			try:
+				r = requests.post(url,payload,cookies = cookies, headers = headers,verify=False)
+			except requests.exceptions.ConnectionError:
+				print colored('It can\'t contact with the login page','green')
+				sys.exit(2)
+			except requests.RequestException:
+				print colored('It can\'t contact with the login page','green')
+				sys.exit(2)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
 		else:
-			r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
+			try:
+				r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
+			except requests.exceptions.ConnectionError:
+				print colored('It can\'t contact with the login page','green')
+				sys.exit(2)
+			except requests.RequestException:
+				print colored('It can\'t contact with the login page','green')
+				sys.exit(2)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
 	else:
-		r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+		try:
+			r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+		except requests.exceptions.ConnectionError:
+			print colored('It can\'t contact with the login page','green')
+			sys.exit(2)
+		except requests.RequestException:
+			print colored('It can\'t contact with the login page','green')
+			sys.exit(2)
+		except requests.exceptions.TimeoutError:
+			print colored('Too many time waiting for response, please try again','green')
+			sys.exit(2)
 	
 	
 	if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario	
@@ -241,11 +325,41 @@ def usersFile(url, userField, passField, user, pwd, message,verbose,cookies,head
 				if tor == True:
 					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 					socket.socket = socks.socksocket
-					r = requests.post(url,data=payload,cookies = cookies, headers = headers,verify=False)
+					try:
+						r = requests.post(url,data=payload,cookies = cookies, headers = headers,verify=False)
+					except requests.exceptions.ConnectionError:
+						print colored('It can\'t contact with the login page','green')
+						sys.exit(2)
+					except requests.RequestException:
+						print colored('It can\'t contact with the login page','green')
+						sys.exit(2)
+					except requests.exceptions.TimeoutError:
+						print colored('Too many time waiting for response, please try again','green')
+						sys.exit(2)
 				else:
-					r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
+					try:
+						r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
+					except requests.exceptions.ConnectionError:
+						print colored('It can\'t contact with the login page','green')
+						sys.exit(2)
+					except requests.RequestException:
+						print colored('It can\'t contact with the login page','green')
+						sys.exit(2)
+					except requests.exceptions.TimeoutError:
+						print colored('Too many time waiting for response, please try again','green')
+						sys.exit(2)
 			else:
-				r = requests.post(url,data = payload, cookies = cookies, headers = headers, proxies = proxies,verify=False)
+				try:
+					r = requests.post(url,data = payload, cookies = cookies, headers = headers, proxies = proxies,verify=False)
+				except requests.exceptions.ConnectionError:
+					print colored('It can\'t contact with the login page','green')
+					sys.exit(2)
+				except requests.RequestException:
+					print colored('It can\'t contact with the login page','green')
+					sys.exit(2)
+				except requests.exceptions.TimeoutError:
+					print colored('Too many time waiting for response, please try again','green')
+					sys.exit(2)
 				
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 				if int(len(r.content)) - int(len(users[i])-1) == list[0] or mbefore in r.content:
@@ -335,11 +449,41 @@ def passFile(url, userField, passField, user, pwd, message,verbose,cookies,heade
 				if tor == True:
 					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 					socket.socket = socks.socksocket
-					r = requests.post(url,data = payload,cookies = cookies, headers = headers,verify=False)
+					try:
+						r = requests.post(url,data = payload,cookies = cookies, headers = headers,verify=False)
+					except requests.exceptions.ConnectionError:
+						print colored('It can\'t contact with the login page','green')
+						sys.exit(2)
+					except requests.RequestException:
+						print colored('It can\'t contact with the login page','green')
+						sys.exit(2)
+					except requests.exceptions.TimeoutError:
+						print colored('Too many time waiting for response, please try again','green')
+						sys.exit(2)
 				else:
-					r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
+					try:
+						r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
+					except requests.exceptions.ConnectionError:
+						print colored('It can\'t contact with the login page','green')
+						sys.exit(2)
+					except requests.RequestException:
+						print colored('It can\'t contact with the login page','green')
+						sys.exit(2)
+					except requests.exceptions.TimeoutError:
+						print colored('Too many time waiting for response, please try again','green')
+						sys.exit(2)
 			else:
-				r = requests.post(url,data = payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+				try:
+					r = requests.post(url,data = payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+				except requests.exceptions.ConnectionError:
+					print colored('It can\'t contact with the login page','green')
+					sys.exit(2)
+				except requests.RequestException:
+					print colored('It can\'t contact with the login page','green')
+					sys.exit(2)
+				except requests.exceptions.TimeoutError:
+					print colored('Too many time waiting for response, please try again','green')
+					sys.exit(2)
 				
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 				if int(len(r.content)) - int(len(user)) == list[0] or mbefore in r.content:
@@ -441,11 +585,41 @@ def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,hea
 					if tor == True:
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
-						r = requests.post(url,data = payload,cookies = cookies, headers = headers,verify=False)
+						try:
+							r = requests.post(url,data = payload,cookies = cookies, headers = headers,verify=False)
+						except requests.exceptions.ConnectionError:
+							print colored('It can\'t contact with the login page','green')
+							sys.exit(2)
+						except requests.RequestException:
+							print colored('It can\'t contact with the login page','green')
+							sys.exit(2)
+						except requests.exceptions.TimeoutError:
+							print colored('Too many time waiting for response, please try again','green')
+							sys.exit(2)
 					else:
-						r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
+						try:
+							r = requests.post(url,data = payload, cookies = cookies, headers = headers, verify=False)
+						except requests.exceptions.ConnectionError:
+							print colored('It can\'t contact with the login page','green')
+							sys.exit(2)
+						except requests.RequestException:
+							print colored('It can\'t contact with the login page','green')
+							sys.exit(2)
+						except requests.exceptions.TimeoutError:
+							print colored('Too many time waiting for response, please try again','green')
+							sys.exit(2)
 				else:
-					r = requests.post(url,data = payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+					try:
+						r = requests.post(url,data = payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+					except requests.exceptions.ConnectionError:
+						print colored('It can\'t contact with the login page','green')
+						sys.exit(2)
+					except requests.RequestException:
+						print colored('It can\'t contact with the login page','green')
+						sys.exit(2)
+					except requests.exceptions.TimeoutError:
+						print colored('Too many time waiting for response, please try again','green')
+						sys.exit(2)
 					
 				if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
 					if int(len(r.content)) - int(len(users[i])-1) == list[0] or mbefore in r.content:

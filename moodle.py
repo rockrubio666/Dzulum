@@ -47,7 +47,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 			except requests.RequestException:
 				error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
-		- Something in te URL could be wrong.
+		- Something in the URL could be wrong.
 		- The site is down.
 		- It seems that we have problems using Tor :(
 """
@@ -127,21 +127,38 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 			socket.socket = socks.socksocket
 			try:
 				upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,verify=False,timeout=10)
-			except requests.exceptions.TimeoutError:
-				print colored('Too many time waiting for Tor response, please try again','green')
+			except requests.RequestException:
+				error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in the URL could be wrong.
+		- The site is down.
+		- It seems that we have problems using Tor :(
+"""
+				print colored(error,'green')
 				sys.exit(2)
 		else:
 			try:
 				upgrade = requests.get(arg + '/lib/upgrade.txt', cookies = cookies, headers = headers,verify=False,timeout=10)
-			except requests.exceptions.TimeoutError:
-				print colored('Too many time waiting for Tor response, please try again','green')
+			except requests.RequestException:
+				error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+"""
+				print colored(error,'green')
 				sys.exit(2)
 	else:
 		try:
 			upgrade = requests.get(arg + '/lib/upgrade.txt',cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-		except requests.exceptions.TimeoutError:
-				print colored('Too many time waiting for Tor response, please try again','green')
-				sys.exit(2)
+		except requests.RequestException:
+			error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+		- There\'s a problem with the proxy connection
+"""
+			print colored(error,'green')
+			sys.exit(2)
 						
 	if int(upgrade.status_code) == 200: #Si tiene el archivo upgrade
 		regex = re.compile(r'===(.*)===')
@@ -188,21 +205,38 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l):	 # Obtencio
 			socket.socket = socks.socksocket
 			try:
 				res = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=10)
-			except requests.exceptions.TimeoutError:
-				print colored('Too many time waiting for Tor response, please try again','green')
+			except requests.RequestException:
+				error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in the URL could be wrong.
+		- The site is down.
+		- It seems that we have problems using Tor :(
+"""
+				print colored(error,'green')
 				sys.exit(2)
 		else:
 			try:
 				res = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=10)
-			except requests.exceptions.TimeoutError:
-				print colored('Too many time waiting for Tor response, please try again','green')
+			except requests.RequestException:
+				error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+"""
+				print colored(error,'green')
 				sys.exit(2)
 	else:
 		try:
 			res = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-		except requests.exceptions.TimeoutError:
-				print colored('Too many time waiting for Tor response, please try again','green')
-				sys.exit(2)
+		except requests.RequestException:
+			error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+		- There\'s a problem with the proxy connection
+"""
+			print colored(error,'green')
+			sys.exit(2)
 		
 	webpage = html.fromstring(res.content)
 	dom = re.sub(r'(http|https)://','',arg)
@@ -217,20 +251,37 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l):	 # Obtencio
 							socket.socket = socks.socksocket
 							try:
 								req = requests.get(link,cookies = cookies, headers = headers,verify=False,timeout=10)
-							except:
-								print 'It seems that we have problems using Tor :(, you could try with proxy option instead of'
+							except requests.RequestException:
+								error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in the URL could be wrong.
+		- The site is down.
+		- It seems that we have problems using Tor :(
+"""
+								print colored(error,'green')
 								sys.exit(2)
 						else:
 							try:
 								req = requests.get(link, cookies = cookies, headers = headers, verify=False,timeout=10)
-							except requests.exceptions.TimeoutError:
-								print colored('Too many time waiting for Tor response, please try again','green')
+							except requests.RequestException:
+								error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+"""
+								print colored(error,'green')
 								sys.exit(2)
 					else:
 						try:
 							req = requests.get(link,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-						except requests.exceptions.TimeoutError:
-							print colored('Too many time waiting for Tor response, please try again','green')
+						except requests.RequestException:
+							error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+		- There\'s a problem with the proxy connection
+"""
+							print colored(error,'green')
 							sys.exit(2)
 						
 					if req.status_code == 200 and i in range(2,3): # Si existen las imagenes, se descargan y se obtiene el hash
@@ -257,21 +308,39 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l):	 # Obtencio
 			socket.socket = socks.socksocket
 			try:
 				readme = requests.get(arg + '/README.txt',cookies = cookies, headers = headers,verify=False,timeout=10)
-			except requests.exceptions.TimeoutError:
-				print colored('Too many time waiting for Tor response, please try again','green')
+			except requests.RequestException:
+				error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in the URL could be wrong.
+		- The site is down.
+		- It seems that we have problems using Tor :(
+"""
+				print colored(error,'green')
 				sys.exit(2)
 		else:
 			try:
 				readme = requests.get(arg + '/README.txt', cookies = cookies, headers = headers, verify=False,timeout=10)
-			except requests.exceptions.TimeoutError:
-				print colored('Too many time waiting for Tor response, please try again','green')
+			except requests.RequestException:
+				error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+"""
+				print colored(error,'green')
 				sys.exit(2)
 	else:
 		try:
 			readme = requests.get(arg + '/README.txt',cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-		except requests.exceptions.TimeoutError:
-				print colored('Too many time waiting for Tor response, please try again','green')
-				sys.exit(2)
+		except requests.RequestException:
+			error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+		- There\'s a problem with the proxy connection
+"""
+			print colored(error,'green')
+			sys.exit(2)
+			
 	if readme.status_code == 200:
 		try:
 			m.update(readme.text)
@@ -327,20 +396,37 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,l): # Ob
 							socket.socket = socks.socksocket
 							try:
 								req = requests.get(readme,cookies = cookies, headers = headers,verify=False,timeout=10)
-							except requests.exceptions.TimeoutError:
-								print colored('Too many time waiting for Tor response, please try again','green')
+							except requests.RequestException:
+								error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in the URL could be wrong.
+		- The site is down.
+		- It seems that we have problems using Tor :(
+"""
+								print colored(error,'green')
 								sys.exit(2)
 						else:
 							try:
 								req = requests.get(readme, cookies = cookies, headers = headers, verify=False,timeout=10)
-							except requests.exceptions.TimeoutError:
-								print colored('Too many time waiting for Tor response, please try again','green')
+							except requests.RequestException:
+								error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+"""
+								print colored(error,'green')
 								sys.exit(2)
 					else:
 						try:
 							req = requests.get(readme,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-						except requests.exceptions.TimeoutError:
-							print colored('Too many time waiting for Tor response, please try again','green')
+						except requests.RequestException:
+							error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+		- There\'s a problem with the proxy connection
+"""
+							print colored(error,'green')
 							sys.exit(2)
 				
 					if req.status_code == 200:
@@ -361,20 +447,37 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,l): # Ob
 							socket.socket = socks.socksocket
 							try:
 								req = requests.get(changeLog,cookies = cookies, headers = headers,verify=False,timeout=10)
-							except requests.exceptions.TimeoutError:
-								print colored('Too many time waiting for Tor response, please try again','green')
+							except requests.RequestException:
+								error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in the URL could be wrong.
+		- The site is down.
+		- It seems that we have problems using Tor :(
+"""
+								print colored(error,'green')
 								sys.exit(2)
 						else:
 							try:
 								req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False,timeout=10)
-							except requests.exceptions.TimeoutError:
-								print colored('Too many time waiting for Tor response, please try again','green')
+							except requests.RequestException:
+								error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+"""
+								print colored(error,'green')
 								sys.exit(2)
 					else:
 						try:
 							req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-						except requests.exceptions.TimeoutError:
-							print colored('Too many time waiting for Tor response, please try again','green')
+						except requests.RequestException:
+							error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+		- There\'s a problem with the proxy connection
+"""
+							print colored(error,'green')
 							sys.exit(2)
 				
 					if req.status_code == 200:
@@ -396,20 +499,37 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,l): # Ob
 						socket.socket = socks.socksocket
 						try:
 							req = requests.get(plugin,cookies = cookies, headers = headers,verify=False,timeout=10)
-						except requests.exceptions.TimeoutError:
-							print colored('Too many time waiting for Tor response, please try again','green')
+						except requests.RequestException:
+							error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in the URL could be wrong.
+		- The site is down.
+		- It seems that we have problems using Tor :(
+"""
+							print colored(error,'green')
 							sys.exit(2)
 					else:
 						try:
 							req = requests.get(plugin, cookies = cookies, headers = headers, verify=False,timeout=10)
-						except requests.exceptions.TimeoutError:
-							print colored('Too many time waiting for Tor response, please try again','green')
+						except requests.RequestException:
+							error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+"""
+							print colored(error,'green')
 							sys.exit(2)
 				else:
 					try:
 						req = requests.get(plugin,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-					except requests.exceptions.TimeoutError:
-						print colored('Too many time waiting for Tor response, please try again','green')
+					except requests.RequestException:
+						error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+		- There\'s a problem with the proxy connection
+"""
+						print colored(error,'green')
 						sys.exit(2)
 				
 				if req.status_code == 200: # Obtencion de la version del plugin
@@ -462,21 +582,38 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,l): # Ob
 			socket.socket = socks.socksocket
 			try:
 				res = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=10)
-			except requests.exceptions.TimeoutError:
-				print colored('Too many time waiting for Tor response, please try again','green')
+			except requests.RequestException:
+				error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in the URL could be wrong.
+		- The site is down.
+		- It seems that we have problems using Tor :(
+"""
+				print colored(error,'green')
 				sys.exit(2)
 		else:
 			try:
 				res = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=10)
-			except requests.exceptions.TimeoutError:
-				print colored('Too many time waiting for Tor response, please try again','green')
+			except requests.RequestException:
+				error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+"""
+				print colored(error,'green')
 				sys.exit(2)
 	else:
 		try:
 			res = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-		except requests.exceptions.TimeoutError:
-				print colored('Too many time waiting for Tor response, please try again','green')
-				sys.exit(2)
+		except requests.RequestException:
+			error = """
+	We are in trouble for some of the following reasons, please check them and try again :D
+		- Something in te URL could be wrong.
+		- The site is down or doesn\'t exist.
+		- There\'s a problem with the proxy connection
+"""
+			print colored(error,'green')
+			sys.exit(2)
 	
 	webpage = html.fromstring(res.text)
 	theme =  webpage.xpath('//link[@rel="shortcut icon"]/@href') # Busqueda del tema a partir del favicon
