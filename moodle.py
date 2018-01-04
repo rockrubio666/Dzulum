@@ -150,7 +150,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 			if match.group(): #Si es un numero de version
 				if 'Slideshow section start here' in match.group(1):
 					version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l)
-					sys.exit(2)
+					
 				else:
 					if int(verbose) == 1:
 						print 'Version site: ' + colored(match.group(1),'green')
@@ -304,16 +304,18 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l):	 # Obtencio
 			sys.exit(2)
 		
 		print '\nVersion getting from configuration files: ' + colored(v, 'green')
+		test = unicode(v)
 		l.append('\nVersion getting from configuration files: ' + v)
-		files(arg,verbose,v,cookies,headers,proxy,proxies,tor,report,l) # Obtencion de plugins y temas
+		files(arg,verbose,test,cookies,headers,proxy,proxies,tor,report,l) # Obtencion de plugins y temas
 		f.close()
 		
 		
 
 def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,l): # Obtencion de plugins y temas
+	
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
-
+	
 	for row in reader:
 		try:
 			if int(verbose) == 3: # Busqueda de archivos de configuracion visibles
@@ -508,7 +510,6 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,l): # Ob
 				if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 					print "Theme Name: " + colored(match.group(2), 'green')
 					l.append("Theme Name: " + match.group(2))
-	
 	vuln(version,verbose,report,l)
 	sys.exit
 		
@@ -517,17 +518,19 @@ def vuln(version,verbose,report,l): # Listado de vulnerabilidades obtenidas a pa
 	reader = csv.reader(f,delimiter=',')
 	
 	for row in reader:
-		
-		if 'Moodle' in row[0] and row[1] in version:
-			if int(verbose) == 1:
-				print "Vulnerability Link: " + colored(row[3],'green')
-				l.append( "Vulnerability Link: " + row[3])
-			elif int(verbose) == 2 or int(verbose) == 3:
-				l.append("Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3])
-				print "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + colored(row[3],'green')
-	
+		try:
+			if 'Moodle' in row[0] and row[1] in version:
+				if int(verbose) == 1:
+					print "Vulnerability Link: " + colored(row[3],'green')
+					l.append( "Vulnerability Link: " + row[3])
+				elif int(verbose) == 2 or int(verbose) == 3:
+					l.append("Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3])
+					print "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + colored(row[3],'green')
+		except IndexError:
+			pass
 			
 	f.close()
+	
 	rep(report,l)
 	
 def rep(list1,list2):
