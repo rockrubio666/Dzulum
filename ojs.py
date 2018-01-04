@@ -545,7 +545,7 @@ def vuln(version,verbose,report,l): # A partir de la version, se listan las posi
 					print "Vulnerability Name: " + colored(row[2],'green') + ' ,Vulnerability Link: ' + colored(row[3],'green')
 					l.append( "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3])
 		except IndexError:
-			sys.exit(2)
+			pass
 	f.close()
 	rep(report,l)
 	

@@ -21,7 +21,6 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 	requests.packages.urllib3.disable_warnings()
 	
 	if 'http' in arg:
-		req = requests.get(arg,verify=False)
 		if '.php' in arg:
 			ind = raw_input('If you don\'t introduce the principal page, you couldn\'t get enough evidence. Do yo want to continue? [y/N] ') or 'N'
 			if 'Y' in ind or 'y' in ind:
@@ -29,11 +28,6 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 			else:
 				print colored('Check the URL and try again :D ', 'green')
 				sys.exit(2)
-		if 'yui_combo' in req.text:
-			pass
-		else:
-			print colored('The site: ','green') + colored(arg,'yellow') + colored(' isn\'t a moodle','green')
-			sys.exit(2)
 	else:
 		print colored('The URL doesn\'t have http or https, please check it and try again :D ','green')
 		sys.exit(2)
@@ -59,7 +53,6 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 """
 				print colored(error,'green')
 				sys.exit(2)
-			
 			except requests.exceptions.TimeoutError:
 				print colored('Too many time waiting for response, please try again','green')
 				sys.exit(2)
@@ -75,7 +68,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 """
 				print colored(error,'green')
 				sys.exit(2)
-			
+				
 			except requests.exceptions.TimeoutError:
 				print colored('Too many time waiting for response, please try again','green')
 				sys.exit(2)
@@ -91,8 +84,8 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 """
 			print colored(error,'green')
 			sys.exit(2)
-
-
+		
+		
 
 	if cookie is None: # Obtiene la cookie de sesion
 		for key,value in req.headers.iteritems():
@@ -121,6 +114,12 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 		headers = {'user-agent': agent}
 
 	m = hashlib.md5()
+	
+	if 'yui_combo' in req.text:
+		pass
+	else:
+		print colored('The site: ','green') + colored(arg,'yellow') + colored(' isn\'t a moodle','green')
+		sys.exit(2)
 	
 	if len(proxy) == 1:
 		if tor == True:
@@ -518,17 +517,16 @@ def vuln(version,verbose,report,l): # Listado de vulnerabilidades obtenidas a pa
 	reader = csv.reader(f,delimiter=',')
 	
 	for row in reader:
-		try:
-			if 'Moodle' in row[0] and row[1] in version:
-				if int(verbose) == 1:
-					print "Vulnerability Link: " + colored(row[3],'green')
-					l.append( "Vulnerability Link: " + row[3])
-				elif int(verbose) == 2 or int(verbose) == 3:
-					l.append("Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3])
-					print "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + colored(row[3],'green')
+		
+		if 'Moodle' in row[0] and row[1] in version:
+			if int(verbose) == 1:
+				print "Vulnerability Link: " + colored(row[3],'green')
+				l.append( "Vulnerability Link: " + row[3])
+			elif int(verbose) == 2 or int(verbose) == 3:
+				l.append("Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3])
+				print "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + colored(row[3],'green')
 	
-		except IndexError:
-			sys.exit(2)
+			
 	f.close()
 	rep(report,l)
 	
