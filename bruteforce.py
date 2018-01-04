@@ -9,7 +9,7 @@ import socket # Tor
 import socks # Tor
 import random
 
-def check(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookie,agent,proxip,proxport,tor,report):
+def check(url, userField, passField, user, pwd, message,verbose,cookie,agent,proxip,proxport,tor,report):
 	print colored("\nBeginning BruteForce", 'yellow')
 	warning = raw_input('Please check that the arguments you gave to the tool are correct, Do you continue? [Y/n]') or 'Y'
 	if 'Y' in warning or 'y' in warning:
@@ -33,6 +33,7 @@ Advices to check the arguments:
 		print colored(error,'green')
 		sys.exit(2)
 		
+	
 	b = ['','1','12']
 	a = []
 	
@@ -100,17 +101,39 @@ Advices to check the arguments:
 		a.append(len(r.content))
 	
 	
+	if os.path.exists(user): #archivo con usuarios
+		print colored('There\'s a file named: ','yellow') + colored(user,'blue') + colored(' as an user argument.','yellow')
+		ask = raw_input('Do you want to make the attack with the file? [Y/n]') or 'Y'
+		if 'Y' in ask or 'y' in ask:
+			u = 1
+		else:
+			u = 0
+	else:
+		u = 0
 	
-	if len(userFile) == 0 and len(pwdFile) == 0 and len(user) > 0 and len(pwd) > 0 : # Sin archivos
-		single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,a,tor,report)
-	elif len(user) == 0 and len(pwd) == 0 and len(userFile) > 0 and len(pwdFile) > 0: # Ambos archvios
-		doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,a,tor,report)
-	elif len(user) == 0 and len(pwdFile) == 0 and len(pwd) > 0 and len(userFile) > 0: # Archivo de usuarios
-		usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,a,tor,report)
-	elif len(pwd) == 0 and len(userFile) == 0 and len(user) > 0 and len(pwdFile) > 0: # Archivo de passwords
-		passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,a,tor,report)
+	if os.path.exists(pwd):
+		print colored('There\'s a file named: ','yellow') + colored(pwd,'blue') + colored(' as a password argument.','yellow')
+		askp = raw_input('Do you want to make the attack with the file? [Y/n]') or 'Y'
+		if 'Y' in askp or 'y' in askp:
+			p = 1  
+		else:
+			p = 0
+	else:
+		p = 0
+	
+	if u == 1 and p == 1:
+		doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,headers,proxy,proxies,a,tor,report)
+	elif u == 1 and p == 0 :
+		usersFile(url, userField, passField, user, pwd, message,verbose,cookies,headers,proxy,proxies,a,tor,report)
+	elif u == 0 and p == 1:
+		passFile(url, userField, passField, user, pwd, message,verbose,cookies,headers,proxy,proxies,a,tor,report)
+	elif u == 0 and p == 0:
+		single(url, userField, passField, user, pwd, message,verbose,cookies,headers,proxy,proxies,a,tor,report)
+	else:
+		print colored('Sorry, something is wrong :(','green')
+	
 		
-def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,list,tor,report):
+def single(url, userField, passField, user, pwd, message,verbose,cookies,headers,proxy,proxies,list,tor,report):
 	l = []
 	mbefore = message
 	requests.packages.urllib3.disable_warnings()		
@@ -197,14 +220,14 @@ def single(url, userField, passField, user, pwd, userFile, pwdFile, message,verb
 		
 	rep(report,l)
 		
-def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,list,tor,report):
+def usersFile(url, userField, passField, user, pwd, message,verbose,cookies,headers,proxy,proxies,list,tor,report):
 	l = []
 	users = []
 	requests.packages.urllib3.disable_warnings()		
 	
 		
-	if os.path.exists(userFile): #archivo con usuarios
-		fo = open(userFile, 'r')
+	if os.path.exists(user): #archivo con usuarios
+		fo = open(user, 'r')
 		for element in fo:
 			users.append(element)
 		fo.close()
@@ -291,13 +314,13 @@ def usersFile(url, userField, passField, user, pwd, userFile, pwdFile, message,v
 						l.append('Successful attack with: ' + 'User: ' + users[i].rstrip('\n') + ' Password: ' + pwd)
 	rep(report,l)
 
-def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,list,tor,report):
+def passFile(url, userField, passField, user, pwd, message,verbose,cookies,headers,proxy,proxies,list,tor,report):
 	l = []
 	passwords = []
 	requests.packages.urllib3.disable_warnings()		
 		
-	if os.path.exists(pwdFile): #archivo con usuarios
-		fo = open(pwdFile, 'r')
+	if os.path.exists(pwd): #archivo con usuarios
+		fo = open(pwd, 'r')
 		for element in fo:
 			passwords.append(element)
 		fo.close()
@@ -385,7 +408,7 @@ def passFile(url, userField, passField, user, pwd, userFile, pwdFile, message,ve
 						l.append('Successful attack with: ' + 'User: ' + user + ' Password: ' + passwords[i].rstrip('\n'))
 	rep(report, l)
 	
-def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,verbose,cookies,headers,proxy,proxies,list,tor,report): # Ambos archivos
+def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,headers,proxy,proxies,list,tor,report): # Ambos archivos
 	l = []
 	users = []
 	passwords = []
@@ -394,14 +417,14 @@ def doubleFile(url, userField, passField, user, pwd, userFile, pwdFile, message,
 	
 	requests.packages.urllib3.disable_warnings()		
 		
-	if os.path.exists(userFile) and os.path.exists(pwdFile): # ambos archivos
+	if os.path.exists(user) and os.path.exists(pwd): # ambos archivos
 		
-		fo = open(userFile, 'r')
+		fo = open(user, 'r')
 		for element in fo:
 			users.append(element)
 		fo.close()
 		
-		fo = open(pwdFile, 'r')
+		fo = open(pwd, 'r')
 		for element in fo:
 			passwords.append(element)
 		fo.close()
