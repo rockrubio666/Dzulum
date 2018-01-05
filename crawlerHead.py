@@ -23,7 +23,14 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 			socket.socket = socks.socksocket
 			try:
 				req = requests.get(url,verify=False)
-			except:
+			except requests.exceptions.ConnectionError:
+				print colored('It can\'t contact with the page','green')
+				sys.exit(2)
+			except requests.RequestException:
+				print colored('It can\'t contact with the page','green')
+				sys.exit(2)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
 				sys.exit(2)
 			
 		else:
@@ -32,6 +39,13 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 		try:
 			req = requests.get(url,proxies = proxies,verify=False)
 		except requests.exceptions.ConnectionError:
+			print colored('It can\'t contact with the page','green')
+			sys.exit(2)
+		except requests.RequestException:
+			print colored('It can\'t contact with the page','green')
+			sys.exit(2)
+		except requests.exceptions.TimeoutError:
+			print colored('Too many time waiting for response, please try again','green')
 			sys.exit(2)
 	
 	if cookie is None: # Obtiene la cookie de sesion
@@ -98,12 +112,41 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			#print  requests.get('http://httpbin.org/ip').content
-			req = requests.head(resources[0],cookies = cookies, headers = headers,verify=False)
+			try:
+				req = requests.head(resources[0],cookies = cookies, headers = headers,verify=False)
+			except requests.exceptions.ConnectionError:
+				print colored('It can\'t contact with the page','green')
+				sys.exit(2)
+			except requests.RequestException:
+				print colored('It can\'t contact with the page','green')
+				sys.exit(2)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
 		else:
-			req = requests.head(resources[0], cookies = cookies, headers = headers, verify=False)
+			try:
+				req = requests.head(resources[0], cookies = cookies, headers = headers, verify=False)
+			except requests.exceptions.ConnectionError:
+				print colored('It can\'t contact with the page','green')
+				sys.exit(2)
+			except requests.RequestException:
+				print colored('It can\'t contact with the page','green')
+				sys.exit(2)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
 	else:
-		req = requests.head(resources[0],cookies = cookies, headers = headers,proxies = proxies,verify=False)
+		try:
+			req = requests.head(resources[0],cookies = cookies, headers = headers,proxies = proxies,verify=False)
+		except requests.exceptions.ConnectionError:
+			print colored('It can\'t contact with the page','green')
+			sys.exit(2)
+		except requests.RequestException:
+			print colored('It can\'t contact with the page','green')
+			sys.exit(2)
+		except requests.exceptions.TimeoutError:
+			print colored('Too many time waiting for response, please try again','green')
+			sys.exit(2)
 			
 	
 	fake.append(req.url)
@@ -125,13 +168,44 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 			if tor == True:
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 				socket.socket = socks.socksocket
-				res = requests.get(other,cookies = cookies, headers = headers,verify=False)
+				try:
+					res = requests.get(other,cookies = cookies, headers = headers,verify=False)
+				except requests.exceptions.ConnectionError:
+					print colored('It can\'t contact with the page','green')
+					sys.exit(2)
+				except requests.RequestException:
+					print colored('It can\'t contact with the page','green')
+					sys.exit(2)
+				except requests.exceptions.TimeoutError:
+					print colored('Too many time waiting for response, please try again','green')
+					sys.exit(2)
 			else:
-				res = requests.head(other, cookies = cookies, headers = headers, verify=False)
-			res.connection.close()
+				try:
+					res = requests.head(other, cookies = cookies, headers = headers, verify=False)
+					res.connection.close()
+				except requests.exceptions.ConnectionError:
+					print colored('It can\'t contact with the page','green')
+					sys.exit(2)
+				except requests.RequestException:
+					print colored('It can\'t contact with the page','green')
+					sys.exit(2)
+				except requests.exceptions.TimeoutError:
+					print colored('Too many time waiting for response, please try again','green')
+					sys.exit(2)
+			
 		else:
-			res = requests.head(other,cookies = cookies, headers = headers,proxies = proxies,verify=False)
-			res.connection.close()
+			try:
+				res = requests.head(other,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+				res.connection.close()
+			except requests.exceptions.ConnectionError:
+				print colored('It can\'t contact with the page','green')
+				sys.exit(2)
+			except requests.RequestException:
+				print colored('It can\'t contact with the page','green')
+				sys.exit(2)
+			except requests.exceptions.TimeoutError:
+				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
 		
 		regex = re.compile(r'20[0-6]')
 		match = regex.search(str(res.status_code))
@@ -162,11 +236,41 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 								if tor == True:
 									socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)	
 									socket.socket = socks.socksocket
-									r = requests.get(indexOf,cookies = cookies, headers = headers,verify=False)
+									try:
+										r = requests.get(indexOf,cookies = cookies, headers = headers,verify=False)
+									except requests.exceptions.ConnectionError:
+										print colored('It can\'t contact with the page','green')
+										sys.exit(2)
+									except requests.RequestException:
+										print colored('It can\'t contact with the page','green')
+										sys.exit(2)
+									except requests.exceptions.TimeoutError:
+										print colored('Too many time waiting for response, please try again','green')
+										sys.exit(2)
 								else:
-									r = requests.get(indexOf,cookies=cookies,headers=headers,verify=False)
+									try:
+										r = requests.get(indexOf,cookies=cookies,headers=headers,verify=False)
+									except requests.exceptions.ConnectionError:
+										print colored('It can\'t contact with the page','green')
+										sys.exit(2)
+									except requests.RequestException:
+										print colored('It can\'t contact with the page','green')
+										sys.exit(2)
+									except requests.exceptions.TimeoutError:
+										print colored('Too many time waiting for response, please try again','green')
+										sys.exit(2)
 							else:
-								r = requests.get(indexOf,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+								try:
+									r = requests.get(indexOf,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+								except requests.exceptions.ConnectionError:
+									print colored('It can\'t contact with the page','green')
+									sys.exit(2)
+								except requests.RequestException:
+									print colored('It can\'t contact with the page','green')
+									sys.exit(2)
+								except requests.exceptions.TimeoutError:
+									print colored('Too many time waiting for response, please try again','green')
+									sys.exit(2)
 								
 							if r.status_code == 200 and '<title>Index of' in r.content: # Siel codigo de estado es 300, se verifica si muestra index of
 								print "Index of: " + colored(r.url, 'green') + " Status code: " + colored(r.status_code, 'yellow')
@@ -183,11 +287,41 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 											if tor == True:
 												socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 												socket.socket = socks.socksocket
-												rn = requests.head(new.rstrip('\n'),cookies = cookies, headers = headers,verify=False)
+												try:
+													rn = requests.head(new.rstrip('\n'),cookies = cookies, headers = headers,verify=False)
+												except requests.exceptions.ConnectionError:
+													print colored('It can\'t contact with the page','green')
+													sys.exit(2)
+												except requests.RequestException:
+													print colored('It can\'t contact with the page','green')
+													sys.exit(2)
+												except requests.exceptions.TimeoutError:
+													print colored('Too many time waiting for response, please try again','green')
+													sys.exit(2)
 											else:
-												rn = requests.head(new.rstrip('\n'),cookies=cookies,headers=headers,verify=False)
+												try:
+													rn = requests.head(new.rstrip('\n'),cookies=cookies,headers=headers,verify=False)
+												except requests.exceptions.ConnectionError:
+													print colored('It can\'t contact with the page','green')
+													sys.exit(2)
+												except requests.RequestException:
+													print colored('It can\'t contact with the page','green')
+													sys.exit(2)
+												except requests.exceptions.TimeoutError:
+													print colored('Too many time waiting for response, please try again','green')
+													sys.exit(2)
 										else:
-											rn = requests.head(new.strip('\n'),cookies = cookies, headers = headers,proxies = proxies,verify=False)
+											try:
+												rn = requests.head(new.strip('\n'),cookies = cookies, headers = headers,proxies = proxies,verify=False)
+											except requests.exceptions.ConnectionError:
+												print colored('It can\'t contact with the page','green')
+												sys.exit(2)
+											except requests.RequestException:
+												print colored('It can\'t contact with the page','green')
+												sys.exit(2)
+											except requests.exceptions.TimeoutError:
+												print colored('Too many time waiting for response, please try again','green')
+												sys.exit(2)
 			
 		
 										if rn.status_code == 200:
