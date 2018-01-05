@@ -179,9 +179,13 @@ def getParams(arg):
 		
 			
 	if options.bruteFile in sys.argv: # Se manda a llamar la funcion del archivo
+		if options.moodle:
+			url = options.moodle
+		elif options.ojs:
+			url = options.ojs
 		for element in options.bruteFile.split(','):
 			bforce.append(element)	
-		checkFile(bforce[0],bforce[1],bforce[2],bforce[3],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		checkFile(bforce[0],bforce[1],bforce[2],bforce[3],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,url)
 		
 
 	if options.Crawler == True and options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
