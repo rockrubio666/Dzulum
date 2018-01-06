@@ -60,13 +60,13 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 				print colored(error,'green')
 				sys.exit(2)
 		else: # Sin anonimato
-			try:
-				req = requests.get(arg,verify=False,timeout=10)
-				error = """
+			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+			try:
+				req = requests.get(arg,verify=False,timeout=10)			
 			except requests.RequestException:			
 				print colored(error,'green')
 				sys.exit(2)
@@ -79,14 +79,14 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 				sys.exit(2)
 				
 	else: # Uso de proxy	
-		try:
-			req = requests.post(arg,proxies = proxies,verify=False,timeout=10)
-			error = """
+		error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+		try:
+			req = requests.post(arg,proxies = proxies,verify=False,timeout=10)		
 		except requests.RequestException:		
 			print colored(error,'green')
 			sys.exit(2)
@@ -140,13 +140,13 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 				sys.exit(2)
 
 		else:
-			try:
-				req = requests.get(arg, cookies = cookies, headers = headers,verify=False,timeout=10)
-				error = """
+			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+			try:
+				req = requests.get(arg, cookies = cookies, headers = headers,verify=False,timeout=10)			
 			except requests.RequestException:			
 				print colored(error,'green')
 				sys.exit(2)
@@ -155,14 +155,14 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 				sys.exit(2)
 
 	else:
-		try:
-			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-			error = """
+		error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+		try:
+			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)		
 		except requests.RequestException:		
 			print colored(error,'green')
 			sys.exit(2)
@@ -237,13 +237,13 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion
 				print colored(error,'green')
 				sys.exit(2)
 		else:
-			try:
-				req = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=10)
-				error = """
+			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+			try:
+				req = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=10)			
 			except requests.RequestException:			
 				print colored(error,'green')
 				sys.exit(2)
@@ -251,14 +251,14 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion
 				print colored(error,'green')
 				sys.exit(2)
 	else:
-		try:
-			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-			error = """
+		error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+		try:
+			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)		
 		except requests.RequestException:		
 			print colored(error,'green')
 			sys.exit(2)
@@ -291,13 +291,13 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion
 							print colored(error,'green')
 							sys.exit(2)
 					else:
-						try:
-							req = requests.get(link, cookies = cookies, headers = headers, verify=False,timeout=10)
-							error = """
+						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+						try:
+							req = requests.get(link, cookies = cookies, headers = headers, verify=False,timeout=10)						
 						except requests.RequestException:						
 							print colored(error,'green')
 							sys.exit(2)
@@ -306,14 +306,14 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion
 							sys.exit(2)
 			
 				else:
-					try:
-						req = requests.get(link,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-						error = """
+					error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+					try:
+						req = requests.get(link,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)					
 					except requests.RequestException:					
 						print colored(error,'green')
 						sys.exit(2)
@@ -396,13 +396,13 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 							sys.exit(2)
 
 					else:
-						try:
-							req = requests.get(plugin, cookies = cookies, headers = headers, verify=False,timeout=10)
-							error = """
+						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+						try:
+							req = requests.get(plugin, cookies = cookies, headers = headers, verify=False,timeout=10)						
 						except requests.RequestException:						
 							print colored(error,'green')
 							sys.exit(2)
@@ -412,14 +412,14 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 			
 
 				else:
-					try:
-						req = requests.get(plugin,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-						error = """
+					error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+					try:
+						req = requests.get(plugin,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)					
 					except requests.RequestException:					
 						print colored(error,'green')
 						sys.exit(2)
@@ -496,13 +496,13 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 								sys.exit(2)
 
 						else:
-							try:
-								req = requests.get(readme, cookies = cookies, headers = headers, verify=False,timeout=10)
-								error = """
+							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+							try:
+								req = requests.get(readme, cookies = cookies, headers = headers, verify=False,timeout=10)							
 							except requests.RequestException:							
 								print colored(error,'green')
 								sys.exit(2)
@@ -512,13 +512,13 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 
 					else:
 						try:
-							req = requests.get(readme,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
 							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+							req = requests.get(readme,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)						
 						except requests.RequestException:						
 							print colored(error,'green')
 							sys.exit(2)
@@ -556,13 +556,13 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 								sys.exit(2)
 
 						else:
-							try:
-								req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False,timeout=10)
-								error = """
+							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+							try:
+								req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False,timeout=10)							
 							except requests.RequestException:							
 								print colored(error,'green')
 								sys.exit(2)
@@ -572,14 +572,14 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 			
 
 					else:
-						try:
-							req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-							error = """
+						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+						try:
+							req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)						
 						except requests.RequestException:						
 							print colored(error,'green')
 							sys.exit(2)
@@ -615,13 +615,13 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 								sys.exit(2)
 
 						else:
-							try:
-								req = requests.get(arg + row[2], cookies = cookies, headers = headers, verify=False,timeout=10)
-								error = """
+							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+							try:
+								req = requests.get(arg + row[2], cookies = cookies, headers = headers, verify=False,timeout=10)							
 							except requests.RequestException:							
 								print colored(error,'green')
 								sys.exit(2)
@@ -631,14 +631,14 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 			
 
 					else:
-						try:
-							req = requests.get(arg + row[2],cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-							error = """
+						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+						try:
+							req = requests.get(arg + row[2],cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)						
 						except requests.RequestException:						
 							print colored(error,'green')
 							sys.exit(2)
@@ -676,13 +676,13 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 				print colored(error,'green')
 				sys.exit(2)
 		else:
-			try:
-				req = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=10)
-				error = """
+			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+			try:
+				req = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=10)			
 			except requests.RequestException:			
 				print colored(error,'green')
 				sys.exit(2)
@@ -692,14 +692,14 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 			
 
 	else:
-		try:
-			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-			error = """
+		error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+		try:
+			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)		
 		except requests.RequestException:		
 			print colored(error,'green')
 			sys.exit(2)
