@@ -29,12 +29,28 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 			except requests.RequestException:
 				print colored('It can\'t contact with the page','green')
 				sys.exit(2)
-			except requests.exceptions.TimeoutError:
+			except requests.exceptions.Timeout:
 				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
+			except:
+				print colored('It can\'t contact with the page','green')
 				sys.exit(2)
 			
 		else:
-			req = requests.get(url,verify=False)
+			try:
+				req = requests.get(url,verify=False)
+			except requests.exceptions.ConnectionError:
+				print colored('It can\'t contact with the page','green')
+				sys.exit(2)
+			except requests.RequestException:
+				print colored('It can\'t contact with the page','green')
+				sys.exit(2)
+			except requests.exceptions.Timeout:
+				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
+			except:
+				print colored('It can\'t contact with the page','green')
+				sys.exit(2)
 	else: # Peticiones a traves del proxy
 		try:
 			req = requests.get(url,proxies = proxies,verify=False)
@@ -44,8 +60,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 		except requests.RequestException:
 			print colored('It can\'t contact with the page','green')
 			sys.exit(2)
-		except requests.exceptions.TimeoutError:
+		except requests.exceptions.Timeout:
 			print colored('Too many time waiting for response, please try again','green')
+			sys.exit(2)
+		except:
+			print colored('It can\'t contact with the page','green')
 			sys.exit(2)
 	
 	if cookie is None: # Obtiene la cookie de sesion
@@ -120,8 +139,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 			except requests.RequestException:
 				print colored('It can\'t contact with the page','green')
 				sys.exit(2)
-			except requests.exceptions.TimeoutError:
+			except requests.exceptions.Timeout:
 				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
+			except:
+				print colored('It can\'t contact with the page','green')
 				sys.exit(2)
 		else:
 			try:
@@ -132,8 +154,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 			except requests.RequestException:
 				print colored('It can\'t contact with the page','green')
 				sys.exit(2)
-			except requests.exceptions.TimeoutError:
+			except requests.exceptions.Timeout:
 				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
+			except:
+				print colored('It can\'t contact with the page','green')
 				sys.exit(2)
 	else:
 		try:
@@ -144,8 +169,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 		except requests.RequestException:
 			print colored('It can\'t contact with the page','green')
 			sys.exit(2)
-		except requests.exceptions.TimeoutError:
+		except requests.exceptions.Timeout:
 			print colored('Too many time waiting for response, please try again','green')
+			sys.exit(2)
+		except:
+			print colored('It can\'t contact with the page','green')
 			sys.exit(2)
 			
 	
@@ -176,8 +204,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 				except requests.RequestException:
 					print colored('It can\'t contact with the page','green')
 					sys.exit(2)
-				except requests.exceptions.TimeoutError:
+				except requests.exceptions.Timeout:
 					print colored('Too many time waiting for response, please try again','green')
+					sys.exit(2)
+				except:
+					print colored('It can\'t contact with the page','green')
 					sys.exit(2)
 			else:
 				try:
@@ -189,8 +220,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 				except requests.RequestException:
 					print colored('It can\'t contact with the page','green')
 					sys.exit(2)
-				except requests.exceptions.TimeoutError:
+				except requests.exceptions.Timeout:
 					print colored('Too many time waiting for response, please try again','green')
+					sys.exit(2)
+				except:
+					print colored('It can\'t contact with the page','green')
 					sys.exit(2)
 			
 		else:
@@ -203,8 +237,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 			except requests.RequestException:
 				print colored('It can\'t contact with the page','green')
 				sys.exit(2)
-			except requests.exceptions.TimeoutError:
+			except requests.exceptions.Timeout:
 				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
+			except:
+				print colored('It can\'t contact with the page','green')
 				sys.exit(2)
 		
 		regex = re.compile(r'20[0-6]')
@@ -244,8 +281,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 									except requests.RequestException:
 										print colored('It can\'t contact with the page','green')
 										sys.exit(2)
-									except requests.exceptions.TimeoutError:
+									except requests.exceptions.Timeout:
 										print colored('Too many time waiting for response, please try again','green')
+										sys.exit(2)
+									except:
+										print colored('It can\'t contact with the page','green')
 										sys.exit(2)
 								else:
 									try:
@@ -256,8 +296,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 									except requests.RequestException:
 										print colored('It can\'t contact with the page','green')
 										sys.exit(2)
-									except requests.exceptions.TimeoutError:
+									except requests.exceptions.Timeout:
 										print colored('Too many time waiting for response, please try again','green')
+										sys.exit(2)
+									except:
+										print colored('It can\'t contact with the page','green')
 										sys.exit(2)
 							else:
 								try:
@@ -268,8 +311,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 								except requests.RequestException:
 									print colored('It can\'t contact with the page','green')
 									sys.exit(2)
-								except requests.exceptions.TimeoutError:
+								except requests.exceptions.Timeout:
 									print colored('Too many time waiting for response, please try again','green')
+									sys.exit(2)
+								except:
+									print colored('It can\'t contact with the page','green')
 									sys.exit(2)
 								
 							if r.status_code == 200 and '<title>Index of' in r.content: # Siel codigo de estado es 300, se verifica si muestra index of
@@ -295,8 +341,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 												except requests.RequestException:
 													print colored('It can\'t contact with the page','green')
 													sys.exit(2)
-												except requests.exceptions.TimeoutError:
+												except requests.exceptions.Timeout:
 													print colored('Too many time waiting for response, please try again','green')
+													sys.exit(2)
+												except:
+													print colored('It can\'t contact with the page','green')
 													sys.exit(2)
 											else:
 												try:
@@ -307,8 +356,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 												except requests.RequestException:
 													print colored('It can\'t contact with the page','green')
 													sys.exit(2)
-												except requests.exceptions.TimeoutError:
+												except requests.exceptions.Timeout:
 													print colored('Too many time waiting for response, please try again','green')
+													sys.exit(2)
+												except:
+													print colored('It can\'t contact with the page','green')
 													sys.exit(2)
 										else:
 											try:
@@ -319,8 +371,11 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 											except requests.RequestException:
 												print colored('It can\'t contact with the page','green')
 												sys.exit(2)
-											except requests.exceptions.TimeoutError:
+											except requests.exceptions.Timeout:
 												print colored('Too many time waiting for response, please try again','green')
+												sys.exit(2)
+											except:
+												print colored('It can\'t contact with the page','green')
 												sys.exit(2)
 			
 		

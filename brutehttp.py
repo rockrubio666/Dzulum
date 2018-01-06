@@ -97,8 +97,11 @@ Advices to get the correct values in the file:
 			except requests.RequestException:
 				print colored('It can\'t contact with the login page','green')
 				sys.exit(2)
-			except requests.exceptions.TimeoutError:
+			except requests.exceptions.Timeout:
 				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
+			except:
+				print colored('It can\'t contact with the login page','green')
 				sys.exit(2)
 		else:
 			try:
@@ -109,8 +112,11 @@ Advices to get the correct values in the file:
 			except requests.RequestException:
 				print colored('It can\'t contact with the login page','green')
 				sys.exit(2)
-			except requests.exceptions.TimeoutError:
+			except requests.exceptions.Timeout:
 				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
+			except:
+				print colored('It can\'t contact with the login page','green')
 				sys.exit(2)
 	else: # Peticiones a traves del proxy
 		try:
@@ -121,8 +127,11 @@ Advices to get the correct values in the file:
 		except requests.RequestException:
 			print colored('It can\'t contact with the login page','green')
 			sys.exit(2)
-		except requests.exceptions.TimeoutError:
+		except requests.exceptions.Timeout:
 			print colored('Too many time waiting for response, please try again','green')
+			sys.exit(2)
+		except:
+			print colored('It can\'t contact with the login page','green')
 			sys.exit(2)
 	
 	if cookie is None: # Obtiene la cookie de sesion
@@ -168,8 +177,11 @@ Advices to get the correct values in the file:
 				except requests.RequestException:
 					print colored('It can\'t contact with the login page','green')
 					sys.exit(2)
-				except requests.exceptions.TimeoutError:
+				except requests.exceptions.Timeout:
 					print colored('Too many time waiting for response, please try again','green')
+					sys.exit(2)
+				except:
+					print colored('It can\'t contact with the login page','green')
 					sys.exit(2)
 			else:
 				try:
@@ -180,8 +192,11 @@ Advices to get the correct values in the file:
 				except requests.RequestException:
 					print colored('It can\'t contact with the login page','green')
 					sys.exit(2)
-				except requests.exceptions.TimeoutError:
+				except requests.exceptions.Timeout:
 					print colored('Too many time waiting for response, please try again','green')
+					sys.exit(2)
+				except:
+					print colored('It can\'t contact with the login page','green')
 					sys.exit(2)
 		else:
 			try:
@@ -192,8 +207,11 @@ Advices to get the correct values in the file:
 			except requests.RequestException:
 				print colored('It can\'t contact with the login page','green')
 				sys.exit(2)
-			except requests.exceptions.TimeoutError:
+			except requests.exceptions.Timeout:
 				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
+			except:
+				print colored('It can\'t contact with the login page','green')
 				sys.exit(2)
 		a.append(len(req.content))
 	
@@ -251,8 +269,11 @@ def single(url, userField, passField, user, pwd, message,verbose,cookies,headers
 			except requests.RequestException:
 				print colored('It can\'t contact with the login page','green')
 				sys.exit(2)
-			except requests.exceptions.TimeoutError:
+			except requests.exceptions.Timeout:
 				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
+			except:
+				print colored('It can\'t contact with the login page','green')
 				sys.exit(2)
 		else:
 			try:
@@ -263,8 +284,11 @@ def single(url, userField, passField, user, pwd, message,verbose,cookies,headers
 			except requests.RequestException:
 				print colored('It can\'t contact with the login page','green')
 				sys.exit(2)
-			except requests.exceptions.TimeoutError:
+			except requests.exceptions.Timeout:
 				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
+			except:
+				print colored('It can\'t contact with the login page','green')
 				sys.exit(2)
 	else:
 		try:
@@ -275,8 +299,11 @@ def single(url, userField, passField, user, pwd, message,verbose,cookies,headers
 		except requests.RequestException:
 			print colored('It can\'t contact with the login page','green')
 			sys.exit(2)
-		except requests.exceptions.TimeoutError:
+		except requests.exceptions.Timeout:
 			print colored('Too many time waiting for response, please try again','green')
+			sys.exit(2)
+		except:
+			print colored('It can\'t contact with the login page','green')
 			sys.exit(2)
 	
 	if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
@@ -373,8 +400,11 @@ def usersFile(url, userField, passField, user, pwd, message,verbose,cookies,head
 					except requests.RequestException:
 						print colored('It can\'t contact with the login page','green')
 						sys.exit(2)
-					except requests.exceptions.TimeoutError:
+					except requests.exceptions.Timeout:
 						print colored('Too many time waiting for response, please try again','green')
+						sys.exit(2)
+					except:
+						print colored('It can\'t contact with the login page','green')
 						sys.exit(2)
 				else:
 					try:
@@ -385,8 +415,11 @@ def usersFile(url, userField, passField, user, pwd, message,verbose,cookies,head
 					except requests.RequestException:
 						print colored('It can\'t contact with the login page','green')
 						sys.exit(2)
-					except requests.exceptions.TimeoutError:
+					except requests.exceptions.Timeout:
 						print colored('Too many time waiting for response, please try again','green')
+						sys.exit(2)
+					except:
+						print colored('It can\'t contact with the login page','green')
 						sys.exit(2)
 			else:
 				try:
@@ -397,8 +430,11 @@ def usersFile(url, userField, passField, user, pwd, message,verbose,cookies,head
 				except requests.RequestException:
 					print colored('It can\'t contact with the login page','green')
 					sys.exit(2)
-				except requests.exceptions.TimeoutError:
+				except requests.exceptions.Timeout:
 					print colored('Too many time waiting for response, please try again','green')
+					sys.exit(2)
+				except:
+					print colored('It can\'t contact with the login page','green')
 					sys.exit(2)
 			
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
@@ -502,8 +538,11 @@ def pwdFile(url, userField, passField, user, pwd,  message,verbose,cookies,heade
 					except requests.RequestException:
 						print colored('It can\'t contact with the login page','green')
 						sys.exit(2)
-					except requests.exceptions.TimeoutError:
+					except requests.exceptions.Timeout:
 						print colored('Too many time waiting for response, please try again','green')
+						sys.exit(2)
+					except:
+						print colored('It can\'t contact with the login page','green')
 						sys.exit(2)
 				else:
 					try:
@@ -514,8 +553,11 @@ def pwdFile(url, userField, passField, user, pwd,  message,verbose,cookies,heade
 					except requests.RequestException:
 						print colored('It can\'t contact with the login page','green')
 						sys.exit(2)
-					except requests.exceptions.TimeoutError:
+					except requests.exceptions.Timeout:
 						print colored('Too many time waiting for response, please try again','green')
+						sys.exit(2)
+					except:
+						print colored('It can\'t contact with the login page','green')
 						sys.exit(2)
 			else:
 				try:
@@ -526,8 +568,11 @@ def pwdFile(url, userField, passField, user, pwd,  message,verbose,cookies,heade
 				except requests.RequestException:
 					print colored('It can\'t contact with the login page','green')
 					sys.exit(2)
-				except requests.exceptions.TimeoutError:
+				except requests.exceptions.Timeout:
 					print colored('Too many time waiting for response, please try again','green')
+					sys.exit(2)
+				except:
+					print colored('It can\'t contact with the login page','green')
 					sys.exit(2)
 		
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
@@ -639,8 +684,11 @@ def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,hea
 						except requests.RequestException:
 							print colored('It can\'t contact with the login page','green')
 							sys.exit(2)
-						except requests.exceptions.TimeoutError:
+						except requests.exceptions.Timeout:
 							print colored('Too many time waiting for response, please try again','green')
+							sys.exit(2)
+						except:
+							print colored('It can\'t contact with the login page','green')
 							sys.exit(2)
 					else:
 						try:
@@ -651,8 +699,11 @@ def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,hea
 						except requests.RequestException:
 							print colored('It can\'t contact with the login page','green')
 							sys.exit(2)	
-						except requests.exceptions.TimeoutError:
+						except requests.exceptions.Timeout:
 							print colored('Too many time waiting for response, please try again','green')
+							sys.exit(2)
+						except:
+							print colored('It can\'t contact with the login page','green')
 							sys.exit(2)
 				else:
 					try:
@@ -663,8 +714,11 @@ def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,hea
 					except requests.RequestException:
 						print colored('It can\'t contact with the login page','green')
 						sys.exit(2)
-					except requests.exceptions.TimeoutError:
+					except requests.exceptions.Timeout:
 						print colored('Too many time waiting for response, please try again','green')
+						sys.exit(2)
+					except:
+						print colored('It can\'t contact with the login page','green')
 						sys.exit(2)
 					
 				if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario

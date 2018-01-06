@@ -41,47 +41,56 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 		if tor == True: # USo de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			try:
-				req = requests.get(arg,verify=False,timeout=10)
-			except requests.RequestException:
-				error = """
+			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in the URL could be wrong.
 		- The site is down.
 		- It seems that we have problems using Tor :(
 """
+			try:
+				req = requests.get(arg,verify=False,timeout=10)
+			except requests.RequestException:
 				print colored(error,'green')
 				sys.exit(2)
 			
-			except requests.exceptions.TimeoutError:
+			except requests.exceptions.ConnectionError:
 				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
+			except:
+				print colored(error,'green')
 				sys.exit(2)
 		else: # Sin anonimato
 			try:
 				req = requests.get(arg,verify=False,timeout=10)
-			except requests.RequestException:
 				error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+			except requests.RequestException:			
 				print colored(error,'green')
 				sys.exit(2)
 			
-			except requests.exceptions.TimeoutError:
+			except requests.exceptions.Timeout:
 				print colored('Too many time waiting for response, please try again','green')
+				sys.exit(2)
+			except:
+				print colored(error,'green')
 				sys.exit(2)
 				
 	else: # Uso de proxy	
 		try:
 			req = requests.post(arg,proxies = proxies,verify=False,timeout=10)
-		except requests.RequestException:
 			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+		except requests.RequestException:		
+			print colored(error,'green')
+			sys.exit(2)
+		except:
 			print colored(error,'green')
 			sys.exit(2)
 
@@ -115,41 +124,49 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			try:
-				req = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=10)
-			except requests.RequestException:
-				error = """
+			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in the URL could be wrong.
 		- The site is down.
 		- It seems that we have problems using Tor :(
 """
+			try:
+				req = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=10)
+			except requests.RequestException:			
+				print colored(error,'green')
+				sys.exit(2)
+			except:
 				print colored(error,'green')
 				sys.exit(2)
 
 		else:
 			try:
 				req = requests.get(arg, cookies = cookies, headers = headers,verify=False,timeout=10)
-			except requests.RequestException:
 				error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+			except requests.RequestException:			
 				print colored(error,'green')
 				sys.exit(2)
-			
+			except:
+				print colored(error,'green')
+				sys.exit(2)
 
 	else:
 		try:
 			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-		except requests.RequestException:
 			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+		except requests.RequestException:		
+			print colored(error,'green')
+			sys.exit(2)
+		except:
 			print colored(error,'green')
 			sys.exit(2)
 		
@@ -167,6 +184,13 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 
 	try:
 		if match.group():		
+			r = requests.get('http://httpbin.org/ip')
+			t = re.compile(r'"origin":(.*)')
+			mat = t.search(r.content)
+			if mat.group():
+				print mat.group(1).replace("\"","")
+			else:
+				pass
 			if int(verbose) == 1:
 				print "Site Version: " + colored(match.group(3),'green')
 				l.append("Site Version: " + match.group(3))
@@ -179,7 +203,7 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 				print "Site version found it in:" + colored(match.group(),'green')
 				l.append("Site version: " + arg + " is: " + match.group(3) + 'Found it in: ' + match.group())
 				
-			
+				
 	except:
 		version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l) #Si no existe la meta etiqueta, busca en los archivos por defecto
 	files(arg,verbose,match.group(3),cookies,headers,proxy,proxies,tor,report,l) # Si existe la version, busca los plugins
@@ -198,41 +222,47 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			try:
-				req = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=10)
-			except requests.RequestException:
-				error = """
+			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in the URL could be wrong.
 		- The site is down.
 		- It seems that we have problems using Tor :(
 """
+			try:
+				req = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=10)
+			except requests.RequestException:			
 				print colored(error,'green')
 				sys.exit(2)
-
+			except:
+				print colored(error,'green')
+				sys.exit(2)
 		else:
 			try:
 				req = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=10)
-			except requests.RequestException:
 				error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+			except requests.RequestException:			
 				print colored(error,'green')
 				sys.exit(2)
-			
-
+			except:
+				print colored(error,'green')
+				sys.exit(2)
 	else:
 		try:
 			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-		except requests.RequestException:
 			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+		except requests.RequestException:		
+			print colored(error,'green')
+			sys.exit(2)
+		except:
 			print colored(error,'green')
 			sys.exit(2)
 	
@@ -246,41 +276,48 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion
 					if tor == True:
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
-						try:
-							req = requests.get(link,cookies = cookies, headers = headers,verify=False,timeout=10)
-						except requests.RequestException:
-							error = """
+						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in the URL could be wrong.
 		- The site is down.
 		- It seems that we have problems using Tor :(
 """
+						try:
+							req = requests.get(link,cookies = cookies, headers = headers,verify=False,timeout=10)
+						except requests.RequestException:						
 							print colored(error,'green')
 							sys.exit(2)
-
+						except:
+							print colored(error,'green')
+							sys.exit(2)
 					else:
 						try:
 							req = requests.get(link, cookies = cookies, headers = headers, verify=False,timeout=10)
-						except requests.RequestException:
 							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+						except requests.RequestException:						
+							print colored(error,'green')
+							sys.exit(2)
+						except:
 							print colored(error,'green')
 							sys.exit(2)
 			
-
 				else:
 					try:
 						req = requests.get(link,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-					except requests.RequestException:
 						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+					except requests.RequestException:					
+						print colored(error,'green')
+						sys.exit(2)
+					except:
 						print colored(error,'green')
 						sys.exit(2)
 				
@@ -343,27 +380,33 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 					if tor == True:
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
-						try:
-							req = requests.get(plugin,cookies = cookies, headers = headers,verify=False,timeout=10)
-						except requests.RequestException:
-							error = """
+						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in the URL could be wrong.
 		- The site is down.
 		- It seems that we have problems using Tor :(
 """
+						try:
+							req = requests.get(plugin,cookies = cookies, headers = headers,verify=False,timeout=10)
+						except requests.RequestException:		
+							print colored(error,'green')
+							sys.exit(2)
+						except:
 							print colored(error,'green')
 							sys.exit(2)
 
 					else:
 						try:
 							req = requests.get(plugin, cookies = cookies, headers = headers, verify=False,timeout=10)
-						except requests.RequestException:
 							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+						except requests.RequestException:						
+							print colored(error,'green')
+							sys.exit(2)
+						except:
 							print colored(error,'green')
 							sys.exit(2)
 			
@@ -371,13 +414,16 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 				else:
 					try:
 						req = requests.get(plugin,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-					except requests.RequestException:
 						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+					except requests.RequestException:					
+						print colored(error,'green')
+						sys.exit(2)
+					except:
 						print colored(error,'green')
 						sys.exit(2)
 					
@@ -434,41 +480,49 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
-							try:
-								req = requests.get(readme,cookies = cookies, headers = headers,verify=False,timeout=10)
-							except requests.RequestException:
-								error = """
+							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in the URL could be wrong.
 		- The site is down.
 		- It seems that we have problems using Tor :(
 """
+							try:
+								req = requests.get(readme,cookies = cookies, headers = headers,verify=False,timeout=10)
+							except requests.RequestException:							
+								print colored(error,'green')
+								sys.exit(2)
+							except:
 								print colored(error,'green')
 								sys.exit(2)
 
 						else:
 							try:
 								req = requests.get(readme, cookies = cookies, headers = headers, verify=False,timeout=10)
-							except requests.RequestException:
 								error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+							except requests.RequestException:							
 								print colored(error,'green')
 								sys.exit(2)
-			
+							except:
+								print colored(error,'green')
+								sys.exit(2)
 
 					else:
 						try:
 							req = requests.get(readme,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-						except requests.RequestException:
 							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+						except requests.RequestException:						
+							print colored(error,'green')
+							sys.exit(2)
+						except:
 							print colored(error,'green')
 							sys.exit(2)
 				
@@ -486,27 +540,33 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
-							try:
-								req = requests.get(changeLog,cookies = cookies, headers = headers,verify=False,timeout=10)
-							except requests.RequestException:
-								error = """
+							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in the URL could be wrong.
 		- The site is down.
 		- It seems that we have problems using Tor :(
 """
+							try:
+								req = requests.get(changeLog,cookies = cookies, headers = headers,verify=False,timeout=10)
+							except requests.RequestException:							
+								print colored(error,'green')
+								sys.exit(2)
+							except:
 								print colored(error,'green')
 								sys.exit(2)
 
 						else:
 							try:
 								req = requests.get(changeLog, cookies = cookies, headers = headers, verify=False,timeout=10)
-							except requests.RequestException:
 								error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+							except requests.RequestException:							
+								print colored(error,'green')
+								sys.exit(2)
+							except:
 								print colored(error,'green')
 								sys.exit(2)
 			
@@ -514,13 +574,16 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 					else:
 						try:
 							req = requests.get(changeLog,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-						except requests.RequestException:
 							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+						except requests.RequestException:						
+							print colored(error,'green')
+							sys.exit(2)
+						except:
 							print colored(error,'green')
 							sys.exit(2)
 	
@@ -536,27 +599,33 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 						if tor == True:
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
-							try:
-								req = requests.get(arg + row[2],cookies = cookies, headers = headers,verify=False,timeout=10)
-							except requests.RequestException:
-								error = """
+							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in the URL could be wrong.
 		- The site is down.
 		- It seems that we have problems using Tor :(
 """
+							try:
+								req = requests.get(arg + row[2],cookies = cookies, headers = headers,verify=False,timeout=10)
+							except requests.RequestException:							
+								print colored(error,'green')
+								sys.exit(2)
+							except:
 								print colored(error,'green')
 								sys.exit(2)
 
 						else:
 							try:
 								req = requests.get(arg + row[2], cookies = cookies, headers = headers, verify=False,timeout=10)
-							except requests.RequestException:
 								error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+							except requests.RequestException:							
+								print colored(error,'green')
+								sys.exit(2)
+							except:
 								print colored(error,'green')
 								sys.exit(2)
 			
@@ -564,13 +633,16 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 					else:
 						try:
 							req = requests.get(arg + row[2],cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-						except requests.RequestException:
 							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+						except requests.RequestException:						
+							print colored(error,'green')
+							sys.exit(2)
+						except:
 							print colored(error,'green')
 							sys.exit(2)
 	
@@ -589,27 +661,32 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 		if tor == True:
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
-			try:
-				req = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=10)
-			except requests.RequestException:
-				error = """
+			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in the URL could be wrong.
 		- The site is down.
 		- It seems that we have problems using Tor :(
 """
+			try:
+				req = requests.get(arg,cookies = cookies, headers = headers,verify=False,timeout=10)
+			except requests.RequestException:			
 				print colored(error,'green')
 				sys.exit(2)
-
+			except:
+				print colored(error,'green')
+				sys.exit(2)
 		else:
 			try:
 				req = requests.get(arg, cookies = cookies, headers = headers, verify=False,timeout=10)
-			except requests.RequestException:
 				error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 """
+			except requests.RequestException:			
+				print colored(error,'green')
+				sys.exit(2)
+			except:
 				print colored(error,'green')
 				sys.exit(2)
 			
@@ -617,13 +694,16 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 	else:
 		try:
 			req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)
-		except requests.RequestException:
 			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
 		- The site is down or doesn\'t exist.
 		- There\'s a problem with the proxy connection
 """
+		except requests.RequestException:		
+			print colored(error,'green')
+			sys.exit(2)
+		except:
 			print colored(error,'green')
 			sys.exit(2)
 	
