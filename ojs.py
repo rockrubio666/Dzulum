@@ -184,13 +184,6 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 
 	try:
 		if match.group():		
-			r = requests.get('http://httpbin.org/ip')
-			t = re.compile(r'"origin":(.*)')
-			mat = t.search(r.content)
-			if mat.group():
-				print mat.group(1).replace("\"","")
-			else:
-				pass
 			if int(verbose) == 1:
 				print "Site Version: " + colored(match.group(3),'green')
 				l.append("Site Version: " + match.group(3))
