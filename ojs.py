@@ -15,7 +15,7 @@ import socks # Tor
 import socket # Tor
 import random
 
-def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
+def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 	
 	if 'http' in arg:
 		pass
@@ -181,7 +181,9 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 		
 	regex = re.compile(r'(.*)(name="generator") content="(.*)"(.*)') # Se busca la meta etiqueta que contiene la version
 	match = regex.search(page_source)
-
+	
+	
+		
 	try:
 		if match.group():		
 			if int(verbose) == 1:

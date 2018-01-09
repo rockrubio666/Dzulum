@@ -8,8 +8,18 @@ import re # Utilizado para regex
 import socket # Tor
 import socks # Tor
 import random
+import threading
+#from threading import Thread
 
-def check(url, userField, passField, user, pwd, message,verbose,cookie,agent,proxip,proxport,tor,report):
+def check(url, userField, passField, user, pwd, message,verbose,cookie,agent,proxip,proxport,tor,report,th):
+	#threads = []
+	#for value in range(int(th)):
+	#	thr = threading.Thread(target=check,args=(url, userField, passField, user, pwd, message,verbose,cookie,agent,proxip,proxport,tor,report,th))
+	#	thr.start()
+	
+	
+		
+	
 	print colored("\nBeginning BruteForce", 'yellow')
 	warning = raw_input('Please check that the arguments you gave to the tool are correct, Do you continue? [Y/n]') or 'Y'
 	if 'Y' in warning or 'y' in warning:
@@ -127,7 +137,10 @@ Advices to check the arguments:
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 				socket.socket = socks.socksocket
 				try:
+					
 					r = requests.post(url,payload,cookies = cookies, headers = headers,verify=False)
+					#thr = threading.Thread(target= requests.post(url,payload,cookies = cookies, headers = headers,verify=False))
+					#thr.start()
 				except requests.exceptions.ConnectionError:
 					print colored('It can\'t contact with the login page','green')
 					sys.exit(2)
@@ -143,6 +156,8 @@ Advices to check the arguments:
 			else:
 				try:
 					r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
+					#thr = threading.Thread(target= requests.post(url, payload,cookies = cookies, headers = headers, verify=False))
+					#thr.start()
 				except requests.exceptions.ConnectionError:
 					print colored('It can\'t contact with the login page','green')
 					sys.exit(2)
@@ -158,6 +173,9 @@ Advices to check the arguments:
 		else:
 			try:
 				r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
+				#thr = threading.Thread(target= requests.post(url,payload,cookies = cookies, headers = headers,proxies = proxies,verify=False))
+				
+				#thr.start()
 			except requests.exceptions.ConnectionError:
 				print colored('It can\'t contact with the login page','green')
 				sys.exit(2)

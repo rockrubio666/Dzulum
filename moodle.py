@@ -17,7 +17,7 @@ import random
 
 plugins = ['']
 
-def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
+def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report,th): # Version
 	requests.packages.urllib3.disable_warnings()
 	
 	if 'http' in arg:

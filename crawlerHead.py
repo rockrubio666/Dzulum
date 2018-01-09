@@ -10,7 +10,7 @@ import socks # Tor
 import random
 	
 
-def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
+def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 	proxy = proxip  + ':' + proxport
 	proxies = {'http' : proxy, 'https' : proxy,}
 		

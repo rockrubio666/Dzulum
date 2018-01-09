@@ -8,7 +8,7 @@ import socket # Tor
 import socks # Tor
 import random
 
-def checkFile(reqFile,user,pwd,message,verbose,cookie,agent,proxip,proxport,tor,report,valUrl):
+def checkFile(reqFile,user,pwd,message,verbose,cookie,agent,proxip,proxport,tor,report,valUrl,th):
 	
 	b = ['','1','12']
 	a = []

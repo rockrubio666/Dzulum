@@ -66,9 +66,11 @@ def getParams(arg):
 	parser.add_argument('-o', '--ojs', metavar= 'URL', help = 'URL from OJS site')
 	parser.add_argument('-p','--proxy',metavar='Proxy IP,Port', help = 'Proxy')
 	parser.add_argument('-r','--report', metavar='Text,HTML,XML,Mail', help= 'Reports the results getting from the site')
+	parser.add_argument('-t','--thread',help='Thread option',action='store_true')
 	parser.add_argument('-T','--tor', help = 'Use Tor',action='store_true')
 	parser.add_argument('-v','--verbose', metavar='Number', nargs = '?',help='Verbose Level 1-3', default = 1)
 	options = parser.parse_args()
+	
 	
 	if len(sys.argv) == 1 : # Para recibir mas de un argumento
 		print parser.print_help()
@@ -102,6 +104,61 @@ def getParams(arg):
 		print '\n You can only use one proxy a time :,v ***'
 		sys.exit(2)	
 	
+	th = []
+	if options.thread == True:
+		for element in sys.argv:
+			if '-C' in element:
+				thC = raw_input('Number of threads for Crawler: ')
+				if len(thC) < 1:
+					thC = 0
+					th.append(thC)
+				else:
+					th.append(thC)
+			elif '-c' in element:
+				thc = raw_input('Number of threads for Crawler: ')
+				if len(thc) < 1:
+					thc = 0
+				else:
+					th.append(thc)
+			elif '-o' in element:
+				tho = raw_input('Number of threads for OJS: ')
+				if len(tho) < 1:
+					tho = 0
+				else:
+					th.append(tho)
+			elif '-m' in element:
+				thm = raw_input('Number of threads for Moodle: ')
+				if len(thm) < 1:
+					thm = 0
+				else:
+					th.append(thm)
+			elif '-b' in element:
+				thb = raw_input('Number of threads for Bruteforce: ')
+				if len(thb) < 1:
+					thb = 0
+				else:
+					th.append(thb)
+			elif '-B' in element:
+				thB = raw_input('Number of threads for Bruteforce: ')
+				if len(thB) < 1:
+					thB = 0
+				else:
+					th.append(thB)	
+			else:
+				pass
+		
+		for element in th:
+			if element.isdigit():
+				pass
+			else:
+				print colored('The value: ','yellow') + colored(element,'red') + colored(' isn\'t a number, please check it and try again','yellow')
+				sys.exit(2)
+			if int(element) >= 0 and int(element) < 15:
+				pass
+			else:
+				print colored('Please introduce a number between 0 and 15', 'yellow')
+				sys.exit(2)
+		
 	if len(sys.argv) >= 3:
 			numMeme = random.randint(0,5)
 			numColor = random.randint(0,6)
@@ -147,35 +204,31 @@ def getParams(arg):
 		
 	
 	if options.ojs in sys.argv: # Se manda a llamar la funcion del archivo
-		#p1 = Process(target = ojs,args = (options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))
-		ojs(options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		ojs(options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,tho)
 		
 		
 	if options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
-		#p2 = Process(target = moodle, args = (options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))
-		moodle(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
-		#p2.start()
-		#p2.join()
+		moodle(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thm)
+		
 			
 	if options.crawlerHead in sys.argv and options.ojs in sys.argv: # Se manda a llamar la funcion del archivo
-		#p3 = Process(target = crawlerHead, args =(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues))
-		crawlerHead(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		crawlerHead(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thc)
 		
 	elif options.crawlerHead in sys.argv and options.moodle in sys.argv:
-		crawlerHead(options.moodle,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		crawlerHead(options.moodle,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thc)
 		
 	if options.Bruteforce in sys.argv and options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
 		for element in options.Bruteforce.split(','):
 			bforce.append(element)
 		url = options.moodle + bforce[0]
-		check(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		check(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thB)
 		
 		
 	elif options.Bruteforce in sys.argv and options.ojs in sys.argv:
 		for element in options.Bruteforce.split(','):
 			bforce.append(element)
 		url = options.ojs + bforce[0]
-		check(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		check(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thB)
 		
 			
 	if options.bruteFile in sys.argv: # Se manda a llamar la funcion del archivo
@@ -185,14 +238,14 @@ def getParams(arg):
 			url = options.ojs
 		for element in options.bruteFile.split(','):
 			bforce.append(element)	
-		checkFile(bforce[0],bforce[1],bforce[2],bforce[3],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,url)
+		checkFile(bforce[0],bforce[1],bforce[2],bforce[3],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,url,thb)
 		
 
 	if options.Crawler == True and options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
-		crawler(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		crawler(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thC)
 		
 	elif options.Crawler == True and options.ojs in sys.argv:
-		crawler(options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
+		crawler(options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thC)
 		
 	
 	
