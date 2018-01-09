@@ -114,6 +114,7 @@ def getParams(arg):
 					th.append(thC)
 				else:
 					th.append(thC)
+				
 			elif '-c' in element:
 				thc = raw_input('Number of threads for Crawler: ')
 				if len(thc) < 1:
@@ -146,6 +147,7 @@ def getParams(arg):
 					th.append(thB)	
 			else:
 				pass
+			
 		
 		for element in th:
 			if element.isdigit():
@@ -158,6 +160,14 @@ def getParams(arg):
 			else:
 				print colored('Please introduce a number between 0 and 15', 'yellow')
 				sys.exit(2)
+	else:
+		tho = None
+		thB = None
+		thb = None
+		thc = None
+		thm = None
+		thC = None
+	
 		
 	if len(sys.argv) >= 3:
 			numMeme = random.randint(0,5)
