@@ -8,16 +8,19 @@ from termcolor import colored
 import socket # Tor
 import socks # Tor
 import random
+import time
+
 
 visited = []
 toVisit = []
 
-
+start_time = time.time()
 def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 	proxy = proxip  + ':' + proxport
 	proxies = {'http' : proxy, 'https' : proxy,}
 	
 	l = []
+	j = []
 	requests.packages.urllib3.disable_warnings()
 	if len(proxy) == 1:
 		if tor == True: # Peticiones a traves de tor
@@ -101,7 +104,8 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 						if js.group() not in visited:
 							if int(verbose) == 2 or int(verbose) == 3:
 								print 'Link: ' + colored(js.group(),'blue')
-								l.append('Link: ' + js.group())
+								j.apped(js.group())
+								#l.append('Link: ' + js.group())
 							visited.append(link)
 					except:
 						regex = re.compile(r'(.*)\?(.*)') # Quita las variables despues de ?
@@ -110,12 +114,12 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 							if match.group():
 								if match.group(1) not in toVisit and match.group(1) not in visited:
 									print 'Link: ' + colored(match.group(1),'blue')
-									l.append('Link: ' + match.group(1))
+									l.append(match.group(1))
 									toVisit.append(match.group(1))
 						except:
 							if link not in toVisit and link not in visited: #Si el enlace no tiene variables
 								print 'Link: ' + colored(link,'blue')
-								l.append( 'Link: ' + link)
+								l.append(link)
 								toVisit.append(link)
 					
 				else: #Otros enlaces Ej:'/'
@@ -138,7 +142,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 								if status.group(): # Si el codigo de estado es 200, lo agrega a una lista para una posterior consulta
 									if complete not in toVisit and complete not in visited:
 										print 'Link: ' + colored(complete,'blue')
-										l.append('Link: ' + complete)
+										l.append(complete)
 										toVisit.append(complete)
 							except:
 								continue
@@ -152,7 +156,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 			http =  re.sub(r'(^)','http://',arg)
 			crawler(http)
 			exit(2)
-	rep(report,l)
+	rep(report,l,j,arg)
 	#for element in range(len(toVisit)):
 	#	visited.append(toVisit[element])
 	#	print colored(toVisit[element], 'blue')
@@ -161,15 +165,47 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 		#crawler(toVisit[element])
 	
 	
-def rep(list1,list2):
-	for value in list1:
-		if list1.index(value) == 0:
+def rep(rep,sites,js,arg):
+	title = ' *** Results of Crawling***'
+	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
+	resource = 'Resource: ' + str(arg)
+	
+	for value in rep:
+		if rep.index(value) == 0:
 			t = time.strftime('%d-%m-%Y')
 			h = time.strftime('%H:%M:%S')
 			fo = open(('CrawlerReport_' + t + '_'+ h + '.txt'), 'wb')
-			fo.write('Results from the site\n')
-			for element in list2:
-				fo.write(element + '\n')
+			fo.write(title.center(100) + '\n')
+			fo.write('' + '\n')
+			fo.write(execution.ljust(50) + '\n')
+			fo.write('' + '\n')
+			fo.write(resource.ljust(50) + '\n')
+			fo.write('' + '\n')
+			
+			if len(js) == 0:
+				pass
+			else:
+				fo.write('JavaScript Files'.center(100) + '\n')
+				fo.write('' + '\n')
+				for element in js:
+					fo.write(element + '\n')
+			
+			if len(sites) == 0:
+				pass
+			else:
+				for element in sites:
+					fo.write('Link: ' + element + '\n')
+			
 			fo.close()
+			#fo.write('' + '\n')
+			#while len(list2) > 0:
+			#	user = list2[0] 
+			#	pa = list2[1]
+			#	val = list2[2]
+			#	fo.write('	' + user + '				' + pa + '					' + val + '\n')
+			#	list2.pop(2)
+			#	list2.pop(1)
+			#	list2.pop(0)	
 		else:
 			pass
+			

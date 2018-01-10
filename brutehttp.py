@@ -732,7 +732,7 @@ def rep(list1,list2,url,userField,passField):
 	passFi = 'PassField: ' + str(passField)
 	tries = 'Number of tries: ' + str(len(list2) / 3)
 	up = 'User				Pass				Success :), Fail :('
-	x = ''
+	
 	
 	
 	for value in list1:
@@ -760,5 +760,6 @@ def rep(list1,list2,url,userField,passField):
 				list2.pop(2)
 				list2.pop(1)
 				list2.pop(0)
+			fo.close()
 		else:
 			pass
