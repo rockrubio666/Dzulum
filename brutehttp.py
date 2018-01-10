@@ -725,7 +725,7 @@ def rep(list1,list2):
 			pass
 '''
 def rep(list1,list2,url,userField,passField):
-	title = ' *** Brutefoce Results ***'
+	title = ' *** Bruterfoce Results ***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(url)
 	usFi = 'UserField: ' + str(userField)
@@ -751,6 +751,7 @@ def rep(list1,list2,url,userField,passField):
 			fo.write('' + '\n')
 			fo.write('' + '\n')
 			fo.write(up.center(52) + '\n')
+			fo.write('--------------------------------------------------------------------------------------------')
 			fo.write('' + '\n')
 			while len(list2) > 0:
 				user = list2[0] 
