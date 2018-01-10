@@ -11,6 +11,7 @@ import random
 import time
 #import threading
 #from threading import Thread
+
 start_time = time.time()
 def check(url, userField, passField, user, pwd, message,verbose,cookie,agent,proxip,proxport,tor,report,th):
 	
@@ -18,10 +19,7 @@ def check(url, userField, passField, user, pwd, message,verbose,cookie,agent,pro
 	#for value in range(int(th)):
 	#	thr = threading.Thread(target=check,args=(url, userField, passField, user, pwd, message,verbose,cookie,agent,proxip,proxport,tor,report,th))
 	#	thr.start()
-	
-	
 		
-	
 	print colored("\nBeginning BruteForce", 'yellow')
 	warning = raw_input('Please check that the arguments you gave to the tool are correct, Do you continue? [Y/n]') or 'Y'
 	if 'Y' in warning or 'y' in warning:
@@ -688,8 +686,10 @@ def rep(list1,list2,url,userField,passField):
 	resource = 'Resource: ' + str(url)
 	usFi = 'UserField: ' + str(userField)
 	passFi = 'PassField: ' + str(passField)
+	tries = 'Number of tries: ' + str(len(list2) / 3)
 	up = 'User				Pass				Success :), Fail :('
 	x = ''
+	
 	
 	for value in list1:
 		if list1.index(value) == 0:
@@ -703,6 +703,7 @@ def rep(list1,list2,url,userField,passField):
 			fo.write(resource.rjust(50) + '\n')
 			fo.write(usFi.ljust(50) + '\n')
 			fo.write(passFi.ljust(50) + '\n')
+			fo.write(tries.ljust(50) + '\n')
 			fo.write('' + '\n')
 			fo.write('' + '\n')
 			fo.write(up.center(52) + '\n')
@@ -716,8 +717,5 @@ def rep(list1,list2,url,userField,passField):
 				list2.pop(1)
 				list2.pop(0)
 				
-			#for element in list2:
-			#	fo.write('	' + element + '\n')
-			#fo.close()
 		else:
 			pass
