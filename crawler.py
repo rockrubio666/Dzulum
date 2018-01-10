@@ -169,6 +169,7 @@ def rep(rep,sites,js,arg):
 	title = ' *** Results of Crawling***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(arg)
+	f = 'Total of links found: ' + str(len(sites) + len(js))
 	
 	for value in rep:
 		if rep.index(value) == 0:
@@ -180,6 +181,7 @@ def rep(rep,sites,js,arg):
 			fo.write(execution.ljust(50) + '\n')
 			fo.write('' + '\n')
 			fo.write(resource.ljust(50) + '\n')
+			fo.write(f.ljust(50) + '\n')
 			fo.write('' + '\n')
 			
 			if len(js) == 0:
@@ -197,15 +199,6 @@ def rep(rep,sites,js,arg):
 					fo.write('Link: ' + element + '\n')
 			
 			fo.close()
-			#fo.write('' + '\n')
-			#while len(list2) > 0:
-			#	user = list2[0] 
-			#	pa = list2[1]
-			#	val = list2[2]
-			#	fo.write('	' + user + '				' + pa + '					' + val + '\n')
-			#	list2.pop(2)
-			#	list2.pop(1)
-			#	list2.pop(0)	
 		else:
 			pass
 			
