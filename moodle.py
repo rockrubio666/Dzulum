@@ -208,10 +208,10 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report,th): # Version
 			exit(2)
 		
 	else: #Si no lo tiene
-		version(arg,verbose,cookies,headers,proxy,proxies,tor,report) # Si no se obtiene la version a partir del archivo, se obtiene a partir de los archivos por defecto
+		version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver) # Si no se obtiene la version a partir del archivo, se obtiene a partir de los archivos por defecto
 					
 
-def version(arg,verbose,cookies,headers,proxy,proxies,tor,report):	 # Obtencion de la version a partir de archivos
+def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver):	 # Obtencion de la version a partir de archivos
 	print colored('We\'re trying to get the version through default files, please wait','green')
 	m = hashlib.md5()
 	elements = []
@@ -771,15 +771,10 @@ def rep(rep,version,url,readme,change,pl,them):
 	title = ' *** Moodle Results ***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(url)
-	print colored(version, 'yellow')
-	print colored(readme,'cyan')
-	print colored(change,'red')
-	print colored(pl,'blue')
-	print colored(them,'grey')
-	#usFi = 'UserField: ' + str(userField)
-	#passFi = 'PassField: ' + str(passField)
-	#tries = 'Number of tries: ' + str(len(list2) / 3)
-	#up = 'User				Pass				Success :), Fail :('
+	
+	#print colored(change,'red')
+	#print colored(them,'grey')
+	#vulnerabilities
 	
 	for value in rep:
 		if rep.index(value) == 0:
@@ -791,36 +786,104 @@ def rep(rep,version,url,readme,change,pl,them):
 			fo.write(execution.ljust(50) + '\n')
 			fo.write('' + '\n')
 			fo.write(resource.ljust(50) + '\n')
-			#fo.write(usFi.ljust(50) + '\n')
-			#fo.write(passFi.ljust(50) + '\n')
-			#fo.write(tries.ljust(50) + '\n')
-			#fo.write('' + '\n')
-			#fo.write('' + '\n')
-			#fo.write(up.center(52) + '\n')
-			#fo.write('--------------------------------------------------------------------------------------------')
-			#fo.write('' + '\n')
-			#while len(list2) > 0:
-			#	user = list2[0] 
-			#	pa = list2[1]
-			#	val = list2[2]
-			#	fo.write('	' + user + '				' + pa + '					' + val + '\n')
-			#	list2.pop(2)
-			#	list2.pop(1)
-			#	list2.pop(0)
-			fo.close()	
-		else:
-			pass
-
-	'''
-	for value in list1:
-		if list1.index(value) == 0:
-			t = time.strftime('%d-%m-%Y')
-			h = time.strftime('%H:%M:%S')
-			fo = open(('MoodleReport_' + t + '_'+ h + '.txt'), 'wb')
-			fo.write('Results from the site\n')
-			for element in list2:
-				fo.write(element + '\n')
+			fo.write('' + '\n')
+			
+			while len(version) > 0:
+				fo.write('Version: ' + version[0] + '\n')
+				fo.write('Path Version: ' + version[1] + '\n')
+				fo.write('' + '\n')
+				version.pop(1)
+				version.pop(0)
+				
+			if len(pl) == 0:
+				pass
+			else:
+				fo.write('Plugins'.center(100) + '\n')
+				fo.write('' + '\n')
+				while len(pl) > 0:
+					na = pl[0]
+					pa = pl[1]
+					ve = pl[2]
+					if len(ve) > 0:
+						ve = 'Version: ' + pl[2]
+					else:
+						ve = 'Version not found'
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write('Name: ' + na + '\n')
+					fo.write('Path: ' + pa + '\n')
+					fo.write(ve+ '\n')
+					fo.write('' + '\n')
+					pl.pop(2)
+					pl.pop(1)
+					pl.pop(0)
+			
+			if len(readme) == 0:
+				pass
+			else:
+				fo.write('Readme Files'.center(100) + '\n')
+				fo.write('' + '\n')
+				while len(readme) > 0:
+					if int(readme[0]) == 2:
+						fo.write('-----------------------------------------------------------------------------------\n')
+						fo.write('Status code: 200\n')
+						fo.write('Path: ' + readme[1] + '\n')
+						fo.write('' + '\n')
+						readme.pop(1)
+						readme.pop(0)
+					elif int(readme[0]) == 4:
+						fo.write('-----------------------------------------------------------------------------------\n')
+						fo.write('Forbidden file\n')
+						fo.write('Path: ' + readme[1] + '\n')
+						fo.write('' + '\n')
+						readme.pop(1)
+						readme.pop(0)
+			
+				
 			fo.close()
 		else:
 			pass
-	'''
+	'''		
+			
+			
+			
+				
+			
+				
+			if len(change) == 0:
+				pass
+			else:
+				fo.write('ChangeLog'.center(100) + '\n')
+				fo.write('' + '\n')
+				while len(change) > 0:
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write('Path: ' + change[0] + '\n')
+					fo.write('' + '\n')
+					rob.pop(0)
+				
+			if len(rob) == 0:
+				pass
+			else:
+				fo.write('Robots file'.center(100) + '\n')
+				fo.write('' + '\n')
+				while len(rob) > 0:
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write('Path: ' + rob[0] + '\n')
+					fo.write('' + '\n')
+					rob.pop(0)
+				
+			if len(them) == 0:
+				pass
+			else:
+				fo.write('Theme(s) installed'.center(100) + '\n')
+				fo.write('' + '\n')
+				while len(them) > 0:
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write(them[0] + '\n')
+					fo.write(them[1] + '\n')
+					fo.write('' + '\n')
+					them.pop(1)
+					them.pop(0)
+		'''
+			
+		
+			

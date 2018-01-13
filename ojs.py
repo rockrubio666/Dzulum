@@ -801,7 +801,7 @@ def rep(rep,url,ver,plug,readm,change,rob,them):
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(url)
 	
-	
+	#vulnerabilities
 	for value in rep:
 		if rep.index(value) == 0:
 			t = time.strftime('%d-%m-%Y')
