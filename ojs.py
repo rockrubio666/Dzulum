@@ -14,7 +14,9 @@ from termcolor import colored
 import socks # Tor
 import socket # Tor
 import random
+import time
 
+start_time = time.time()
 def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 	
 	if 'http' in arg:
@@ -33,7 +35,7 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 	proxy = proxip  + ':' + proxport	
 	proxies = {'http' : proxy, 'https' : proxy,}
 	
-	l = []
+	ver = []
 	
 	requests.packages.urllib3.disable_warnings()
 	
@@ -188,23 +190,24 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 		if match.group():		
 			if int(verbose) == 1:
 				print "Site Version: " + colored(match.group(3),'green')
-				l.append("Site Version: " + match.group(3))
+				
 				
 			elif int(verbose) == 2:
 				print "Site version: " + colored(arg, 'green') + " is: " + colored(match.group(3),'green')
-				l.append("Site version: " + arg + " is: " + match.group(3))
+				
 			elif int(verbose) == 3:
 				print "Site version: " + colored(arg, 'green') + " is: " + colored(match.group(3),'green')
 				print "Site version found it in:" + colored(match.group(),'green')
-				l.append("Site version: " + arg + " is: " + match.group(3) + 'Found it in: ' + match.group())
+			ver.append(match.group(3))
+			ver.append(match.group())
 				
 				
 	except:
-		version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l) #Si no existe la meta etiqueta, busca en los archivos por defecto
-	files(arg,verbose,match.group(3),cookies,headers,proxy,proxies,tor,report,l) # Si existe la version, busca los plugins
+		version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver) #Si no existe la meta etiqueta, busca en los archivos por defecto
+	files(arg,verbose,match.group(3),cookies,headers,proxy,proxies,tor,report,ver) # Si existe la version, busca los plugins
 	
 	
-def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion de la version mediante archivos
+def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver): # Obtencion de la version mediante archivos
 	print colored('We\'re trying to get the version through default files, please wait','green')
 	m = hashlib.md5()
 	elements = []
@@ -331,6 +334,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion
 						m.update(req.text)
 						hs =  m.hexdigest()
 						elements.append(hs)
+	
 					except:
 						continue
 					
@@ -354,16 +358,22 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,l): # Obtencion
 			print colored('Sorry, It couldn\'t get the version of the OJS, please try again later :(','green')
 			sys.exit(2)
 		print '\nVersion getting from configuration files: ' + colored(v, 'green')
-		l.append('\nVersion getting from configuration files: ' + v)
-		files(arg,verbose,v,cookies,headers,proxy,proxies,tor,report,l)
+		ver.append(v)
+		ver.append('Version getting from configuration files')
+		files(arg,verbose,v,cookies,headers,proxy,proxies,tor,report,ver)
 		
 	
-def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obtencion de plugins y temas
+def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Obtencion de plugins y temas
 	f = open('versions','rb')
 	reader = csv.reader(f,delimiter=',')
 
 	listThemes = ['//script/@src', '//@href']
 	tmp = []
+	readm = []
+	change = []
+	plug = []
+	them = []
+	rob = []
 	requests.packages.urllib3.disable_warnings()					
 	
 	for row in reader:
@@ -433,21 +443,21 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 								if pV.group():
 									if int(verbose) == 1:
 										print "Plugin Name: " + colored(pN.group(1),'green')
-										l.append("Plugin Name: " + pN.group(1))
-										
 									elif int(verbose) == 2:
 										print "Plugin, Name: " + colored(pN.group(1),'green') + ' ,Path: ' + colored(plugin, 'green')
-										l.append("Plugin, Name: " + pN.group(1) + ' ,Path: ' + plugin)
 									elif int(verbose) == 3:
 										print "Plugin, Name: " + colored(pN.group(1), 'green') + ' ,Path: ' + colored(plugin, 'green') + " " + colored(pV.group(2), 'blue')
-										l.append("Plugin, Name: " + pN.group(1) + ' ,Path: ' + plugin + " " + pV.group(2))
+									plug.append(pN.group(1))
+									plug.append(plugin)
+									plug.append(pV.group(2))
 							except:
 								if int(verbose) == 1:
 									print "Plugin Name: " + colored(pN.group(1), 'green') 
-									l.append("Plugin Name: " + pN.group(1))
 								elif int(verbose) == 2 or int(verbose) == 3:
 									print "Plugin, Name: " + colored(pN.group(1), 'green') + ' ,Path: ' + colored(plugin, 'green')		
-									l.append("Plugin, Name: " + pN.group(1) + ' ,Path: ' + plugin)
+								plug.append(pN.group(1))
+								plug.append(plugin)
+								plug.append('')
 					except:
 						continue
 					
@@ -457,10 +467,11 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 						if match.group():
 							if int(verbose) == 1:
 								print "Plugin Name: " + colored(match.group(2),'green')
-								l.append("Plugin Name: " + match.group(2))
 							elif int(verbose) == 2 or int(verbose) == 3:
 								print "Plugin, Name: " + colored(match.group(2), 'green') + ' ,Path: ' + colored(plugin, 'green')
-								l.append( "Plugin, Name: " + match.group(2) + ' ,Path: ' + plugin)
+							plug.append(match.group(2))
+							plug.append(plugin)
+							plug.append('')
 					except:
 						continue
 				
@@ -523,7 +534,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 				
 					if req.status_code == 200:
 						print 'README file: ' + colored(readme, 'green')
-						l.append('README file: ' + readme)
+						readm.append(readme)						
 					else:
 						continue
 					
@@ -584,7 +595,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 	
 					if req.status_code == 200:
 						print 'ChangeLog: ' + colored(changeLog,'green')
-						l.append('ChangeLog: ' + changeLog)
+						change.append(changeLog)
 					else:
 						continue
 	
@@ -643,7 +654,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 	
 					if req.status_code == 200:
 						print 'Robots file: ' + colored(req.url, 'green')
-						l.append('Robots file: ' + req.url)
+						rob.append(req.url)
 					else:
 						continue
 			else:
@@ -714,10 +725,10 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 		if 'default' in tmp[element]: # Tema por defecto
 			if int(verbose) == 1:
 				print colored('Default Theme', 'green')
-				l.append('Default Theme')
 			elif int(verbose) == 2 or int(verbose) == 3:
 				print colored( 'Default Theme', 'green') + ' Path: ' + colored(tmp[element], 'green')
-				l.append('Default Theme' + ' Path: ' + tmp[element])
+			them.append('Default')
+			them.append(tmp[element])
 			element + i
 		elif 'journals' in tmp[element]: #Tema journal
 			regex = re.compile(r'(.*)\/(.*)\.css')
@@ -726,14 +737,13 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 				if match.group():
 					if int(verbose) == 1:
 						print colored('Customize Theme ', 'green')
-						l.append('Customize Theme ')
 					elif int(verbose) == 2:
 						print colored('Customize Theme, Name: ' + match.group(2), 'green')
-						l.append('Customize Theme, Name: ' + match.group(2))
 					elif int(verbose) == 3:	
 						print 'Customize Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
-						l.append('Customize Theme, Name: ' + match.group(2) + ', Path: ' + tmp[element])
 					element + 1
+					them.append('Customize Theme: ' + match.group(2))
+					them.append(tmp[element])
 			except:
 				pass
 		elif 'theme' in tmp[element]: 
@@ -764,7 +774,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,l): #Obte
 				pass	
 		else:
 			sys.exit
-	vuln(version,verbose,report,l)
+	vuln(version,verbose,report,ver)
 
 def vuln(version,verbose,report,l): # A partir de la version, se listan las posibles vulnerabilidades
 	f = open('vuln','rb')
