@@ -212,14 +212,10 @@ def getParams(arg):
 	else:
 		pass
 		
-	
-	if options.ojs in sys.argv: # Se manda a llamar la funcion del archivo
-		ojs(options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,tho)
-		
-		
-	if options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
-		moodle(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thm)
-		
+	if options.Crawler == True and options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
+		crawler(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thC)	
+	elif options.Crawler == True and options.ojs in sys.argv:
+		crawler(options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thC)
 			
 	if options.crawlerHead in sys.argv and options.ojs in sys.argv: # Se manda a llamar la funcion del archivo
 		crawlerHead(options.ojs,options.crawlerHead,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thc)
@@ -251,11 +247,12 @@ def getParams(arg):
 		checkFile(bforce[0],bforce[1],bforce[2],bforce[3],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,url,thb)
 		
 
-	if options.Crawler == True and options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
-		crawler(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thC)
+	if options.ojs in sys.argv: # Se manda a llamar la funcion del archivo
+		ojs(options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,tho)
 		
-	elif options.Crawler == True and options.ojs in sys.argv:
-		crawler(options.ojs,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thC)
+		
+	if options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
+		moodle(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thm)
 		
 	
 	
