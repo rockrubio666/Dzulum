@@ -753,10 +753,10 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 				if match.group():
 					if int(verbose) == 1:
 						print 'Theme, Name: ' + colored(match.group(2),'green')
-						l.append('Theme, Name: ' + match.group(2))
 					elif int(verbose) == 2 or int(verbose) == 3:	
 						print 'Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
-						l.append( 'Theme, Name: ' + match.group(2) + ', Path: ' + tmp[element])
+					them.append(match.group(2))
+					them.append(tmp[element])
 			except:
 				pass	
 		elif 'bootstrap' in tmp[element]: # Tema creado con bootstrap
@@ -766,17 +766,19 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 				if match.group():	
 					if int(verbose) == 1:
 						print 'Theme, Name: ' + colored(match.group(2),'green')
-						l.append('Theme, Name: ' + match.group(2))
 					elif int(verbose) == 2 or int(verbose) == 3:
 						print 'Theme, Name: ' + colored(match.group(2), 'green') + ', Path: ' + colored(tmp[element],'green')
-						l.append('Theme, Name: ' + match.group(2) + ', Path: ' + tmp[element])
+					them.append(match.group(2))
+					them.append(tmp[element])
 			except:
 				pass	
 		else:
 			sys.exit
-	vuln(version,verbose,report,ver)
+			readm = []
+	
+	vuln(version,verbose,report,arg,ver,plug,readm,change,rob,them)
 
-def vuln(version,verbose,report,l): # A partir de la version, se listan las posibles vulnerabilidades
+def vuln(version,verbose,report,arg,ver,plug,readm,change,rob,them): # A partir de la version, se listan las posibles vulnerabilidades
 	f = open('vuln','rb')
 	reader = csv.reader(f,delimiter=',')
 	
@@ -785,25 +787,80 @@ def vuln(version,verbose,report,l): # A partir de la version, se listan las posi
 			if 'Ojs' in row[0] and row[1] in version:
 				if int(verbose) == 1:
 					print "Vulnerability Link: " + colored(row[3],'green')
-					l.append( "Vulnerability Link: " + row[3])
 				elif int(verbose) == 2 or int(verbose) == 3:
 					print "Vulnerability Name: " + colored(row[2],'green') + ' ,Vulnerability Link: ' + colored(row[3],'green')
-					l.append( "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3])
 		except IndexError:
 			pass
 	f.close()
-	rep(report,l)
+	rep(report,arg,ver,plug,readm,change,rob,them)
 	
 
-def rep(list1,list2):
-	for value in list1:
-		if list1.index(value) == 0:
+def rep(rep,url,ver,plug,readm,change,rob,them):
+
+	title = ' *** Results of OJS Scanner***'
+	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
+	resource = 'Resource: ' + str(url)
+	
+	
+	for value in rep:
+		if rep.index(value) == 0:
 			t = time.strftime('%d-%m-%Y')
 			h = time.strftime('%H:%M:%S')
 			fo = open(('OJSReport_' + t + '_'+ h + '.txt'), 'wb')
-			fo.write('Results from the site\n')
-			for element in list2:
-				fo.write(element + '\n')
+			fo.write(title.center(100) + '\n')
+			fo.write('' + '\n')
+			fo.write(execution.ljust(50) + '\n')
+			fo.write('' + '\n')
+			fo.write(resource.ljust(50) + '\n')
+			fo.write('' + '\n')
+			
+			if len(plug) == 0:
+				pass
+			else:
+				fo.write('Plugins'.center(100) + '\n')
+				fo.write('' + '\n')
+				while len(plug) > 0:
+					na = plug[0]
+					pa = plug[1]
+					ve = plug[2]
+					if len(ve) > 0:
+						ve = 'Version: ' + plug[2]
+					else:
+						ve = 'Version not found'
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write('Name: ' + na + '\n')
+					fo.write('Path: ' + pa + '\n')
+					fo.write(ve+ '\n')
+					fo.write('' + '\n')
+					plug.pop(2)
+					plug.pop(1)
+					plug.pop(0)
+				
+			if len(readm) == 0:
+				pass
+			else:
+				fo.write('Readme Files'.center(100) + '\n')
+				fo.write('' + '\n')
+				
+			if len(change) == 0:
+				pass
+			else:
+				fo.write('ChangeLog'.center(100) + '\n')
+				fo.write('' + '\n')
+				
+			if len(rob) == 0:
+				pass
+			else:
+				fo.write('Robots file'.center(100) + '\n')
+				fo.write('' + '\n')
+				
+			if len(them) == 0:
+				pass
+			else:
+				fo.write('Theme(s) installed'.center(100) + '\n')
+				fo.write('' + '\n')
+			
 			fo.close()
 		else:
 			pass
+			
