@@ -814,6 +814,13 @@ def rep(rep,url,ver,plug,readm,change,rob,them):
 			fo.write(resource.ljust(50) + '\n')
 			fo.write('' + '\n')
 			
+			while len(ver) > 0:
+				fo.write('Version: ' + ver[0] + '\n')
+				fo.write('Path Version: ' + ver[1] + '\n')
+				fo.write('' + '\n')
+				ver.pop(1)
+				ver.pop(0)
+			
 			if len(plug) == 0:
 				pass
 			else:
@@ -841,25 +848,46 @@ def rep(rep,url,ver,plug,readm,change,rob,them):
 			else:
 				fo.write('Readme Files'.center(100) + '\n')
 				fo.write('' + '\n')
+				while len(readm) > 0:
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write('Path: ' + readm[0] + '\n')
+					fo.write('' + '\n')
+					readm.pop(0)
 				
 			if len(change) == 0:
 				pass
 			else:
 				fo.write('ChangeLog'.center(100) + '\n')
 				fo.write('' + '\n')
+				while len(change) > 0:
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write('Path: ' + change[0] + '\n')
+					fo.write('' + '\n')
+					rob.pop(0)
 				
 			if len(rob) == 0:
 				pass
 			else:
 				fo.write('Robots file'.center(100) + '\n')
 				fo.write('' + '\n')
+				while len(rob) > 0:
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write('Path: ' + rob[0] + '\n')
+					fo.write('' + '\n')
+					rob.pop(0)
 				
 			if len(them) == 0:
 				pass
 			else:
 				fo.write('Theme(s) installed'.center(100) + '\n')
 				fo.write('' + '\n')
-			
+				while len(them) > 0:
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write(them[0] + '\n')
+					fo.write(them[1] + '\n')
+					fo.write('' + '\n')
+					them.pop(1)
+					them.pop(0)
 			fo.close()
 		else:
 			pass
