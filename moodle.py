@@ -749,6 +749,7 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 	vuln(version,verbose,report,ver,arg,readm,change,pl,them)
 	
 def vuln(version,verbose,report,ver,arg,readm,change,pl,them): # Listado de vulnerabilidades obtenidas a partir de la version del gestor de contenidos
+	vul = []
 	f = open('vuln','rb')
 	reader = csv.reader(f,delimiter='|')
 	
@@ -757,24 +758,26 @@ def vuln(version,verbose,report,ver,arg,readm,change,pl,them): # Listado de vuln
 			if 'Moodle' in row[0] and row[1] in version:
 				if int(verbose) == 1:
 					print "Vulnerability Link: " + colored(row[3],'green')
-					#l.append( "Vulnerability Link: " + row[3])
 				elif int(verbose) == 2 or int(verbose) == 3:
-					#l.append("Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3])
-					print "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + colored(row[3],'green') #+ colored(row[4],'yellow') + colored(row[5],'cyan') + colored(row[6],'red')
+					print "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3]
+				vul.append(row[2])
+				vul.append(row[3])
+				vul.append(row[4])
+				vul.append(row[5])
+				vul.append(row[6])
+			else:
+				pass
 		except IndexError:
 			pass
 			
 	f.close()
-	rep(report,ver,arg,readm,change,pl,them)
+	rep(report,ver,arg,readm,change,pl,them,vul)
 
-def rep(rep,version,url,readme,change,pl,them):
+def rep(rep,version,url,readme,change,pl,them,vul):
 	title = ' *** Moodle Results ***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(url)
 	
-	#print colored(change,'red')
-	#print colored(them,'grey')
-	#vulnerabilities
 	
 	for value in rep:
 		if rep.index(value) == 0:
@@ -837,39 +840,32 @@ def rep(rep,version,url,readme,change,pl,them):
 						fo.write('' + '\n')
 						readme.pop(1)
 						readme.pop(0)
+					else:
+						pass
 			
-				
-			fo.close()
-		else:
-			pass
-	'''		
-			
-			
-			
-				
-			
-				
 			if len(change) == 0:
 				pass
 			else:
 				fo.write('ChangeLog'.center(100) + '\n')
 				fo.write('' + '\n')
 				while len(change) > 0:
-					fo.write('-----------------------------------------------------------------------------------\n')
-					fo.write('Path: ' + change[0] + '\n')
-					fo.write('' + '\n')
-					rob.pop(0)
-				
-			if len(rob) == 0:
-				pass
-			else:
-				fo.write('Robots file'.center(100) + '\n')
-				fo.write('' + '\n')
-				while len(rob) > 0:
-					fo.write('-----------------------------------------------------------------------------------\n')
-					fo.write('Path: ' + rob[0] + '\n')
-					fo.write('' + '\n')
-					rob.pop(0)
+					if int(change[0]) == 2:
+						fo.write('-----------------------------------------------------------------------------------\n')
+						fo.write('Status code: 200\n')
+						fo.write('Path: ' + change[1] + '\n')
+						fo.write('' + '\n')
+						change.pop(1)	
+						change.pop(0)
+					elif int(change[0]) == 4:
+						fo.write('-----------------------------------------------------------------------------------\n')
+						fo.write('Forbidden file\n')
+						fo.write('Path: ' + change[1] + '\n')
+						fo.write('' + '\n')
+						change.pop(1)	
+						change.pop(0)
+					else:
+						pass
+			
 				
 			if len(them) == 0:
 				pass
@@ -883,7 +879,26 @@ def rep(rep,version,url,readme,change,pl,them):
 					fo.write('' + '\n')
 					them.pop(1)
 					them.pop(0)
-		'''
 			
-		
-			
+			if len(vul) == 0:
+				pass
+			else:
+				fo.write('Vulnerabilities found'.center(100) + '\n')
+				fo.write('' + '\n')
+				while len(vul) > 0:
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write('Vulnerability Name: ' + vul[0] + '\n')
+					fo.write('Vulnerability Link: ' + vul[1] + '\n')
+					fo.write('Description: ' + vul[2] + '\n')
+					fo.write('Recomendation: ' + vul[3] + '\n')
+					fo.write('CVSS: ' + vul[4] + '\n')
+					fo.write('' + '\n')
+					vul.pop(4)
+					vul.pop(3)
+					vul.pop(2)
+					vul.pop(1)
+					vul.pop(0)
+					
+			fo.close()
+		else:
+			pass

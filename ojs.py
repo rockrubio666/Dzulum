@@ -782,6 +782,8 @@ def vuln(version,verbose,report,arg,ver,plug,readm,change,rob,them): # A partir 
 	f = open('vuln','rb')
 	reader = csv.reader(f,delimiter=',')
 	
+	vul = []
+	
 	for row in reader:
 		try:
 			if 'Ojs' in row[0] and row[1] in version:
@@ -789,19 +791,25 @@ def vuln(version,verbose,report,arg,ver,plug,readm,change,rob,them): # A partir 
 					print "Vulnerability Link: " + colored(row[3],'green')
 				elif int(verbose) == 2 or int(verbose) == 3:
 					print "Vulnerability Name: " + colored(row[2],'green') + ' ,Vulnerability Link: ' + colored(row[3],'green')
+				vul.append(row[2])
+				vul.append(row[3])
+				vul.append(row[4])
+				vul.append(row[5])
+				vul.append(row[6])
+			else:
+				pass
 		except IndexError:
 			pass
 	f.close()
-	rep(report,arg,ver,plug,readm,change,rob,them)
+	rep(report,arg,ver,plug,readm,change,rob,them,vul)
 	
 
-def rep(rep,url,ver,plug,readm,change,rob,them):
+def rep(rep,url,ver,plug,readm,change,rob,them,vul):
 
 	title = ' *** Results of OJS Scanner***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(url)
 	
-	#vulnerabilities
 	for value in rep:
 		if rep.index(value) == 0:
 			t = time.strftime('%d-%m-%Y')
@@ -888,6 +896,26 @@ def rep(rep,url,ver,plug,readm,change,rob,them):
 					fo.write('' + '\n')
 					them.pop(1)
 					them.pop(0)
+					
+			if len(vul) == 0:
+				pass
+			else:
+				fo.write('Vulnerabilities found'.center(100) + '\n')
+				fo.write('' + '\n')
+				while len(vul) > 0:
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write('Vulnerability Name: ' + vul[0] + '\n')
+					fo.write('Vulnerability Link: ' + vul[1] + '\n')
+					fo.write('Description: ' + vul[2] + '\n')
+					fo.write('Recomendation: ' + vul[3] + '\n')
+					fo.write('CVSS: ' + vul[4] + '\n')
+					fo.write('' + '\n')
+					vul.pop(4)
+					vul.pop(3)
+					vul.pop(2)
+					vul.pop(1)
+					vul.pop(0)
+			
 			fo.close()
 		else:
 			pass
