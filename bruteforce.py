@@ -692,7 +692,7 @@ def rep(list1,list2,url,userField,passField):
 	
 	
 	for value in list1:
-		if list1.index(value) == 0:
+		if 'text' in value:
 			t = time.strftime('%d-%m-%Y')
 			h = time.strftime('%H:%M:%S')
 			fo = open(('BruteForceReport_' + t + '_'+ h + '.txt'), 'wb')
@@ -718,5 +718,10 @@ def rep(list1,list2,url,userField,passField):
 				list2.pop(1)
 				list2.pop(0)
 			fo.close()	
-		else:
-			pass
+		elif 'html'.upper() in value:
+			
+			
+			t = time.strftime('%d-%m-%Y')
+			h = time.strftime('%H:%M:%S')
+			fo = open(('BruteForceReport_' + t + '_'+ h + '.txt'), 'wb')
+			fo.write(message)

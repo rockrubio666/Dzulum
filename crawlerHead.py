@@ -413,7 +413,7 @@ def rep(rep,dos,index,url):
 	resource = 'Resource: ' + str(url)
 	
 	for value in rep:
-		if rep.index(value) == 0:
+		if 'text' in value:
 			t = time.strftime('%d-%m-%Y')
 			h = time.strftime('%H:%M:%S')
 			fo = open(('CrawlerReport_' + t + '_'+ h + '.txt'), 'wb')

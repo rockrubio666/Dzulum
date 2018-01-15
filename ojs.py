@@ -811,7 +811,7 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul):
 	resource = 'Resource: ' + str(url)
 	
 	for value in rep:
-		if rep.index(value) == 0:
+		if 'text' in value:
 			t = time.strftime('%d-%m-%Y')
 			h = time.strftime('%H:%M:%S')
 			fo = open(('OJSReport_' + t + '_'+ h + '.txt'), 'wb')

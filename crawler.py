@@ -172,7 +172,7 @@ def rep(rep,sites,js,arg):
 	f = 'Total of links found: ' + str(len(sites) + len(js))
 	
 	for value in rep:
-		if rep.index(value) == 0:
+		if 'text' in value:
 			t = time.strftime('%d-%m-%Y')
 			h = time.strftime('%H:%M:%S')
 			fo = open(('CrawlerReport_' + t + '_'+ h + '.txt'), 'wb')

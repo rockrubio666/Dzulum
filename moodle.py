@@ -780,7 +780,7 @@ def rep(rep,version,url,readme,change,pl,them,vul):
 	
 	
 	for value in rep:
-		if rep.index(value) == 0:
+		if 'text' in value:
 			t = time.strftime('%d-%m-%Y')
 			h = time.strftime('%H:%M:%S')
 			fo = open(('MoodleReport_' + t + '_'+ h + '.txt'), 'wb')
@@ -900,5 +900,31 @@ def rep(rep,version,url,readme,change,pl,them,vul):
 					vul.pop(0)
 					
 			fo.close()
-		else:
-			pass
+		elif 'html'.upper() in value or 'html' in value:
+			message = """
+			<html>
+			<head>
+			<style>
+		
+				body {
+					background-image:url("unam.jpg");
+					background-repeat: no-repeat;
+					background-attachment: fixed;
+					background-size: cover;
+					}
+
+			</style>
+			</head>
+
+			<body>
+			<h1 align=center>jasd</h1>
+			</body>
+			</html>
+			"""
+			
+			t = time.strftime('%d-%m-%Y')
+			h = time.strftime('%H:%M:%S')
+			fo = open(('MoodleReport_' + t + '_'+ h + '.html'), 'wb')
+			fo.write(message)
+
+#background-image:url("https://pbs.twimg.com/profile_images/950411965909708800/iB4SMKuD.jpg");
