@@ -405,14 +405,12 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 			except:
 				pass
 	
-	rep(report,d,i,c,url)
+	rep(report,d,i,url)
 	
-def rep(rep,dos,index,cuatro,url):
-	print cuatro
+def rep(rep,dos,index,url):
 	title = ' *** Results of Crawling***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(url)
-	f = 'Total of links found: ' + str(len(dos) + len(index) + len(cuatro))
 	
 	for value in rep:
 		if rep.index(value) == 0:
@@ -425,8 +423,27 @@ def rep(rep,dos,index,cuatro,url):
 			fo.write('' + '\n')
 			fo.write(resource.ljust(50) + '\n')
 			fo.write('' + '\n')
-			fo.write(f.ljust(50) + '\n')
-			fo.write('' + '\n')
+			
+			if len(dos) == 0:
+				pass
+			else:
+				fo.write('Paths found with status code 200'.center(100) + '\n')
+				fo.write('' + '\n')
+				while len(dos) > 0:
+					fo.write(str(dos[0]) + '\n')
+					dos.pop(1)
+					dos.pop(0)
+					
+			if len(index) == 0:
+				pass
+			else:
+				fo.write('Paths found with Index of'.center(100) + '\n')
+				fo.write('' + '\n')
+				while len(index) > 0:
+					fo.write(str(index[0]) + '\n')
+					index.pop(1)
+					index.pop(0)
+			
 			fo.close()
 		else:
 			pass
