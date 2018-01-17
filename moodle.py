@@ -777,12 +777,11 @@ def rep(rep,version,url,readme,change,pl,them,vul):
 	title = ' *** Moodle Results ***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(url)
-	
+	t = time.strftime('%d-%m-%Y')
+	h = time.strftime('%H:%M:%S')
 	
 	for value in rep:
-		if 'text' in value:
-			t = time.strftime('%d-%m-%Y')
-			h = time.strftime('%H:%M:%S')
+		if 'text' in value:		
 			fo = open(('MoodleReport_' + t + '_'+ h + '.txt'), 'wb')
 			fo.write(title.center(100) + '\n')
 			fo.write('' + '\n')
@@ -901,30 +900,186 @@ def rep(rep,version,url,readme,change,pl,them,vul):
 					
 			fo.close()
 		elif 'html'.upper() in value or 'html' in value:
-			message = """
+			fo = open(('MoodleReport_' + t + '_'+ h + '.html'), 'wb')
+			
+			header = """
 			<html>
 			<head>
 			<style>
-		
-				body {
-					background-image:url("unam.jpg");
-					background-repeat: no-repeat;
-					background-attachment: fixed;
-					background-size: cover;
-					}
+			table {
+				font-family: arial, sans-serif;
+				border-collapse: collapse;
+				width: 100%;
+			}
+	
+			td, th {
+				border: 3px solid #808080;
+				text-align: center;
+				padding: 8px;
+			}
 
+			tr:nth-child(even) {
+				background-color: #f8f8ff;
+			}
 			</style>
+
+				<title>OJS Results</title>
 			</head>
-
-			<body>
-			<h1 align=center>jasd</h1>
-			</body>
-			</html>
+			<body text = "B8860B"; link ="B8860B"; bgcolor="00008B">
+				<h1 align="center">Results of Moodle Scanner</h1><br><br>
 			"""
+			fo.write( header)
+			fo.write("""<h1 align="left"> %s </h1>""" % execution)
+			fo.write("""<h1 align="left"><a href='%s'> %s </a></h1><br>""" % (url,resource))
 			
-			t = time.strftime('%d-%m-%Y')
-			h = time.strftime('%H:%M:%S')
-			fo = open(('MoodleReport_' + t + '_'+ h + '.html'), 'wb')
-			fo.write(message)
+			
+			while len(version) > 0:
+				fo.write("""<h1 align="left"> Version: %s </h1><br>""" % version[0])
+				version.pop(1)
+				version.pop(0)
+				
+				
+			if len(pl) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> Plugins </h1><br>""")
+				fo.write("""<table>
+							<tr>
+								<th>Name</th>
+								<th>Path</th>
+								<th>Version</th>
+							</tr>
+						""")
+				while len(pl) > 0:
+					na = pl[0]
+					pa = pl[1]
+					ve = pl[2]
+					if len(ve) > 0:
+						ve =  pl[2]
+					else:
+						ve = 'Version not found'
+					
+					fo.write("""
+							<tr>
+								<th>%s</th>
+								<th><a href='%s'> %s </a></th>
+								<th>%s</th>
+							</tr>
+							""" % (na,pa,pa,ve))
+					pl.pop(2)
+					pl.pop(1)
+					pl.pop(0)
+				fo.write("""</table><br>""")
+			
+			if len(readme) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> Readme Files </h1><br>""")
+				fo.write("""<table>	
+								<tr>
+									<th>Status code</th>
+									<th>Path</th>
+								</tr>""")
+				while len(readme) > 0:
+					if int(readme[0]) == 2:
+						fo.write("""<tr>
+									<th>200 OK!</th>
+									<th><a href='%s'> %s </a></th>
+								</tr>""" % (readme[1],readme[1]))
+						readme.pop(1)
+						readme.pop(0)
+						
+					elif int(readme[0]) == 4:
+						fo.write("""<tr>
+									<th>403 Forbidden File</th>
+									<th><a href='%s'> %s </a></th>
+								</tr>""" % (readme[1],readme[1]))
+						readme.pop(1)
+						readme.pop(0)
+					
+				fo.write("""</table><br>""")
+						
+				
+			if len(change) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> ChangeLog </h1><br>""")
+				fo.write("""<table>	
+								<tr>
+									<th>Status code</th>
+									<th>Path</th>
+								</tr>""")
+				while len(change) > 0:
+					if int(change[0]) == 2:
+						fo.write("""<tr>
+									<th>200 OK!</th>
+									<th><a href='%s'> %s </a></th>
+								</tr>""" % (change[1],change[1]))
+						change.pop(1)
+						change.pop(0)
+						
+					elif int(change[0]) == 4:
+						fo.write("""<tr>
+									<th>403 Forbidden File</th>
+									<th><a href='%s'> %s </a></th>
+								</tr>""" % (change[1],change[1]))
+						change.pop(1)
+						change.pop(0)
+				fo.write("""</table><br>""")
+				
+				
+			if len(them) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> Theme(s) installed </h1><br>""")
+				fo.write("""<table>
+							<tr>
+								<th>Name</th>
+								<th>Path</th>
+							</tr>""")
+				while len(them) > 0:
+					fo.write("""<tr>
+									<th>%s</th>
+									<th><a href='%s'> %s </a></th>
+								</tr>""" % (them[0],them[1],them[1]))
+					them.pop(1)
+					them.pop(0)
+				fo.write("""</table><br>""")
+				
+					
+			if len(vul) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> Vulnerabilities found </h1><br>""")
+				fo.write("""<table>
+							<tr>
+								<th>Name</th>
+								<th>Link</th>
+								<th>Description</th>
+								<th>Recomendation</th>
+								<th>CVSS</th>
+							</tr>""")
+				while len(vul) > 0:
+					fo.write("""
+							<tr>
+								<th>%s</th>
+								<th><a href='%s'> %s </a></th>
+								<th>%s</th>
+								<th><a href='%s'> %s </a></th>
+								<th>%s</th>
+							</tr>""" % (vul[0],vul[1],vul[1],vul[2],vul[3],vul[3],vul[4]))
+					
+					vul.pop(4)
+					vul.pop(3)
+					vul.pop(2)
+					vul.pop(1)
+					vul.pop(0)
+				fo.write("""</table><br>""")	
+				
+			
 
-#background-image:url("https://pbs.twimg.com/profile_images/950411965909708800/iB4SMKuD.jpg");
+				
+			fo.write("""
+			</body>
+			</html>""")
+			fo.close()
