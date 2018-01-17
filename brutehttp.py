@@ -760,8 +760,7 @@ def rep(list1,list2,url,userField,passField):
 				list2.pop(1)
 				list2.pop(0)
 			fo.close()
-		else:
-			elif 'html'.upper() in value or 'html' in value:			
+		elif 'html'.upper() in value or 'html' in value:			
 			fo = open(('BruteForceReport_' + t + '_'+ h + '.html'), 'wb')
 			
 			header = """
@@ -792,7 +791,7 @@ def rep(list1,list2,url,userField,passField):
 			"""
 			fo.write( header)
 			fo.write("""<h1 align="left"> %s </h1>""" % execution)
-			fo.write("""<h1 align="left"><a href='%s'> %s </a></h1><br>""" % (resource,resource))
+			fo.write("""<h1 align="left"><a href='%s'> %s </a></h1><br>""" % (url,resource))
 			fo.write("""<h1 align="left"> %s </h1>""" % usFi)
 			fo.write("""<h1 align="left"> %s </h1>""" % passFi)
 			fo.write("""<h1 align="left"> %s </h1><br>""" % tries)

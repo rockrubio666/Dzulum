@@ -747,7 +747,7 @@ def rep(list1,list2,url,userField,passField):
 			"""
 			fo.write( header)
 			fo.write("""<h1 align="left"> %s </h1>""" % execution)
-			fo.write("""<h1 align="left"><a href='%s'> %s </a></h1><br>""" % (resource,resource))
+			fo.write("""<h1 align="left"><a href='%s'> %s </a></h1><br>""" % (url,resource))
 			fo.write("""<h1 align="left"> %s </h1>""" % usFi)
 			fo.write("""<h1 align="left"> %s </h1>""" % passFi)
 			fo.write("""<h1 align="left"> %s </h1><br>""" % tries)

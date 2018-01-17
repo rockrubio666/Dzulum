@@ -170,11 +170,11 @@ def rep(rep,sites,js,arg):
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(arg)
 	f = 'Total of links found: ' + str(len(sites) + len(js))
+	t = time.strftime('%d-%m-%Y')
+	h = time.strftime('%H:%M:%S')
 	
 	for value in rep:
 		if 'text' in value:
-			t = time.strftime('%d-%m-%Y')
-			h = time.strftime('%H:%M:%S')
 			fo = open(('CrawlerReport_' + t + '_'+ h + '.txt'), 'wb')
 			fo.write(title.center(100) + '\n')
 			fo.write('' + '\n')
@@ -195,10 +195,64 @@ def rep(rep,sites,js,arg):
 			if len(sites) == 0:
 				pass
 			else:
+				fo.write('Links founnd'.center(100) + '\n')
+				fo.write('' + '\n')
 				for element in sites:
 					fo.write('Link: ' + element + '\n')
 			
 			fo.close()
-		else:
-			pass
 			
+		elif 'html'.upper() in value or 'html' in value:			
+			fo = open(('CrawlerReport_' + t + '_'+ h + '.html'), 'wb')
+			
+			header = """
+			<html>
+			<head>
+			<style>
+			table {
+				font-family: arial, sans-serif;
+				border-collapse: collapse;
+				width: 100%;
+			}
+	
+			td, th {
+				border: 3px solid #808080;
+				text-align: center;
+				padding: 8px;
+			}
+
+			tr:nth-child(even) {
+				background-color: #f8f8ff;
+			}
+			</style>
+
+				<title>Results of Crawling</title>
+			</head>
+			<body text = "B8860B"; link ="B8860B"; bgcolor="00008B">
+				<h1 align="center">Results of Crawling</h1><br><br>
+			"""
+			fo.write( header)
+			fo.write("""<h1 align="left"> %s </h1>""" % execution)
+			fo.write("""<h1 align="left"><a href='%s'> %s </a></h1>""" % (arg,resource))
+			fo.write("""<h1 align="left"> %s </h1><br>""" % f)
+			
+			if len(js) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> JavaScript Files </h1><br>""")
+				for element in js: 	
+					fo.write("""<h1 align="left"><a href='%s'> %s </a></h1>""" % (element,element))
+
+			if len(sites) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> Links found </h1><br>""")				
+				fo.write("""<table>
+							<tr>""")
+				for element in sites:
+					fo.write("""<th><a href='%s'> %s </a></th></tr>""" % (element,element))
+				
+			fo.write("""</table>
+			</body>
+			</html>""")
+			fo.close()
