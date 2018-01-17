@@ -265,7 +265,7 @@ def getParams(arg):
 	if options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
 		moodle(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thm)
 		
-	fromaddr = "mail"
+	fromaddr = ""
 	toaddr = to
 	msg = MIMEMultipart()
 
@@ -299,7 +299,7 @@ def getParams(arg):
 	try:
 		server = smtplib.SMTP('smtp.gmail.com',587)
 		server.starttls()
-		server.login(fromaddr,'pass')
+		server.login(fromaddr,'')
 		text = msg.as_string()
 		server.sendmail(fromaddr,toaddr,text)
 		server.quit()
