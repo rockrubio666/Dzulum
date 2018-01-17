@@ -688,13 +688,11 @@ def rep(list1,list2,url,userField,passField):
 	passFi = 'PassField: ' + str(passField)
 	tries = 'Number of tries: ' + str(len(list2) / 3)
 	up = 'User				Pass				Success :), Fail :('
-	
-	
+	t = time.strftime('%d-%m-%Y')
+	h = time.strftime('%H:%M:%S')
 	
 	for value in list1:
-		if 'text' in value:
-			t = time.strftime('%d-%m-%Y')
-			h = time.strftime('%H:%M:%S')
+		if 'text' in value:		
 			fo = open(('BruteForceReport_' + t + '_'+ h + '.txt'), 'wb')
 			fo.write(title.center(100) + '\n')
 			fo.write('' + '\n')
@@ -718,10 +716,64 @@ def rep(list1,list2,url,userField,passField):
 				list2.pop(1)
 				list2.pop(0)
 			fo.close()	
-		elif 'html'.upper() in value:
+		elif 'html'.upper() in value or 'html' in value:			
+			fo = open(('BruteForceReport_' + t + '_'+ h + '.html'), 'wb')
 			
-			
-			t = time.strftime('%d-%m-%Y')
-			h = time.strftime('%H:%M:%S')
-			fo = open(('BruteForceReport_' + t + '_'+ h + '.txt'), 'wb')
-			fo.write(message)
+			header = """
+			<html>
+			<head>
+			<style>
+			table {
+				font-family: arial, sans-serif;
+				border-collapse: collapse;
+				width: 100%;
+			}
+	
+			td, th {
+				border: 3px solid #808080;
+				text-align: center;
+				padding: 8px;
+			}
+
+			tr:nth-child(even) {
+				background-color: #f8f8ff;
+			}
+			</style>
+
+				<title>Bruteforce Results</title>
+			</head>
+			<body text = "B8860B"; link ="B8860B"; bgcolor="00008B">
+				<h1 align="center">Bruteforce Results</h1><br><br>
+			"""
+			fo.write( header)
+			fo.write("""<h1 align="left"> %s </h1>""" % execution)
+			fo.write("""<h1 align="left"><a href='%s'> %s </a></h1><br>""" % (resource,resource))
+			fo.write("""<h1 align="left"> %s </h1>""" % usFi)
+			fo.write("""<h1 align="left"> %s </h1>""" % passFi)
+			fo.write("""<h1 align="left"> %s </h1><br>""" % tries)
+			fo.write("""<table>
+							<tr>
+								<th>User</th>
+								<th>Password</th>
+								<th>Success :), Fail :(</th>
+							</tr>
+						""")
+			while len(list2) > 0:
+				user = list2[0] 
+				pa = list2[1]
+				val = list2[2]
+				fo.write("""
+							<tr>
+								<th>%s</th>
+								<th>%s</th>
+								<th>%s</th>
+							</tr>
+							""" % (user,pa,val))
+				list2.pop(2)
+				list2.pop(1)
+				list2.pop(0)
+				
+			fo.write("""</table>
+			</body>
+			</html>""")
+			fo.close()
