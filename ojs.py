@@ -871,7 +871,7 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul):
 					fo.write('-----------------------------------------------------------------------------------\n')
 					fo.write('Path: ' + change[0] + '\n')
 					fo.write('' + '\n')
-					rob.pop(0)
+					change.pop(0)
 				
 			if len(rob) == 0:
 				pass
@@ -951,62 +951,131 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul):
 			fo.write("""<h1 align="left"><a href='%s'> %s </a></h1><br>""" % (url,resource))
 			
 			while len(ver) > 0:
-				fo.write("""<h1 align="left"> Version: %s </h1>""" % ver[0])
-				fo.write("""<h1 align="left"> Path Version: %s </h1><br>""" % str(ver[1]))
+				a = ver[1]
+				print type(ver[1])
+				fo.write("""<h1 align="left"> Version: %s </h1><br>""" % ver[0])
 				ver.pop(1)
 				ver.pop(0)
 			
 			if len(plug) == 0:
 				pass
 			else:
-				fo.write('Plugins'.center(100) + '\n')
-				fo.write('' + '\n')
+				fo.write("""<h1 align="center"> Plugins </h1><br>""")
+				fo.write("""<table>
+							<tr>
+								<th>Name</th>
+								<th>Path</th>
+								<th>Version</th>
+							</tr>
+						""")
 				while len(plug) > 0:
 					na = plug[0]
 					pa = plug[1]
 					ve = plug[2]
 					if len(ve) > 0:
-						ve = 'Version: ' + plug[2]
+						ve =  plug[2]
 					else:
 						ve = 'Version not found'
-					fo.write('-----------------------------------------------------------------------------------\n')
-					fo.write('Name: ' + na + '\n')
-					fo.write('Path: ' + pa + '\n')
-					fo.write(ve+ '\n')
-					fo.write('' + '\n')
+					
+					fo.write("""
+							<tr>
+								<th>%s</th>
+								<th><a href='%s'> %s </a></th>
+								<th>%s</th>
+							</tr>
+							""" % (na,pa,pa,ve))
 					plug.pop(2)
 					plug.pop(1)
 					plug.pop(0)
+				fo.write("""</table><br>""")
+			
+			if len(readm) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> Readme Files </h1><br>""")
+				fo.write("""<table>	""")
+				while len(readm) > 0:
+					fo.write("""<tr>
+									<th><a href='%s'> %s </a></th>
+								</tr>""" % (readm[0],readm[0]))
+					
+					readm.pop(0)
+				fo.write("""</table><br>""")
+						
 			
 			
-			
-			
-			
-		#	fo.write("""<h1 align="left"> %s </h1>""" % usFi)
-		#	fo.write("""<h1 align="left"> %s </h1>""" % passFi)
-		#	fo.write("""<h1 align="left"> %s </h1><br>""" % tries)
-		#	fo.write("""<table>
-		#					<tr>
-		#						<th>User</th>
-		#						<th>Password</th>
-		#						<th>Success :), Fail :(</th>
-		#					</tr>
-		#				""")
-		#	while len(list2) > 0:
-		#		user = list2[0] 
-		#		pa = list2[1]
-		#		val = list2[2]
-		#		fo.write("""
-		#					<tr>
-		#						<th>%s</th>
-		#						<th>%s</th>
-		#						<th>%s</th>
-		#					</tr>
-		#					""" % (user,pa,val))
-		#		list2.pop(2)
-		#		list2.pop(1)
-		#		list2.pop(0)
+			if len(change) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> ChangeLog </h1><br>""")
+				fo.write("""<table>	""")
+				while len(change) > 0:
+					fo.write("""<tr>
+									<th><a href='%s'> %s </a></th>
+								</tr>""" % (change[0],change[0]))
+					change.pop(0)
+				fo.write("""</table><br>""")
 				
+				
+			if len(rob) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> Robots File </h1><br>""")
+				fo.write("""<table>	""")
+				while len(rob) > 0:
+					fo.write("""<tr>
+									<th><a href='%s'> %s </a></th>
+								</tr>""" % (rob[0],rob[0]))
+					rob.pop(0)
+				fo.write("""</table><br>""")
+				
+			if len(them) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> Theme(s) installed </h1><br>""")
+				fo.write("""<table>
+							<tr>
+								<th>Name</th>
+								<th>Path</th>
+							</tr>""")
+				while len(them) > 0:
+					fo.write("""<tr>
+									<th>%s</th>
+									<th><a href='%s'> %s </a></th>
+								</tr>""" % (them[0],them[1],them[1]))
+					them.pop(1)
+					them.pop(0)
+				fo.write("""</table><br>""")
+				
+					
+			if len(vul) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> Vulnerabilities found </h1><br>""")
+				fo.write("""<table>
+							<tr>
+								<th>Name</th>
+								<th>Link</th>
+								<th>Description</th>
+								<th>Recomendation</th>
+								<th>CVSS</th>
+							</tr>""")
+				while len(vul) > 0:
+					fo.write("""
+							<tr>
+								<th>%s</th>
+								<th><a href='%s'> %s </a></th>
+								<th>%s</th>
+								<th><a href='%s'> %s </a></th>
+								<th>%s</th>
+							</tr>""" % (vul[0],vul[1],vul[1],vul[2],vul[3],vul[3],vul[4]))
+					
+					vul.pop(4)
+					vul.pop(3)
+					vul.pop(2)
+					vul.pop(1)
+					vul.pop(0)
+				fo.write("""</table><br>""")
 			fo.write("""
 			</body>
 			</html>""")

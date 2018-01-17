@@ -240,20 +240,18 @@ def rep(rep,sites,js,arg):
 				pass
 			else:
 				fo.write("""<h1 align="center"> JavaScript Files </h1><br>""")
-				fo.write("""<table>
-							<tr>""")
+				fo.write("""<table>""")
 				for element in js: 	
-					fo.write("""<th><a href='%s'> %s </a></th></tr>""" % (element,element))
+					fo.write("""<tr><th><a href='%s'> %s </a></th></tr>""" % (element,element))
 				fo.write("""</table><br>""")
 				
 			if len(sites) == 0:
 				pass
 			else:
 				fo.write("""<h1 align="center"> Links found </h1><br>""")				
-				fo.write("""<table>
-							<tr>""")
+				fo.write("""<table>""")
 				for element in sites:
-					fo.write("""<th><a href='%s'> %s </a></th></tr>""" % (element,element))
+					fo.write("""<tr><th><a href='%s'> %s </a></th></tr>""" % (element,element))
 				
 			fo.write("""</table>
 			</body>
