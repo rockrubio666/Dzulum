@@ -13,6 +13,11 @@ from crawlerHead import *
 from crawler import *
 from bruteforce import *
 from brutehttp import *
+import smtplib
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+from email.MIMEBase import MIMEBase
+from email import encoders
 from multiprocessing import Process #  Utilizado para realizar la ejecucion de los programas de forma paralela
 arg = ''  
 		
@@ -207,6 +212,12 @@ def getParams(arg):
 		pvalues.append('')
 
 	if options.report in sys.argv:
+		mail = raw_input('Do you want to send reports to your mail?[Y/n]') or 'Y'
+		if 'Y' in mail or 'y' in mail:
+			to = raw_input("Introduce your email: ")
+			
+
+
 		for element in options.report.split(','):
 			rvalues.append(element)
 	else:
@@ -254,7 +265,48 @@ def getParams(arg):
 	if options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
 		moodle(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thm)
 		
-	
-	
+	fromaddr = "mail"
+	toaddr = to
+	msg = MIMEMultipart()
+
+	msg['From'] = fromaddr
+	msg['To'] = toaddr
+	msg['Subject'] = "Reports"
+
+	ind = ['BruteForce','CrawlerReport','OJSReport','MoodleReport']
+	ext = ['.txt','.xml','.html']
+	f = []
+	dirs = os.listdir(os.getcwd())
+
+	for element in dirs:
+		for i in ind:
+			if element.startswith(i):
+				for e in ext:
+					if element.endswith(e):
+						f.append(element)
+					else:
+						pass
+			
+	for element in f:
+		filename = str(element)
+		attachment = open(os.getcwd() + '/' + element,'rb')
+		part = MIMEBase('application','octet-stream')
+		part.set_payload((attachment).read())
+		encoders.encode_base64(part)
+		part.add_header('Content-Disposition',"attachment;filename=%s" % filename)
+		msg.attach(part)
+
+	try:
+		server = smtplib.SMTP('smtp.gmail.com',587)
+		server.starttls()
+		server.login(fromaddr,'pass')
+		text = msg.as_string()
+		server.sendmail(fromaddr,toaddr,text)
+		server.quit()
+		print 'Mail sent successful!'
+	except:
+		print 'Something went wrong, please check your mail and try again'
+		sys.exit(2)
+
 
 getParams(arg)
