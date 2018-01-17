@@ -411,11 +411,11 @@ def rep(rep,dos,index,url):
 	title = ' *** Results of Crawling***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(url)
+	t = time.strftime('%d-%m-%Y')
+	h = time.strftime('%H:%M:%S')
 	
 	for value in rep:
 		if 'text' in value:
-			t = time.strftime('%d-%m-%Y')
-			h = time.strftime('%H:%M:%S')
 			fo = open(('CrawlerReport_' + t + '_'+ h + '.txt'), 'wb')
 			fo.write(title.center(100) + '\n')
 			fo.write('' + '\n')
@@ -445,7 +445,65 @@ def rep(rep,dos,index,url):
 					index.pop(0)
 			
 			fo.close()
-		else:
-			pass
+		elif 'html'.upper() in value or 'html' in value:			
+			fo = open(('CrawlerReport_' + t + '_'+ h + '.html'), 'wb')
+			
+			header = """
+			<html>
+			<head>
+			<style>
+			table {
+				font-family: arial, sans-serif;
+				border-collapse: collapse;
+				width: 100%;
+			}
+	
+			td, th {
+				border: 3px solid #808080;
+				text-align: center;
+				padding: 8px;
+			}
 
+			tr:nth-child(even) {
+				background-color: #f8f8ff;
+			}
+			</style>
 
+				<title>Bruteforce Results</title>
+			</head>
+			<body text = "B8860B"; link ="B8860B"; bgcolor="00008B">
+				<h1 align="center">Results of Crawling</h1><br><br>
+			"""
+			fo.write(header)
+			fo.write("""<h1 align="left"> %s </h1>""" % execution)
+			fo.write("""<h1 align="left"><a href='%s'> %s </a></h1><br>""" % (url,resource))
+			
+			if len(dos) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> Paths found with status code 200 </h1><br>""")
+				fo.write("""<table>""")
+				while len(dos) > 0:
+					fo.write("""<tr>
+									<th><a href='%s'> %s </a></th></tr>
+								</tr>""" % (dos[0],dos[0]))
+					dos.pop(1)
+					dos.pop(0)
+				fo.write("""</table><br>""")
+				
+			if len(index) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> Paths found with Index of </h1><br>""")
+				fo.write("""<table>""")
+				while len(index) > 0:
+					fo.write("""<tr>
+									<th><a href='%s'> %s </a></th></tr>
+								</tr>""" % (index[0],index[0]))
+					index.pop(1)
+					index.pop(0)
+				fo.write("""</table><br>""")
+						
+			fo.write("""</body>
+			</html>""")
+			fo.close()
