@@ -809,11 +809,11 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul):
 	title = ' *** Results of OJS Scanner***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(url)
+	t = time.strftime('%d-%m-%Y')
+	h = time.strftime('%H:%M:%S')
 	
 	for value in rep:
 		if 'text' in value:
-			t = time.strftime('%d-%m-%Y')
-			h = time.strftime('%H:%M:%S')
 			fo = open(('OJSReport_' + t + '_'+ h + '.txt'), 'wb')
 			fo.write(title.center(100) + '\n')
 			fo.write('' + '\n')
@@ -917,6 +917,97 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul):
 					vul.pop(0)
 			
 			fo.close()
-		else:
-			pass
+		elif 'html'.upper() in value or 'html' in value:			
+			fo = open(('OJSReport_' + t + '_'+ h + '.html'), 'wb')
 			
+			header = """
+			<html>
+			<head>
+			<style>
+			table {
+				font-family: arial, sans-serif;
+				border-collapse: collapse;
+				width: 100%;
+			}
+	
+			td, th {
+				border: 3px solid #808080;
+				text-align: center;
+				padding: 8px;
+			}
+
+			tr:nth-child(even) {
+				background-color: #f8f8ff;
+			}
+			</style>
+
+				<title>OJS Results</title>
+			</head>
+			<body text = "B8860B"; link ="B8860B"; bgcolor="00008B">
+				<h1 align="center">Results of OJS Scanner</h1><br><br>
+			"""
+			fo.write( header)
+			fo.write("""<h1 align="left"> %s </h1>""" % execution)
+			fo.write("""<h1 align="left"><a href='%s'> %s </a></h1><br>""" % (url,resource))
+			
+			while len(ver) > 0:
+				fo.write("""<h1 align="left"> Version: %s </h1>""" % ver[0])
+				fo.write("""<h1 align="left"> Path Version: %s </h1><br>""" % str(ver[1]))
+				ver.pop(1)
+				ver.pop(0)
+			
+			if len(plug) == 0:
+				pass
+			else:
+				fo.write('Plugins'.center(100) + '\n')
+				fo.write('' + '\n')
+				while len(plug) > 0:
+					na = plug[0]
+					pa = plug[1]
+					ve = plug[2]
+					if len(ve) > 0:
+						ve = 'Version: ' + plug[2]
+					else:
+						ve = 'Version not found'
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write('Name: ' + na + '\n')
+					fo.write('Path: ' + pa + '\n')
+					fo.write(ve+ '\n')
+					fo.write('' + '\n')
+					plug.pop(2)
+					plug.pop(1)
+					plug.pop(0)
+			
+			
+			
+			
+			
+		#	fo.write("""<h1 align="left"> %s </h1>""" % usFi)
+		#	fo.write("""<h1 align="left"> %s </h1>""" % passFi)
+		#	fo.write("""<h1 align="left"> %s </h1><br>""" % tries)
+		#	fo.write("""<table>
+		#					<tr>
+		#						<th>User</th>
+		#						<th>Password</th>
+		#						<th>Success :), Fail :(</th>
+		#					</tr>
+		#				""")
+		#	while len(list2) > 0:
+		#		user = list2[0] 
+		#		pa = list2[1]
+		#		val = list2[2]
+		#		fo.write("""
+		#					<tr>
+		#						<th>%s</th>
+		#						<th>%s</th>
+		#						<th>%s</th>
+		#					</tr>
+		#					""" % (user,pa,val))
+		#		list2.pop(2)
+		#		list2.pop(1)
+		#		list2.pop(0)
+				
+			fo.write("""
+			</body>
+			</html>""")
+			fo.close()

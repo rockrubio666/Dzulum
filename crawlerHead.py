@@ -469,7 +469,7 @@ def rep(rep,dos,index,url):
 			}
 			</style>
 
-				<title>Bruteforce Results</title>
+				<title>Results of Crawling</title>
 			</head>
 			<body text = "B8860B"; link ="B8860B"; bgcolor="00008B">
 				<h1 align="center">Results of Crawling</h1><br><br>
