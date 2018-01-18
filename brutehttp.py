@@ -821,4 +821,36 @@ def rep(list1,list2,url,userField,passField):
 			</body>
 			</html>""")
 			fo.close()
+		
+		elif 'xml'.upper() in value or 'xml' in value:			
+			fo = open(('BruteForceReport_' + t + '_'+ h + '.xml'), 'wb')
+			
+			header = """<?xml version="1.0" encoding="UTF-8"?>
+			<bruteforce>
+				
+			"""
+			fo.write( header)
+			fo.write(""" <time>%s</time>""" % execution)
+			fo.write(""" <resource>%s</resource>""" % resource)
+			fo.write(""" <userField>%s</userField>""" % usFi)
+			fo.write(""" <passwordField>%s</passwordField>""" % passFi)
+			fo.write(""" <tries>%s</tries>""" % tries)
+			while len(list2) > 0:
+				user = list2[0] 
+				pa = list2[1]
+				val = list2[2]
+				fo.write("""
+							<credentials>
+								<user>%s</user>
+								<pass>%s</pass>
+								<result>%s</result>
+							</credentials>
+							""" % (user,pa,val))
+				list2.pop(2)
+				list2.pop(1)
+				list2.pop(0)
+			fo.write("""</bruteforce> """)
+			fo.close()
+		else:
+			pass
 

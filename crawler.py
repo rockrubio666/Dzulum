@@ -257,3 +257,31 @@ def rep(rep,sites,js,arg):
 			</body>
 			</html>""")
 			fo.close()
+		
+		elif 'xml'.upper() in value or 'xml' in value:			
+			fo = open(('CrawlerReport_' + t + '_'+ h + '.xml'), 'wb')
+			
+			header = """<?xml version="1.0" encoding="UTF-8"?>
+			<crawling>
+				
+			"""
+			fo.write( header)
+			fo.write(""" <time>%s</time>""" % execution)
+			fo.write(""" <resource>%s</resource>""" % resource)
+			fo.write("""<total>%s</total>""" % f)
+			
+			if len(js) == 0:
+				pass
+			else:
+				for element in js: 	
+					fo.write("""<js> %s </js>""" % (element))
+			if len(sites) == 0:
+				pass
+			else:
+				for element in sites:
+					fo.write("""<link> %s </link>""" % (element))
+			fo.write("""</crawling> """)
+			fo.close()
+		else:
+			pass
+

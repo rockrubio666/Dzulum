@@ -507,3 +507,35 @@ def rep(rep,dos,index,url):
 			fo.write("""</body>
 			</html>""")
 			fo.close()
+		
+		elif 'xml'.upper() in value or 'xml' in value:			
+			fo = open(('CrawlerReport_' + t + '_'+ h + '.xml'), 'wb')
+			
+			header = """<?xml version="1.0" encoding="UTF-8"?>
+			<crawling>
+				
+			"""
+			fo.write( header)
+			fo.write(""" <time>%s</time>""" % execution)
+			fo.write(""" <resource>%s</resource>""" % resource)
+			
+			if len(dos) == 0:
+				pass
+			else:
+				while len(dos) > 0:
+					fo.write("""<codeOk>%s</codeOk>""" % (dos[0]))
+					dos.pop(1)
+					dos.pop(0)
+				
+			if len(index) == 0:
+				pass
+			else:
+				while len(index) > 0:
+					fo.write("""<indexof>%s </indexof>""" % (index[0]))
+					index.pop(1)
+					index.pop(0)
+
+			fo.write("""</crawling>""")
+			fo.close()
+		else:
+			pass
