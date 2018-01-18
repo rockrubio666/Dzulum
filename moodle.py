@@ -1083,3 +1083,105 @@ def rep(rep,version,url,readme,change,pl,them,vul):
 			</body>
 			</html>""")
 			fo.close()
+
+		elif 'xml'.upper() in value or 'xml' in value:			
+			fo = open(('MoodleReport_' + t + '_'+ h + '.xml'), 'wb')
+			
+			header = """<?xml version="1.0" encoding="UTF-8"?>
+			<moodleScan>
+				
+			"""
+			
+			fo.write( header)
+			fo.write("""<time> %s </time>""" % execution)
+			fo.write("""<resource> %s </resource>""" % (resource))
+			
+			
+			while len(version) > 0:
+				fo.write("""<version> Version: %s </version>""" % version[0])
+				version.pop(1)
+				version.pop(0)
+			
+			if len(pl) == 0:
+				pass
+			else:
+				while len(pl) > 0:
+					na = pl[0]
+					pa = pl[1]
+					ve = pl[2]
+					if len(ve) > 0:
+						ve =  pl[2]
+					else:
+						ve = 'Version not found'
+					
+					fo.write("""<plugin>
+									<name>%s</name>
+									<path> %s </path>
+									<version>%s</version>
+								</plugin>""" % (na,pa,ve))
+					pl.pop(2)
+					pl.pop(1)
+					pl.pop(0)
+					
+			
+			if len(readme) == 0:
+				pass
+			else:
+				fo.write("""<readme>""")
+				while len(readme) > 0:
+					if int(readme[0]) == 2:
+						fo.write("""<codeOk>%s</codeOk>""" % (readme[1]))
+						readme.pop(1)
+						readme.pop(0)
+					elif int(readme[0]) == 4:
+						fo.write("""<forbidden>%s</forbidden>""" % (readme[1]))
+						readme.pop(1)
+						readme.pop(0)
+				fo.write("""</readme>""")
+			
+			if len(change) == 0:
+				pass
+			else:
+				fo.write("""<changeLog>""")
+				while len(change) > 0:
+					if int(change[0]) == 2:
+						fo.write("""<codeOk>%s</codeOk>""" % (change[1]))
+						change.pop(1)
+						change.pop(0)
+						
+					elif int(change[0]) == 4:
+						fo.write("""<forbidden>%s</forbidden>""" % (change[1]))
+						change.pop(1)
+						change.pop(0)
+				fo.write("""</changeLog>""")
+					
+			if len(them) == 0:
+				pass
+			else:
+				while len(them) > 0:
+					fo.write("""<theme>
+									<name>%s</name>
+									<path>%s</path>
+								</theme>""" % (them[0],them[1]))
+					them.pop(1)
+					them.pop(0)
+			
+			if len(vul) == 0:
+				pass
+			else:	
+				while len(vul) > 0:
+					fo.write("""<vulnerability>""")
+					fo.write("""<name>Jaja</name>""")
+					fo.write("""</vulnerability>""")
+					vul.pop(4)
+					vul.pop(3)
+					vul.pop(2)
+					vul.pop(1)
+					vul.pop(0)
+			
+			fo.write("""</moodleScan>""")
+			fo.close()
+		else:
+			pass
+
+				
