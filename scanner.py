@@ -221,6 +221,7 @@ def getParams(arg):
 		for element in options.report.split(','):
 			rvalues.append(element)
 	else:
+		to = ''
 		pass
 		
 	if options.Crawler == True and options.moodle in sys.argv: # Se manda a llamar la funcion del archivo

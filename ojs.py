@@ -951,8 +951,6 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul):
 			fo.write("""<h1 align="left"><a href='%s'> %s </a></h1><br>""" % (url,resource))
 			
 			while len(ver) > 0:
-				a = ver[1]
-				print type(ver[1])
 				fo.write("""<h1 align="left"> Version: %s </h1><br>""" % ver[0])
 				ver.pop(1)
 				ver.pop(0)
@@ -1080,3 +1078,99 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul):
 			</body>
 			</html>""")
 			fo.close()
+		
+		elif 'xml'.upper() in value or 'xml' in value:			
+			fo = open(('OJSReport_' + t + '_'+ h + '.xml'), 'wb')
+			
+			header = """<?xml version="1.0" encoding="UTF-8"?>
+			<ojsScan>
+				
+			"""
+			fo.write( header)
+			fo.write("""<time> %s </time>""" % execution)
+			fo.write("""<resource> %s </resource>""" % (resource))
+			
+			while len(ver) > 0:
+				fo.write("""<version> Version: %s </version>""" % ver[0])
+				ver.pop(1)
+				ver.pop(0)
+			
+			if len(plug) == 0:
+				pass
+			else:
+				while len(plug) > 0:
+					na = plug[0]
+					pa = plug[1]
+					ve = plug[2]
+					if len(ve) > 0:
+						ve =  plug[2]
+					else:
+						ve = 'Version not found'
+					
+					fo.write("""<plugin>
+									<name>%s</name>
+									<path> %s </path>
+									<version>%s</version>
+								</plugin>""" % (na,pa,ve))
+					plug.pop(2)
+					plug.pop(1)
+					plug.pop(0)
+			
+			if len(readm) == 0:
+				pass
+			else:
+				while len(readm) > 0:
+					fo.write("""<readme>%s </readme>""" % (readm[0]))
+					readm.pop(0)
+						
+			
+			if len(change) == 0:
+				pass
+			else:
+				while len(change) > 0:
+					fo.write("""<changeLog> %s </changeLog>""" % (change[0]))
+					change.pop(0)
+				
+			if len(rob) == 0:
+				pass
+			else:
+				while len(rob) > 0:
+					fo.write("""<robots> %s </robots>""" % (rob[0]))
+					rob.pop(0)
+			
+			
+			if len(them) == 0:
+				pass
+			else:
+				while len(them) > 0:
+					fo.write("""<theme>
+									<name>%s</name>
+									<path>%s</path>""" % (them[0],them[1]))
+					them.pop(1)
+					them.pop(0)
+					
+			if len(vul) == 0:
+				pass
+			else:
+				while len(vul) > 0:
+					fo.write("""
+							<vulnerability>
+								<name>%s</name>
+								<link>%s</link>
+								<description>%s</description>
+								<recomendation> %s </recomendation>
+								<cvss>%s</cvss>
+							</vulnerability>""" % (vul[0],vul[1],vul[2],vul[3],vul[4]))
+					
+					vul.pop(4)
+					vul.pop(3)
+					vul.pop(2)
+					vul.pop(1)
+					vul.pop(0)
+				
+				
+			fo.write("""</ojsScan> """)
+			fo.close()
+		else:
+			pass
+
