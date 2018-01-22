@@ -40,8 +40,8 @@ Moodle|3.0|CVE-2017-2641|https://www.cvedetails.com/cve/CVE-2017-2641/|'In Moodl
 Moodle|3.1|CVE-2017-2641|https://www.cvedetails.com/cve/CVE-2017-2641/|'In Moodle 2.x and 3.x, SQL injection can occur via user preferences. '|'https://www.exploit-db.com/exploits/41828/'|'7.5'
 Moodle|3.2|CVE-2017-2641|https://www.cvedetails.com/cve/CVE-2017-2641/|'In Moodle 2.x and 3.x, SQL injection can occur via user preferences. '|'https://www.exploit-db.com/exploits/41828/'|'7.5
 Moodle|3.1|CVE-2017-2578|https://www.cvedetails.com/cve/CVE-2017-2578/|'In Moodle 3.x, there is XSS in the assignment submission page. '|'https://moodle.org/mod/forum/discuss.php?d=345915' |'4.3'
-Moodle|3.2|CVE-2017-2578|https://www.cvedetails.com/cve/CVE-2017-2578/'In Moodle 3.x, there is XSS in the assignment submission page. '|'https://moodle.org/mod/forum/discuss.php?d=345915 '|'4.3'
-Moodle|2.7|CVE-2017-2576|https://www.cvedetails.com/cve/CVE-2017-2576/'In Moodle 2.x and 3.x, there is incorrect sanitization of attributes in forums. '|https://moodle.org/mod/forum/discuss.php?d=345912 |5.0
+Moodle|3.2|CVE-2017-2578|https://www.cvedetails.com/cve/CVE-2017-2578/|'In Moodle 3.x, there is XSS in the assignment submission page. '|'https://moodle.org/mod/forum/discuss.php?d=345915 '|'4.3'
+Moodle|2.7|CVE-2017-2576|https://www.cvedetails.com/cve/CVE-2017-2576/|'In Moodle 2.x and 3.x, there is incorrect sanitization of attributes in forums. '|https://moodle.org/mod/forum/discuss.php?d=345912 |5.0
 Moodle|2.8|CVE-2017-2576|https://www.cvedetails.com/cve/CVE-2017-2576/|'In Moodle 2.x and 3.x, there is incorrect sanitization of attributes in forums. '|https://moodle.org/mod/forum/discuss.php?d=345912 |5.0
 Moodle|2.9|CVE-2017-2576|https://www.cvedetails.com/cve/CVE-2017-2576/|'In Moodle 2.x and 3.x, there is incorrect sanitization of attributes in forums. '|https://moodle.org/mod/forum/discuss.php?d=345912 |5.0
 Moodle|3.0|CVE-2017-2576|https://www.cvedetails.com/cve/CVE-2017-2576/|'In Moodle 2.x and 3.x, there is incorrect sanitization of attributes in forums. '|https://moodle.org/mod/forum/discuss.php?d=345912 |5.0
