@@ -19,6 +19,7 @@ import time
 plugins = ['']
 start_time = time.time()
 def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report,th): # Version
+	print colored("\nBeginning moodle scanner", 'yellow')
 	requests.packages.urllib3.disable_warnings()
 	
 	if 'http' in arg:
@@ -771,9 +772,62 @@ def vuln(version,verbose,report,ver,arg,readm,change,pl,them): # Listado de vuln
 			pass
 			
 	f.close()
-	rep(report,ver,arg,readm,change,pl,them,vul)
+	exploit(report,ver,arg,readm,change,pl,them,vul)
+	
 
-def rep(rep,version,url,readme,change,pl,them,vul):
+def exploit(report,ver,url,readm,change,pl,them,vul):
+	rec = []
+	ask = raw_input("There are some exploits in our DB that could be used in thi site, Do you want to try them? [Y/n]") or 'Y'
+	if 'Y' in ask or 'y' in ask:
+		ex = ['/admin/roles/usersroles.php?userid=6&','/admin/mnet/trustedhosts.html','/lib/ajax/getnavbranch.php?id=6&type=6','/lib/phpunit/bootstrap.php','/blog/rsslib.php','/admin/cron.php','/iplookup/index.php']
+		succs = []
+		for element in ex:
+			t = url + element
+			r = requests.get(t)
+			if int(r.status_code) == 200 and element in r.url:
+				if len(r.content) > 0:
+					if '!!!' in r.content:
+						pass
+					else:
+						succs.append(t)
+				else:
+					pass
+			elif int(r.status_code) == 404 and 'courseid' in r.content:
+				succs.append(t)
+		
+		for element in succs:
+			if 'iplookup' in element or 'cron' in element:
+				print colored('They were found the following vulnerabilities in the site, related with a DoS attack','green')
+				print colored(element,'yellow')
+				print '\n'
+				rec.append('dos')
+				rec.append(element)
+			elif 'rsslib' in element or 'bootstrap' in element:
+				print colored('They were found the following vulnerabilities in the site, related with OS path','green')
+				print colored(element,'yellow')
+				print '\n'
+				rec.append('os')
+				rec.append(element)
+			elif 'ajax' in element or 'usersroles' in element:
+				print colored('They were found the following vulnerabilities in the site, related with Obtain Information about users and courses in the site','green')
+				print colored(element,'yellow')
+				print '\n'
+				rec.append('list')
+				rec.append(element)
+			elif '.html' in element:
+				print colored('They were found the following vulnerabilities in the site, related with upload files','green')
+				print colored(element,'yellow')
+				print '\n'
+				rec.append('up')
+				rec.append(element)
+		rep(report,ver,url,readm,change,pl,them,vul,rec)	
+	
+	else:
+		rep(report,ver,url,readm,change,pl,them,vul,rec)
+	
+	
+
+def rep(rep,version,url,readme,change,pl,them,vul,rec):
 	title = ' *** Moodle Results ***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(url)
@@ -897,7 +951,37 @@ def rep(rep,version,url,readme,change,pl,them,vul):
 					vul.pop(2)
 					vul.pop(1)
 					vul.pop(0)
+			
+			if len(rec) == 0:
+				pass
+			else:
+				fo.write('Exploits'.center(100) + '\n')
+				fo.write('' + '\n')
+				while len(rec) > 0:		
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write('Path to exploit: ' + rec[1] + '\n')
+					if 'dos' in rec[0]:			
+						fo.write('You could exploit this vulnerability by requesting the same resource multiple times \n')
+						fo.write('' + '\n')
+						rec.pop(1)
+						rec.pop(0)
+					elif 'list' in rec[0]:
+						fo.write('With this vulnerability you could listing information about users, courses and information contain in the database by changing the number in the ID parameter \n')
+						fo.write('' + '\n')
+						rec.pop(1)
+						rec.pop(0)
+					elif 'up' in rec[0]:
+						fo.write('It\'s possible to upload files with this vulnerability \n')
+						fo.write('' + '\n')
+						rec.pop(1)
+						rec.pop(0)
+					elif 'os' in rec[0]:
+						fo.write('You could get the installation path in the response of the resourse\n')
+						fo.write('' + '\n')
+						rec.pop(1)
+						rec.pop(0)
 					
+						
 			fo.close()
 		elif 'html'.upper() in value or 'html' in value:
 			fo = open(('MoodleReport_' + t + '_'+ h + '.html'), 'wb')
