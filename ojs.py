@@ -16,12 +16,12 @@ import socket # Tor
 import random
 import time
 
-start_time = time.time()
+start_time = time.time() #Tiempo de ejecucion del programa
 def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 	print colored("Beginning OJS scanner",'yellow')
 	if 'http' in arg:
 		pass
-		if 'index.php' in arg:
+		if 'index.php' in arg: #Validacion de la pagina principal del sitio
 			ind = raw_input('If you don\'t introduce the principal page, you couldn\'t get enough evidence. Do yo want to continue? [y/N] ') or 'N'
 			if 'Y' in ind or 'y' in ind:
 				pass
@@ -104,7 +104,7 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 			else:
 				pass
 		
-		if cookie is None:
+		if cookie is None: #cookie aleatoria
 			alp = ['a','b','c','d','e','f','g','h','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6','7','8','9','0']
 			cook = []
 			while len(cook) < 26:
@@ -116,14 +116,14 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 		jar = cookie.split(',')
 		cookies = {jar[0]:jar[1]}
 		
-	if agent is None:
+	if agent is None: #User agent por defecto
 		agent = 'Mozilla/5.0 (PLAYSTATION 3;3.55)'
 		headers = {'user-agent': agent}
 	else:
 		headers = {'user-agent': agent}
 
 	if len(proxy) == 1:
-		if tor == True:
+		if tor == True: #Manejo de errores de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			error = """
@@ -141,7 +141,7 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 				print colored(error,'green')
 				sys.exit(2)
 
-		else:
+		else: #Manejo de errores de la peticion
 			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -156,7 +156,7 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 				print colored(error,'green')
 				sys.exit(2)
 
-	else:
+	else: #Manejo de errores del proxy
 		error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -175,7 +175,7 @@ def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 	
 	
 	page_source =  req.text
-	if '/lib/pkp/js' in page_source:
+	if '/lib/pkp/js' in page_source: #Validacion de OJS
 		pass
 	else:
 		print colored('The site: ','yellow') +  colored(arg, 'blue') + colored(' isn\'t an OJS','yellow')
@@ -217,7 +217,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver): # Obtenci
 	requests.packages.urllib3.disable_warnings()					
 	
 	if len(proxy) == 1:
-		if tor == True:
+		if tor == True: #Manejo de errores de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			error = """
@@ -234,7 +234,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver): # Obtenci
 			except:
 				print colored(error,'green')
 				sys.exit(2)
-		else:
+		else: #Manejo de errores peticion normal
 			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -248,7 +248,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver): # Obtenci
 			except:
 				print colored(error,'green')
 				sys.exit(2)
-	else:
+	else: #Mandejo de errores del proxy
 		error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -271,7 +271,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver): # Obtenci
 		for link in webpage.xpath(listFind[i]):
 			if dom in link:
 				if len(proxy) == 1:
-					if tor == True:
+					if tor == True: #Manejo de errores de tor
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
 						error = """
@@ -288,7 +288,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver): # Obtenci
 						except:
 							print colored(error,'green')
 							sys.exit(2)
-					else:
+					else: #Manejo de errores peticion normal
 						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -303,7 +303,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver): # Obtenci
 							print colored(error,'green')
 							sys.exit(2)
 			
-				else:
+				else: #Manejo de errores del proxy
 					error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -382,7 +382,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 				plugin = arg + '/plugins' + row[2]
 				
 				if len(proxy) == 1:
-					if tor == True:
+					if tor == True: #Manejo de errores de tor
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
 						error = """
@@ -400,7 +400,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 							print colored(error,'green')
 							sys.exit(2)
 
-					else:
+					else: #Manejo de errores peticion normal
 						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -416,7 +416,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 							sys.exit(2)
 			
 
-				else:
+				else: #Manejo de errores del proxy
 					error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -483,7 +483,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 					readme = arg + '/docs/release-notes/README-' + row[2]
 				
 					if len(proxy) == 1:
-						if tor == True:
+						if tor == True: #Manejo de errores de tor
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
 							error = """
@@ -501,7 +501,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 								print colored(error,'green')
 								sys.exit(2)
 
-						else:
+						else: #Manejo de errores peticion normal
 							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -516,7 +516,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 								print colored(error,'green')
 								sys.exit(2)
 
-					else:
+					else: #Manejo de errores del proxy
 						try:
 							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
@@ -543,7 +543,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 					changeLog = arg + '/docs/release-notes/ChangeLog-' + row[2]
 				
 					if len(proxy) == 1:
-						if tor == True:
+						if tor == True: #Manejo de errores de tor
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
 							error = """
@@ -561,7 +561,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 								print colored(error,'green')
 								sys.exit(2)
 
-						else:
+						else: #Manejo de errores peticion normal
 							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -577,7 +577,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 								sys.exit(2)
 			
 
-					else:
+					else: #Manejo de errores del proxy
 						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -602,7 +602,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 				elif 'Robots' in row[1] and 'Ojs' in row[0]: # Archivos de configuracion visibles
 				
 					if len(proxy) == 1:
-						if tor == True:
+						if tor == True: #Manejo de errores de tor
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
 							error = """
@@ -620,7 +620,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 								print colored(error,'green')
 								sys.exit(2)
 
-						else:
+						else: #Manejo de errores peticion normal
 							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -636,7 +636,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 								sys.exit(2)
 			
 
-					else:
+					else: #Manejo de errores del proxy
 						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -664,7 +664,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 	f.close()
 	
 	if len(proxy) == 1:
-		if tor == True:
+		if tor == True: #Manejo de errores de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			error = """
@@ -681,7 +681,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 			except:
 				print colored(error,'green')
 				sys.exit(2)
-		else:
+		else: #Manejo de errores peticion normal
 			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -697,7 +697,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 				sys.exit(2)
 			
 
-	else:
+	else: #Manejo de errores del proxy
 		error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -734,7 +734,7 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 			regex = re.compile(r'(.*)\/(.*)\.css')
 			match = regex.search(tmp[element])
 			try:
-				if match.group():
+				if match.group(): #Tema peronalizado
 					if int(verbose) == 1:
 						print colored('Customize Theme ', 'green')
 					elif int(verbose) == 2:
@@ -791,7 +791,7 @@ def vuln(version,verbose,report,arg,ver,plug,readm,change,rob,them): # A partir 
 					print "Vulnerability Link: " + colored(row[3],'green')
 				elif int(verbose) == 2 or int(verbose) == 3:
 					print "Vulnerability Name: " + colored(row[2],'green') + ' ,Vulnerability Link: ' + colored(row[3],'green')
-				vul.append(row[2])
+				vul.append(row[2]) #Usado para el reporte
 				vul.append(row[3])
 				vul.append(row[4])
 				vul.append(row[5])
@@ -804,7 +804,7 @@ def vuln(version,verbose,report,arg,ver,plug,readm,change,rob,them): # A partir 
 	rep(report,arg,ver,plug,readm,change,rob,them,vul)
 	
 
-def rep(rep,url,ver,plug,readm,change,rob,them,vul):
+def rep(rep,url,ver,plug,readm,change,rob,them,vul): #Reporte
 
 	title = ' *** Results of OJS Scanner***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
@@ -813,7 +813,7 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul):
 	h = time.strftime('%H:%M:%S')
 	
 	for value in rep:
-		if 'text' in value:
+		if 'text' in value: #En texto plano
 			fo = open(('OJSReport_' + t + '_'+ h + '.txt'), 'wb')
 			fo.write(title.center(100) + '\n')
 			fo.write('' + '\n')
@@ -917,7 +917,7 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul):
 					vul.pop(0)
 			
 			fo.close()
-		elif 'html'.upper() in value or 'html' in value:			
+		elif 'html'.upper() in value or 'html' in value: #HTML
 			fo = open(('OJSReport_' + t + '_'+ h + '.html'), 'wb')
 			
 			header = """
@@ -1079,7 +1079,7 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul):
 			</html>""")
 			fo.close()
 		
-		elif 'xml'.upper() in value or 'xml' in value:			
+		elif 'xml'.upper() in value or 'xml' in value:	#XML
 			fo = open(('OJSReport_' + t + '_'+ h + '.xml'), 'wb')
 			
 			header = """<?xml version="1.0" encoding="UTF-8"?>

@@ -17,13 +17,13 @@ import random
 import time
 
 plugins = ['']
-start_time = time.time()
+start_time = time.time() #Tiempo de ejecucion del programa
 def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report,th): # Version
 	print colored("\nBeginning moodle scanner", 'yellow')
 	requests.packages.urllib3.disable_warnings()
 	
 	if 'http' in arg:
-		if '.php' in arg:
+		if '.php' in arg: #Validacion de la pagina principal del sitio
 			ind = raw_input('If you don\'t introduce the principal page, you couldn\'t get enough evidence. Do yo want to continue? [y/N] ') or 'N'
 			if 'Y' in ind or 'y' in ind:
 				pass
@@ -62,7 +62,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report,th): # Version
 				print colored(error,'green')
 				sys.exit(2)
 
-		else:
+		else: #Manejo de errores peticion normal
 			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -108,7 +108,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report,th): # Version
 			else:
 				pass
 		
-		if cookie is None:
+		if cookie is None: #Cookie aleatoria
 			alp = ['a','b','c','d','e','f','g','h','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6','7','8','9','0']
 			cook = []
 			while len(cook) < 26:
@@ -120,7 +120,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report,th): # Version
 		jar = cookie.split(',')
 		cookies = {jar[0]:jar[1]}
 		
-	if agent is None:
+	if agent is None: #User agent por defecto
 		agent = 'Mozilla/5.0 (PLAYSTATION 3;3.55)'
 		headers = {'user-agent': agent}
 	else:
@@ -128,14 +128,14 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report,th): # Version
 
 	m = hashlib.md5()
 	
-	if 'yui_combo' in req.text:
+	if 'yui_combo' in req.text: #Validacion del moodle
 		pass
 	else:
 		print colored('The site: ','green') + colored(arg,'yellow') + colored(' isn\'t a moodle','green')
 		sys.exit(2)
 	
 	if len(proxy) == 1:
-		if tor == True:
+		if tor == True: #Manejo de errores de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			error = """
@@ -152,7 +152,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report,th): # Version
 			except:
 				print colored(error,'green')
 				sys.exit(2)
-		else:
+		else: #Manejo de errores peticion normal
 			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -166,7 +166,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report,th): # Version
 			except:
 				print colored(error,'green')
 				sys.exit(2)
-	else:
+	else: #Manejo de errores del proxy
 		error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -223,7 +223,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver):	 # Obtenc
 	requests.packages.urllib3.disable_warnings()					
 	
 	if len(proxy) == 1:
-		if tor == True:
+		if tor == True: #Manejo de errores de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			error = """
@@ -240,7 +240,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver):	 # Obtenc
 			except:
 				print colored(error,'green')
 				sys.exit(2)
-		else:
+		else: #Manejo de errores peticion normal
 			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -254,7 +254,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver):	 # Obtenc
 			except:
 				print colored(error,'green')
 				sys.exit(2)
-	else:
+	else: #Manejo de errores del proxy
 		error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -278,7 +278,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver):	 # Obtenc
 			if dom in link:
 				if link.startswith('http'):	
 					if len(proxy) == 1:
-						if tor == True:
+						if tor == True: #Manejo de errores de tor
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
 							error = """
@@ -295,7 +295,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver):	 # Obtenc
 							except:
 								print colored(error,'green')
 								sys.exit(2)
-						else:
+						else: #Manejo de errores peticion normal
 							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -309,7 +309,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver):	 # Obtenc
 							except:
 								print colored(error,'green')
 								sys.exit(2)
-					else:
+					else: #Manejo de errores del proxy
 						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -344,7 +344,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver):	 # Obtenc
 							continue
 	
 	if len(proxy) == 1: # Obtencion del hash del archivo README
-		if tor == True:
+		if tor == True: #Manejo de errores de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			error = """
@@ -361,7 +361,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver):	 # Obtenc
 			except:
 				print colored(error,'green')
 				sys.exit(2)
-		else:
+		else: #Manejo de errores peticion normal
 			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -375,7 +375,7 @@ def version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver):	 # Obtenc
 			except:
 				print colored(error,'green')
 				sys.exit(2)
-	else:
+	else: #Manejo de errores del proxy
 		error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -445,7 +445,7 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 				if 'Readme' in row[1] and 'Moodle' in row[0]: 
 					readme = arg + row[2]
 					if len(proxy) == 1:
-						if tor == True:
+						if tor == True: #Manejo de errores de tor
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
 							error = """
@@ -462,7 +462,7 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 							except:
 								print colored(error,'green')
 								sys.exit(2)
-						else:
+						else: #Manejo de errores peticion normal
 							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -476,7 +476,7 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 							except:
 								print colored(error,'green')
 								sys.exit(2)
-					else:
+					else: #Manejo de errores del proxy
 						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -492,11 +492,11 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 							print colored(error,'green')
 							sys.exit(2)
 				
-					if req.status_code == 200:
+					if req.status_code == 200: #Si se tiene acceso al archivo
 						print 'README file: ' + colored(readme, 'green')
 						readm.append('2')
 						readm.append(readme)
-					elif req.status_code == 403:
+					elif req.status_code == 403: #Si el archivo existe pero no se tiene acceso
 						print 'Forbidden README: ' + colored(readme, 'green')
 						readm.append('4')
 						readm.append(readme)
@@ -507,7 +507,7 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 					changeLog = arg +  row[2]
 				
 					if len(proxy) == 1:
-						if tor == True:
+						if tor == True: #Manejo de errores de tor
 							socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 							socket.socket = socks.socksocket
 							error = """
@@ -524,7 +524,7 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 							except:
 								print colored(error,'green')
 								sys.exit(2)
-						else:
+						else: #Manejo de errores peticion normal
 							error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -538,7 +538,7 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 							except:
 								print colored(error,'green')
 								sys.exit(2)
-					else:
+					else: #Manejo de errores del proxy
 						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -554,11 +554,11 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 							print colored(error,'green')
 							sys.exit(2)
 				
-					if req.status_code == 200:
+					if req.status_code == 200: #Si existe el archivo
 						print 'ChangeLog: ' + colored(changeLog,'green')
 						change.append('2')
 						change.append(changeLog)
-					elif req.status_code == 403:
+					elif req.status_code == 403: #Si existe el archivo pero no se tiene acceso al mismo
 						print 'Forbidden ChangeLog: ' + colored(changeLog,'green')
 						change.append('4')
 						change.append(changeLog)
@@ -570,7 +570,7 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 			if 'Plugin' in row[1] and 'Moodle' in row[0]: # Busqueda de los plugins
 				plugin = arg + row[2]
 				if len(proxy) == 1:
-					if tor == True:
+					if tor == True: #Manejo de errores de tor
 						socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 						socket.socket = socks.socksocket
 						error = """
@@ -587,7 +587,7 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 						except:
 							print colored(error,'green')
 							sys.exit(2)
-					else:
+					else: #Manejo de errores peticion normal
 						error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -601,7 +601,7 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 						except:
 							print colored(error,'green')
 							sys.exit(2)
-				else:
+				else: #Manejo de errores del proxy
 					error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -647,7 +647,7 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 					except:
 						continue
 		
-				elif req.status_code == 403:
+				elif req.status_code == 403: #Exitencia del plugin, sin acceso al archivo
 					path = re.sub(r'upgrade.txt','',plugin)
 					one = re.sub(r'^\/','',element)
 					plug = re.sub(r'/upgrade.txt','',one)
@@ -665,7 +665,7 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 	f.close()		
 	
 	if len(proxy) == 1:
-		if tor == True:
+		if tor == True: #Manejo de errores de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			error = """
@@ -682,7 +682,7 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 			except:
 				print colored(error,'green')
 				sys.exit(2)
-		else:
+		else: #Manejo de errores peticion normal
 			error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -696,7 +696,7 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 			except:
 				print colored(error,'green')
 				sys.exit(2)
-	else:
+	else: #Manejo de errores del proxy
 		error = """
 	We are in trouble for some of the following reasons, please check them and try again :D
 		- Something in te URL could be wrong.
@@ -761,7 +761,7 @@ def vuln(version,verbose,report,ver,arg,readm,change,pl,them): # Listado de vuln
 					print "Vulnerability Link: " + colored(row[3],'green')
 				elif int(verbose) == 2 or int(verbose) == 3:
 					print "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3]
-				vul.append(row[2])
+				vul.append(row[2]) #Utilizado para el reporte
 				vul.append(row[3])
 				vul.append(row[4])
 				vul.append(row[5])
@@ -775,8 +775,8 @@ def vuln(version,verbose,report,ver,arg,readm,change,pl,them): # Listado de vuln
 	exploit(report,ver,arg,readm,change,pl,them,vul)
 	
 
-def exploit(report,ver,url,readm,change,pl,them,vul):
-	rec = []
+def exploit(report,ver,url,readm,change,pl,them,vul): #Explotacion de algunas vulnerabilidades
+	rec = [] 
 	ask = raw_input("There are some exploits in our DB that could be used in thi site, Do you want to try them? [Y/n]") or 'Y'
 	if 'Y' in ask or 'y' in ask:
 		ex = ['/admin/roles/usersroles.php?userid=6&','/admin/mnet/trustedhosts.html','/lib/ajax/getnavbranch.php?id=6&type=6','/lib/phpunit/bootstrap.php','/blog/rsslib.php','/admin/cron.php','/iplookup/index.php']
@@ -784,8 +784,8 @@ def exploit(report,ver,url,readm,change,pl,them,vul):
 		for element in ex:
 			t = url + element
 			r = requests.get(t)
-			if int(r.status_code) == 200 and element in r.url:
-				if len(r.content) > 0:
+			if int(r.status_code) == 200 and element in r.url: #Acceso al archivo
+				if len(r.content) > 0: #Si devuelve algun valor
 					if '!!!' in r.content:
 						pass
 					else:
@@ -795,7 +795,7 @@ def exploit(report,ver,url,readm,change,pl,them,vul):
 			elif int(r.status_code) == 404 and 'courseid' in r.content:
 				succs.append(t)
 		
-		for element in succs:
+		for element in succs: #Recomendaciones para realizar la explotacion
 			if 'iplookup' in element or 'cron' in element:
 				print colored('They were found the following vulnerabilities in the site, related with a DoS attack','green')
 				print colored(element,'yellow')
@@ -827,7 +827,7 @@ def exploit(report,ver,url,readm,change,pl,them,vul):
 	
 	
 
-def rep(rep,version,url,readme,change,pl,them,vul,rec):
+def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 	title = ' *** Moodle Results ***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(url)
@@ -835,7 +835,7 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec):
 	h = time.strftime('%H:%M:%S')
 	
 	for value in rep:
-		if 'text' in value:		
+		if 'text' in value:	#Texto plano
 			fo = open(('MoodleReport_' + t + '_'+ h + '.txt'), 'wb')
 			fo.write(title.center(100) + '\n')
 			fo.write('' + '\n')
@@ -981,7 +981,7 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec):
 						rec.pop(1)
 						rec.pop(0)
 			fo.close()
-		elif 'html'.upper() in value or 'html' in value:
+		elif 'html'.upper() in value or 'html' in value: #HTML
 			fo = open(('MoodleReport_' + t + '_'+ h + '.html'), 'wb')
 			
 			header = """
@@ -1205,7 +1205,7 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec):
 			</html>""")
 			fo.close()
 
-		elif 'xml'.upper() in value or 'xml' in value:			
+		elif 'xml'.upper() in value or 'xml' in value:	#XML
 			fo = open(('MoodleReport_' + t + '_'+ h + '.xml'), 'wb')
 			
 			header = """<?xml version="1.0" encoding="UTF-8"?>
