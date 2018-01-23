@@ -14,7 +14,7 @@ import time
 visited = []
 toVisit = []
 
-start_time = time.time()
+start_time = time.time() #Tiempo de ejecucion del programa
 def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 	proxy = proxip  + ':' + proxport
 	proxies = {'http' : proxy, 'https' : proxy,}
@@ -46,7 +46,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 			else:
 				pass
 		
-		if cookie is None:
+		if cookie is None: #Cookie aleatoria
 			alp = ['a','b','c','d','e','f','g','h','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6','7','8','9','0']
 			cook = []
 			while len(cook) < 26:
@@ -58,7 +58,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 		jar = cookie.split(',')
 		cookies = {jar[0]:jar[1]}
 		
-	if agent is None:
+	if agent is None: #User agent por defecto
 		agent = 'Mozilla/5.0 (PLAYSTATION 3;3.55)'
 		headers = {'user-agent': agent}
 	else:
@@ -74,13 +74,13 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 		try:
 			requests.packages.urllib3.disable_warnings()					
 			if len(proxy) == 1:
-				if tor == True:
+				if tor == True: #Manejo de errores de tor
 					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 					socket.socket = socks.socksocket					
 					res = requests.get(arg,cookies = cookies, headers = headers,verify=False)
-				else:
+				else: #Manejo de errores peticion normal
 					res = requests.get(arg, cookies = cookies, headers = headers, verify=False)
-			else:
+			else: #Manejo de errores del proxy
 				req = requests.get(arg,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 			
 			page_source = res.text
@@ -165,7 +165,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 		#crawler(toVisit[element])
 	
 	
-def rep(rep,sites,js,arg):
+def rep(rep,sites,js,arg): #Reporte
 	title = ' *** Results of Crawling***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(arg)
@@ -174,7 +174,7 @@ def rep(rep,sites,js,arg):
 	h = time.strftime('%H:%M:%S')
 	
 	for value in rep:
-		if 'text' in value:
+		if 'text' in value: #Texto plano
 			fo = open(('CrawlerReport_' + t + '_'+ h + '.txt'), 'wb')
 			fo.write(title.center(100) + '\n')
 			fo.write('' + '\n')
@@ -202,7 +202,7 @@ def rep(rep,sites,js,arg):
 			
 			fo.close()
 			
-		elif 'html'.upper() in value or 'html' in value:			
+		elif 'html'.upper() in value or 'html' in value:	#HTML
 			fo = open(('CrawlerReport_' + t + '_'+ h + '.html'), 'wb')
 			
 			header = """
@@ -258,7 +258,7 @@ def rep(rep,sites,js,arg):
 			</html>""")
 			fo.close()
 		
-		elif 'xml'.upper() in value or 'xml' in value:			
+		elif 'xml'.upper() in value or 'xml' in value:	#XML
 			fo = open(('CrawlerReport_' + t + '_'+ h + '.xml'), 'wb')
 			
 			header = """<?xml version="1.0" encoding="UTF-8"?>

@@ -10,7 +10,7 @@ import socks # Tor
 import random
 import time	
 
-start_time = time.time()
+start_time = time.time() #Tiempo de ejecucion del programa
 def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 	proxy = proxip  + ':' + proxport
 	proxies = {'http' : proxy, 'https' : proxy,}
@@ -22,7 +22,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 	i = []
 	requests.packages.urllib3.disable_warnings()
 	if len(proxy) == 1:
-		if tor == True:
+		if tor == True: #Manejo de errores de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050) # Peticiones a traves de tor
 			socket.socket = socks.socksocket
 			try:
@@ -40,7 +40,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 				print colored('It can\'t contact with the page','green')
 				sys.exit(2)
 			
-		else:
+		else: #Manejo de errores peticion normal
 			try:
 				req = requests.get(url,verify=False)
 			except requests.exceptions.ConnectionError:
@@ -79,7 +79,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 			else:
 				pass
 		
-		if cookie is None:
+		if cookie is None: #Cookie aleatoria
 			alp = ['a','b','c','d','e','f','g','h','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6','7','8','9','0']
 			cook = []
 			while len(cook) < 26:
@@ -92,7 +92,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 		jar = cookie.split(',')
 		cookies = {jar[0]:jar[1]}
 		
-	if agent is None:
+	if agent is None: #User agent por defecto
 		agent = 'Mozilla/5.0 (PLAYSTATION 3;3.55)'
 		headers = {'user-agent': agent}
 	else:
@@ -132,7 +132,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 
 	requests.packages.urllib3.disable_warnings() # Se revisa el location que devuelve con el recurso que no exite
 	if len(proxy) == 1:
-		if tor == True:
+		if tor == True: #Manejo de errores de tor
 			socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 			socket.socket = socks.socksocket
 			try:
@@ -149,7 +149,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 			except:
 				print colored('It can\'t contact with the page','green')
 				sys.exit(2)
-		else:
+		else: #Manejo de errores peticion normal
 			try:
 				req = requests.head(resources[0], cookies = cookies, headers = headers, verify=False)
 			except requests.exceptions.ConnectionError:
@@ -164,7 +164,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 			except:
 				print colored('It can\'t contact with the page','green')
 				sys.exit(2)
-	else:
+	else: #Manejo de errores del proxy
 		try:
 			req = requests.head(resources[0],cookies = cookies, headers = headers,proxies = proxies,verify=False)
 		except requests.exceptions.ConnectionError:
@@ -197,7 +197,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 		requests.packages.urllib3.disable_warnings()					
 		
 		if len(proxy) == 1:
-			if tor == True:
+			if tor == True: #Manejo de errores de tor
 				socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 				socket.socket = socks.socksocket
 				try:
@@ -214,7 +214,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 				except:
 					print colored('It can\'t contact with the page','green')
 					sys.exit(2)
-			else:
+			else: #Manejo de errores peticion normal
 				try:
 					res = requests.head(other, cookies = cookies, headers = headers, verify=False)
 					res.connection.close()
@@ -231,7 +231,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 					print colored('It can\'t contact with the page','green')
 					sys.exit(2)
 			
-		else:
+		else: #Manejo de errores del proxy
 			try:
 				res = requests.head(other,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 				res.connection.close()
@@ -276,7 +276,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 						if int(verbose) == 1 or int(verbose) == 2 or int(verbose) == 3:
 							indexOf = res.url + '/'
 							if len(proxy) == 1:
-								if tor == True:
+								if tor == True: #Manejo de errores de tor
 									socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)	
 									socket.socket = socks.socksocket
 									try:
@@ -293,7 +293,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 									except:
 										print colored('It can\'t contact with the page','green')
 										sys.exit(2)
-								else:
+								else: #Manejo de errores peticion normal
 									try:
 										r = requests.get(indexOf,cookies=cookies,headers=headers,verify=False)
 									except requests.exceptions.ConnectionError:
@@ -308,7 +308,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 									except:
 										print colored('It can\'t contact with the page','green')
 										sys.exit(2)
-							else:
+							else: #Manejo de errores del proxy
 								try:
 									r = requests.get(indexOf,cookies = cookies, headers = headers,proxies = proxies,verify=False)
 								except requests.exceptions.ConnectionError:
@@ -340,7 +340,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 									for line in fo:
 										new = r.url + line
 										if len(proxy) == 1:
-											if tor == True:
+											if tor == True: #Manejo de errores de tor
 												socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
 												socket.socket = socks.socksocket
 												try:
@@ -357,7 +357,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 												except:
 													print colored('It can\'t contact with the page','green')
 													sys.exit(2)
-											else:
+											else: #Manejo de errores peticion normal
 												try:
 													rn = requests.head(new.rstrip('\n'),cookies=cookies,headers=headers,verify=False)
 												except requests.exceptions.ConnectionError:
@@ -372,7 +372,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 												except:
 													print colored('It can\'t contact with the page','green')
 													sys.exit(2)
-										else:
+										else: #Manejo de errores del proxy
 											try:
 												rn = requests.head(new.strip('\n'),cookies = cookies, headers = headers,proxies = proxies,verify=False)
 											except requests.exceptions.ConnectionError:
@@ -397,7 +397,7 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 								else:
 									print "File not found"
 								
-						for key, value in res.headers.iteritems():
+						for key, value in res.headers.iteritems(): #Validacion de multiples redirecciones
 							if 'location' in key: 
 								if value in f:
 									fake.append(res.url)	
@@ -407,15 +407,15 @@ def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
 	
 	rep(report,d,i,url)
 	
-def rep(rep,dos,index,url):
+def rep(rep,dos,index,url): #Reporte
 	title = ' *** Results of Crawling***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
 	resource = 'Resource: ' + str(url)
 	t = time.strftime('%d-%m-%Y')
 	h = time.strftime('%H:%M:%S')
 	
-	for value in rep:
-		if 'text' in value:
+	for value in rep: 
+		if 'text' in value: #Texto plano
 			fo = open(('CrawlerReport_' + t + '_'+ h + '.txt'), 'wb')
 			fo.write(title.center(100) + '\n')
 			fo.write('' + '\n')
@@ -445,7 +445,7 @@ def rep(rep,dos,index,url):
 					index.pop(0)
 			
 			fo.close()
-		elif 'html'.upper() in value or 'html' in value:			
+		elif 'html'.upper() in value or 'html' in value: #HTML
 			fo = open(('CrawlerReport_' + t + '_'+ h + '.html'), 'wb')
 			
 			header = """
@@ -508,7 +508,7 @@ def rep(rep,dos,index,url):
 			</html>""")
 			fo.close()
 		
-		elif 'xml'.upper() in value or 'xml' in value:			
+		elif 'xml'.upper() in value or 'xml' in value:	#XML
 			fo = open(('CrawlerReport_' + t + '_'+ h + '.xml'), 'wb')
 			
 			header = """<?xml version="1.0" encoding="UTF-8"?>
