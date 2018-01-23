@@ -110,7 +110,7 @@ def getParams(arg):
 		sys.exit(2)	
 	
 	th = []
-	if options.thread == True:
+	if options.thread == True: #Uso de hilos
 		for element in sys.argv:
 			if '-C' in element:
 				thC = raw_input('Number of threads for Crawler: ')
@@ -175,7 +175,7 @@ def getParams(arg):
 	
 		
 	if len(sys.argv) >= 3:
-			numMeme = random.randint(0,5)
+			numMeme = random.randint(0,5) #Generacion de banners
 			numColor = random.randint(0,6)
 			ban(numMeme,numColor)
 			# Actualizacion de la herramienta
@@ -211,7 +211,7 @@ def getParams(arg):
 		pvalues.append('')
 		pvalues.append('')
 
-	if options.report in sys.argv:
+	if options.report in sys.argv: #Envio de los reportes por correo
 		mail = raw_input('Do you want to send reports to your mail?[Y/n]') or 'Y'
 		if 'Y' in mail or 'y' in mail:
 			to = raw_input("Introduce your email: ")
@@ -242,7 +242,7 @@ def getParams(arg):
 		check(url,bforce[1],bforce[2],bforce[3],bforce[4],bforce[5],options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thB)
 		
 		
-	elif options.Bruteforce in sys.argv and options.ojs in sys.argv:
+	elif options.Bruteforce in sys.argv and options.ojs in sys.argv: #Funcion de fuerza bruta
 		for element in options.Bruteforce.split(','):
 			bforce.append(element)
 		url = options.ojs + bforce[0]
@@ -266,7 +266,7 @@ def getParams(arg):
 	if options.moodle in sys.argv: # Se manda a llamar la funcion del archivo
 		moodle(options.moodle,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues,thm)
 		
-	if len(to) == 0:
+	if len(to) == 0: #Envio de correos
 		pass
 	else:
 		fromaddr = ""
