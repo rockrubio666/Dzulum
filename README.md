@@ -29,22 +29,21 @@ And finally to be a hacker don't forget to check the help:
 	./scanner.py --help
 
 	-h, --help            show this help message and exit
-	
+
 	-a Set User Agent, --Agent Set User Agent
                         User Agent value
+	
+	-B Login,UserField,PassField,User,Password,Message, --Bruteforce Login,UserField,PassField,User,Password,Message
+                        Login = Url Login, User= Value or file, Password= Value o file, Message= Error Message
+	
+	-b RequestFile,User,Password,Message, --bruteFile RequestFile,User,Password,Message, User= Value or file, Password= Value o file,
+                        Message= Error Message
                         
-	-B Login,UserField,PassField,User,Password,UsersFile,PassFile,Message, --Bruteforce Login,UserField,PassField,User,Password,UsersFile,PassFile,Message
-                        Login = Url Login, User = It could be optional, Password = It could be optional, UsersFile = It could be optional, PassFile = It could be optional
-                        
-	-b RequestFile,User,Password,UsersFile,PassFile,Message, --bruteFile RequestFile,User,Password,UsersFile,PassFile,Message
-						User = It could be optional, Password = It could be optional, UsersFile = It could be optional, PassFile =  It could be optional
-						
 	-c File, --crawlerHead File
                         File with directories
-                        
 	-C, --Crawler         Crawling site
 	
-	-k Set Cookie, --Cookie Set Cookie
+	-k ID Cookie, Cookie Value, --Cookie ID Cookie, Cookie Value
                         Cookide ID,Cookie value
                         
 	-m URL, --moodle URL  URL from Moodle site
@@ -52,8 +51,12 @@ And finally to be a hacker don't forget to check the help:
 	-o URL, --ojs URL     URL from OJS site
 	
 	-p Proxy IP,Port, --proxy Proxy IP,Port
-                        Proxy
+							Proxy
+							
+	-r Text,HTML,XML, --report Text,HTML,XML
+                        Reports the results getting from the site
                         
-	-T, --tor           Use Tor
+	-T, --tor             Use Tor
+	
 	-v [Number], --verbose [Number]
-                      Verbose Level 1-3																																																																																																																	
+                        Verbose Level 1-3

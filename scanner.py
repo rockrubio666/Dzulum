@@ -29,48 +29,42 @@ def getParams(arg):
 	description=( 						# Descripcion de las opciones de la herramienta
 	'''				Vulnerability scanner for Moodle and OJS
 -----------------------------------------------------------------------------------------------
- * Agent: Lets to specify the User Agent use it in the requests, e.g: -a 'Thunderstruck'
+ * Agent: Lets to specify the User Agent use it in the requests, e.g.: -a 'Thunderstruck'
  
- * Bruteforce: Tries to obtain the credentials of the site, it could be use with files like:
-	Option with both individuals: /login,username,password,papu,pass123,,,'Error login'
-	Option user and file with passwords: /login,username,password,papu,,,passFile,'Error login'
-	Option file with users and password: /login,username,password,,pass123,usersFile,,'Error login'
-	Option with both files: /login,username,password,,,usersFile,passFile,'Error Login'
+ * Bruteforce: Tries to obtain the credentials of the site, parameters could be files, e.g.: /login/index.php,username,password,Users,Passwords,'Invalid Login'
 	
- * Bruteforce with file: Tries to obtain the credentials of the site, this option needs a file with request and the usage is:
-	Option with both individuals: reqFile,papu,pass123,,,'Error login'
-	Option user and file with passwords: reqFile,papu,,,passFile,'Error login'
-	Option file with users and password: reqFile,,pass123,usersFile,,'Error login'
-	Option with both iles: reqFile,,,usersFile,passFile,'Error Login'
+ * Bruteforce with file: Tries to obtain the credentials of the site, this option needs a file with request, e.g.: my_request,Users,Passwords,'Invalid Login'
 	
- * Cookie: Lets to specify the Session Cookie use it in the requests, e.g: -k 'Cuki'
+ * Cookie: Lets to specify the Session Cookie use it in the requests, e.g.: -k 'My_Cookie','Cuki'
  
- * Crawler: Look for possible links and javascript in the index page, e.g: -C
+ * Crawler: Look for possible links and javascript in the index page, e.g.: -C
  
- * Crawler with head requests: Look for possible links and javascript in the index page with help of a file, e.g: -c sitesFile
+ * Crawler with head requests: Look for possible links and javascript in the index page with help of a file, e.g.: -c sitesFile
  
- * Moodle: Searches elements necessaries to get the version and determine the possible vulnerabilities, e.g: -m https://example.com/moodle/
+ * Moodle: Searches elements necessaries to get the version and determine the possible vulnerabilities, e.g.: -m https://example.com/moodle/
  
- * Proxy: Sends requests through proxy, e.g: -p 169.69.69.69,6969
+ * Proxy: Sends requests through proxy, e.g.: -p 169.69.69.69,6969
  
- * OJS: Searches elements necessaries to get the version an determine the possible vulnerabilities, e.g: -o https://example.com/ojs/
+ * OJS: Searches elements necessaries to get the version an determine the possible vulnerabilities, e.g.: -o https://example.com/ojs/
  
- * Tor: Makes requests through Tor socks, e.g: -T
+ * Report: Generates reports in TXT,HTML and XML from the results. They also could be sent via mail, e.g.: -r text,html,xml (The mail option will be asked when the program begins)
  
- * Verbose: Shows differents depuration levels, from 1 to 3, e.g: -v 3	'''),
+ * Tor: Makes requests through Tor socks, e.g.: -T
+ 
+ * Verbose: Shows differents depuration levels, from 1 to 3, e.g.: -v 3	'''),
 	epilog = 'Enjoy it! ')
 
 # Opciones de la herramienta
 	parser.add_argument('-a', '--Agent',metavar='Set User Agent', help='User Agent value')
-	parser.add_argument('-B', '--Bruteforce',metavar='Login,UserField,PassField,User,Password,UsersFile,PassFile,Message',help='Login = Url Login, User = It could be optional, Password = It could be optional, UsersFile = It could be optional, PassFile = It could be optional')
-	parser.add_argument('-b', '--bruteFile',metavar='RequestFile,User,Password,UsersFile,PassFile,Message',help=' User = It could be optional, Password = It could be optional, UsersFile = It could be optional, PassFile = It could be optional')
+	parser.add_argument('-B', '--Bruteforce',metavar='Login,UserField,PassField,User,Password,Message',help='Login = Url Login, User= Value or file, Password= Value o file, Message= Error Message')
+	parser.add_argument('-b', '--bruteFile',metavar='RequestFile,User,Password,Message',help=' , User= Value or file, Password= Value o file, Message= Error Message')
 	parser.add_argument('-c', '--crawlerHead', metavar='File', help = 'File with directories')	
 	parser.add_argument('-C', '--Crawler', help = 'Crawling site',action='store_true')	
-	parser.add_argument('-k', '--Cookie',metavar='Set Cookie', help='Cookide ID,Cookie value')
+	parser.add_argument('-k', '--Cookie',metavar='ID Cookie, Cookie Value', help='Cookide ID,Cookie value')
 	parser.add_argument('-m','--moodle', metavar='URL', help = 'URL from Moodle site')
 	parser.add_argument('-o', '--ojs', metavar= 'URL', help = 'URL from OJS site')
 	parser.add_argument('-p','--proxy',metavar='Proxy IP,Port', help = 'Proxy')
-	parser.add_argument('-r','--report', metavar='Text,HTML,XML,Mail', help= 'Reports the results getting from the site')
+	parser.add_argument('-r','--report', metavar='Text,HTML,XML', help= 'Reports the results getting from the site')
 	parser.add_argument('-t','--thread',help='Thread option',action='store_true')
 	parser.add_argument('-T','--tor', help = 'Use Tor',action='store_true')
 	parser.add_argument('-v','--verbose', metavar='Number', nargs = '?',help='Verbose Level 1-3', default = 1)
