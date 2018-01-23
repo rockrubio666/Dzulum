@@ -980,8 +980,6 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec):
 						fo.write('' + '\n')
 						rec.pop(1)
 						rec.pop(0)
-					
-						
 			fo.close()
 		elif 'html'.upper() in value or 'html' in value:
 			fo = open(('MoodleReport_' + t + '_'+ h + '.html'), 'wb')
@@ -1160,9 +1158,48 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec):
 					vul.pop(0)
 				fo.write("""</table><br>""")	
 				
-			
-
-				
+			if len(rec) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> Exploits found </h1><br>""")
+				fo.write("""<table>
+							<tr>
+								<th>Path</th>
+								<th>Description</th>
+							</tr>""")
+					
+				while len(rec) > 0:
+					if 'dos' in rec[0]:			
+						fo.write("""<tr>
+										<th><a href='%s'> %s </a></th>
+										<th>You could exploit this vulnerability by requesting the same resource multiple times</th>
+									</tr>""" % (rec[1],rec[1]))
+						rec.pop(1)
+						rec.pop(0)
+						
+					elif 'list' in rec[0]:
+						fo.write("""<tr>
+										<th><a href='%s'> %s </a></th>
+										<th>With this vulnerability you could listing information about users, courses and information contain in the database by changing the number in the ID parameter</th>
+									</tr>""" % (rec[1],rec[1]))
+						rec.pop(1)
+						rec.pop(0)
+					elif 'up' in rec[0]:
+						fo.write("""<tr>
+										<th><a href='%s'> %s </a></th>
+										<th>It\'s possible to upload files with this vulnerability</th>
+									</tr>""" % (rec[1],rec[1]))
+						rec.pop(1)
+						rec.pop(0)
+					elif 'os' in rec[0]:
+						fo.write("""<tr>
+										<th><a href='%s'> %s </a></th>
+										<th>You could get the installation path in the response of the resourse</th>
+									</tr>""" % (rec[1],rec[1]))
+						rec.pop(1)
+						rec.pop(0)
+					
+			fo.write("""</table><br>""")	
 			fo.write("""
 			</body>
 			</html>""")
@@ -1255,13 +1292,67 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec):
 			else:	
 				while len(vul) > 0:
 					fo.write("""<vulnerability>""")
-					fo.write("""<name>Jaja</name>""")
+					fo.write("""<name>%s</name>""" % (vul[0]))
 					fo.write("""</vulnerability>""")
 					vul.pop(4)
 					vul.pop(3)
 					vul.pop(2)
 					vul.pop(1)
 					vul.pop(0)
+					
+			if len(rec) == 0:
+				pass
+			else:
+				while len(rec) > 0:
+					
+					if 'dos' in rec[0]:	
+						if '&'	in rec[1]:
+							t = rec[1].replace('&',"&amp;")
+						else:
+							t = rec[1]
+						fo.write("""<exploit>""")
+						fo.write("""<path>"%s"</path>""" % t)
+						fo.write("""<description>You could exploit this vulnerability by requesting the same resource multiple times</description>""")
+						fo.write("""</exploit>""")
+						rec.pop(1)
+						rec.pop(0)
+						
+					elif 'list' in rec[0]:
+						if '&'	in rec[1]:
+							t = rec[1].replace('&',"&amp;")
+						else:
+							t = rec[1]
+						fo.write("""<exploit>""")
+						fo.write("""<path>"%s"</path>""" % t)
+						fo.write("""<description>With this vulnerability you could listing information about users, courses and information contain in the database by changing the number in the ID parameter</description>""")
+						fo.write("""</exploit>""")
+						rec.pop(1)
+						rec.pop(0)
+						
+					elif 'up' in rec[0]:
+						if '&'	in rec[1]:
+							t = rec[1].replace('&',"&amp;")
+						else:
+							t = rec[1]
+						fo.write("""<exploit>""")
+						fo.write("""<path>"%s"</path>""" % t)
+						fo.write("""<description>It's possible to upload files with this vulnerability</description>""")
+						fo.write("""</exploit>""")
+						rec.pop(1)
+						rec.pop(0)
+							
+					elif 'os' in rec[0]:
+						if '&'	in rec[1]:
+							t = rec[1].replace('&',"&amp;")
+						else:
+							t = rec[1]
+						fo.write("""<exploit>""")
+						fo.write("""<path>"%s"</path>""" % t)
+						fo.write("""<description>You could get the installation path in the response of the resourse</description>""")
+						fo.write("""</exploit>""")
+						rec.pop(1)
+						rec.pop(0)
+										
 			
 			fo.write("""</moodleScan>""")
 			fo.close()

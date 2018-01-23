@@ -18,7 +18,7 @@ import time
 
 start_time = time.time()
 def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
-	
+	print colored("Beginning OJS scanner",'yellow')
 	if 'http' in arg:
 		pass
 		if 'index.php' in arg:
