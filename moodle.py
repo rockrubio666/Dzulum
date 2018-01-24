@@ -817,21 +817,21 @@ def exploit(report,ver,url,readm,change,pl,them,vul,cookies,headers,proxy,proxie
 					except:
 						print colored(error,'green')
 						sys.exit(2)
-			#else: #Manejo de errores del proxy
-			#	error = """
-			#	We are in trouble for some of the following reasons, please check them and try again :D
-			#		- Something in te URL could be wrong.
-			#		- The site is down or doesn\'t exist.
-			#		- There\'s a problem with the proxy connection
-			#	"""
-			#	try:
-			#		r = requests.get(t,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)		
-			#	except requests.RequestException:		
-			#		print colored(error,'green')
-			#		sys.exit(2)
-			#	except:
-			#		print colored(error,'green')
-			#		sys.exit(2)
+			else: #Manejo de errores del proxy
+				error = """
+				We are in trouble for some of the following reasons, please check them and try again :D
+					- Something in te URL could be wrong.
+					- The site is down or doesn\'t exist.
+					- There\'s a problem with the proxy connection
+				"""
+				try:
+					r = requests.get(t,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)		
+				except requests.RequestException:		
+					print colored(error,'green')
+					sys.exit(2)
+				except:
+					print colored(error,'green')
+					sys.exit(2)
 			
 			if int(r.status_code) == 200 and element in r.url: #Acceso al archivo
 				if len(r.content) > 0: #Si devuelve algun valor
@@ -844,32 +844,36 @@ def exploit(report,ver,url,readm,change,pl,them,vul,cookies,headers,proxy,proxie
 			elif int(r.status_code) == 404 and 'courseid' in r.content:
 				succs.append(t)
 		
-		for element in succs: #Recomendaciones para realizar la explotacion
-			if 'iplookup' in element or 'cron' in element:
-				print colored('They were found the following vulnerabilities in the site, related with a DoS attack','green')
-				print colored(element,'yellow')
-				print '\n'
-				rec.append('dos')
-				rec.append(element)
-			elif 'rsslib' in element or 'bootstrap' in element:
-				print colored('They were found the following vulnerabilities in the site, related with OS path','green')
-				print colored(element,'yellow')
-				print '\n'
-				rec.append('os')
-				rec.append(element)
-			elif 'ajax' in element or 'usersroles' in element:
-				print colored('They were found the following vulnerabilities in the site, related with Obtain Information about users and courses in the site','green')
-				print colored(element,'yellow')
-				print '\n'
-				rec.append('list')
-				rec.append(element)
-			elif '.html' in element:
-				print colored('They were found the following vulnerabilities in the site, related with upload files','green')
-				print colored(element,'yellow')
-				print '\n'
-				rec.append('up')
-				rec.append(element)
-		rep(report,ver,url,readm,change,pl,them,vul,rec)	
+		if len(succs) > 0:
+			for element in succs: #Recomendaciones para realizar la explotacion
+				if 'iplookup' in element or 'cron' in element:
+					print colored('They were found the following vulnerabilities in the site, related with a DoS attack','green')
+					print colored(element,'yellow')
+					print '\n'
+					rec.append('dos')
+					rec.append(element)
+				elif 'rsslib' in element or 'bootstrap' in element:
+					print colored('They were found the following vulnerabilities in the site, related with OS path','green')
+					print colored(element,'yellow')
+					print '\n'
+					rec.append('os')
+					rec.append(element)
+				elif 'ajax' in element or 'usersroles' in element:
+					print colored('They were found the following vulnerabilities in the site, related with Obtain Information about users and courses in the site','green')
+					print colored(element,'yellow')
+					print '\n'
+					rec.append('list')
+					rec.append(element)
+				elif '.html' in element:
+					print colored('They were found the following vulnerabilities in the site, related with upload files','green')
+					print colored(element,'yellow')
+					print '\n'
+					rec.append('up')
+					rec.append(element)
+			rep(report,ver,url,readm,change,pl,them,vul,rec)	
+		else:
+			print colored('Sorry there aren\'t any exploit available in the database','yellow')
+			rep(report,ver,url,readm,change,pl,them,vul,rec)	
 	
 	else:
 		rep(report,ver,url,readm,change,pl,them,vul,rec)
