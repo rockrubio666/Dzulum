@@ -45,12 +45,12 @@ userField {
 }
 
 
-
-
 credentials {
 	font-family: arial, sans-serif;
 	border-collapse: collapse;
-	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	width: 30%;
 	background-color: #f8f8ff;
 	display: block;
 	border: 3px solid #808080;
@@ -59,12 +59,9 @@ credentials {
 }
 
 user, pass ,result{
-		font-weight: bold;
-		display: block;
-		
-		
-		
-		color: darkgoldenrod;
+	font-weight: bold;
+	display: block;	
+	color: darkgoldenrod;
 		
 }
 
