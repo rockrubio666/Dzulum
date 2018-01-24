@@ -747,9 +747,9 @@ def files(arg, verbose,version,cookies,headers,proxy,proxies,tor,report,ver): # 
 				them.append(match.group(2))
 				them.append('It can\'t get the path')
 					
-	vuln(version,verbose,report,ver,arg,readm,change,pl,them)
+	vuln(version,verbose,report,ver,arg,readm,change,pl,them,cookies,headers,proxy,proxies,tor)
 	
-def vuln(version,verbose,report,ver,arg,readm,change,pl,them): # Listado de vulnerabilidades obtenidas a partir de la version del gestor de contenidos
+def vuln(version,verbose,report,ver,arg,readm,change,pl,them,cookies,headers,proxy,proxies,tor): # Listado de vulnerabilidades obtenidas a partir de la version del gestor de contenidos
 	vul = []
 	f = open('vuln','rb')
 	reader = csv.reader(f,delimiter='|')
@@ -772,10 +772,10 @@ def vuln(version,verbose,report,ver,arg,readm,change,pl,them): # Listado de vuln
 			pass
 			
 	f.close()
-	exploit(report,ver,arg,readm,change,pl,them,vul)
+	exploit(report,ver,arg,readm,change,pl,them,vul,cookies,headers,proxy,proxies,tor)
 	
 
-def exploit(report,ver,url,readm,change,pl,them,vul): #Explotacion de algunas vulnerabilidades
+def exploit(report,ver,url,readm,change,pl,them,vul,cookies,headers,proxy,proxies,tor): #Explotacion de algunas vulnerabilidades
 	rec = [] 
 	ask = raw_input("There are some exploits in our DB that could be used in thi site, Do you want to try them? [Y/n]") or 'Y'
 	if 'Y' in ask or 'y' in ask:
@@ -783,7 +783,56 @@ def exploit(report,ver,url,readm,change,pl,them,vul): #Explotacion de algunas vu
 		succs = []
 		for element in ex:
 			t = url + element
-			r = requests.get(t)
+			
+			if len(proxy) == 1:
+				if tor == True: #Manejo de errores de tor
+					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+					socket.socket = socks.socksocket
+					error = """
+				We are in trouble for some of the following reasons, please check them and try again :D
+					- Something in the URL could be wrong.
+					- The site is down.
+					- It seems that we have problems using Tor :(
+					"""
+					try:
+						r = requests.get(t,cookies = cookies, headers = headers,verify=False,timeout=10)
+					except requests.RequestException:			
+						print colored(error,'green')
+						sys.exit(2)
+					except:
+						print colored(error,'green')
+						sys.exit(2)
+					
+				else: #Manejo de errores peticion normal
+					error = """
+					We are in trouble for some of the following reasons, please check them and try again :D
+						- Something in te URL could be wrong.
+						- The site is down or doesn\'t exist.
+					"""
+					try:
+						r = requests.get(t, cookies = cookies, headers = headers, verify=False,timeout=10)			
+					except requests.RequestException:			
+						print colored(error,'green')
+						sys.exit(2)
+					except:
+						print colored(error,'green')
+						sys.exit(2)
+			#else: #Manejo de errores del proxy
+			#	error = """
+			#	We are in trouble for some of the following reasons, please check them and try again :D
+			#		- Something in te URL could be wrong.
+			#		- The site is down or doesn\'t exist.
+			#		- There\'s a problem with the proxy connection
+			#	"""
+			#	try:
+			#		r = requests.get(t,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)		
+			#	except requests.RequestException:		
+			#		print colored(error,'green')
+			#		sys.exit(2)
+			#	except:
+			#		print colored(error,'green')
+			#		sys.exit(2)
+			
 			if int(r.status_code) == 200 and element in r.url: #Acceso al archivo
 				if len(r.content) > 0: #Si devuelve algun valor
 					if '!!!' in r.content:
