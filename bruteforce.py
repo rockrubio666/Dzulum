@@ -782,30 +782,33 @@ def rep(list1,list2,url,userField,passField): #Reporte
 			fo = open(('BruteForceReport_' + t + '_'+ h + '.xml'), 'wb')
 			
 			header = """<?xml version="1.0" encoding="UTF-8"?>
-			<bruteforce>
-				
+			<?xml-stylesheet type"text/css" href=bforce.css?>
+			<people>	
 			"""
-			fo.write( header)
-			fo.write(""" <time>%s</time>""" % execution)
-			fo.write(""" <resource>%s</resource>""" % resource)
-			fo.write(""" <userField>%s</userField>""" % usFi)
-			fo.write(""" <passwordField>%s</passwordField>""" % passFi)
-			fo.write(""" <tries>%s</tries>""" % tries)
+			fo.write('<?xml version="1.0" encoding="UTF-8"?>' + '\n')
+			fo.write('<?xml-stylesheet type="text/css" href="bforce.css"?>' + '\n')
+			fo.write('<bruteforce>' + '\n')
+			fo.write('	<title>***Bruteforce Results***</title><br />' + '\n')
+			fo.write('	<time>%s</time>' % execution + '\n')
+			fo.write('	<resource>%s</resource>' % resource + '\n')
+			fo.write('	<userField>%s</userField>' % usFi + '\n')
+			fo.write('	<passwordField>%s</passwordField>' % passFi + '\n')
+			fo.write('	<tries>%s</tries>' % tries + '\n')
 			while len(list2) > 0:
 				user = list2[0] 
 				pa = list2[1]
 				val = list2[2]
-				fo.write("""
-							<credentials>
-								<user>%s</user>
-								<pass>%s</pass>
-								<result>%s</result>
-							</credentials>
-							""" % (user,pa,val))
+				fo.write('	<credentials>' + '\n')
+				fo.write('		<user>User: %s</user>' % user + '\n')
+				fo.write('		<pass>Password: %s</pass>' % pa + '\n')
+				fo.write('		<result>Result: %s</result>' % val + '\n')
+				fo.write('	</credentials>' + '\n')
 				list2.pop(2)
 				list2.pop(1)
 				list2.pop(0)
-			fo.write("""</bruteforce> """)
+			fo.write('</bruteforce>')
 			fo.close()
+
+
 		else:
 			pass
