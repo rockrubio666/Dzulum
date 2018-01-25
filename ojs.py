@@ -1082,22 +1082,25 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul): #Reporte
 		elif 'xml'.upper() in value or 'xml' in value:	#XML
 			fo = open(('OJSReport_' + t + '_'+ h + '.xml'), 'wb')
 			
-			header = """<?xml version="1.0" encoding="UTF-8"?>
-			<ojsScan>
-				
-			"""
-			fo.write( header)
-			fo.write("""<time> %s </time>""" % execution)
-			fo.write("""<resource> %s </resource>""" % (resource))
+			fo.write('<?xml version="1.0" encoding="UTF-8"?>' + '\n')
+			fo.write('<?xml-stylesheet type="text/css" href="ojs.css"?>' + '\n')
+			fo.write('<ojsScan>' + '\n')
+			fo.write('	<title>***Results of OJS Scanner***</title><br />' + '\n')
+			fo.write(' 	<time>%s</time>' % execution)
+			fo.write('	<resource>%s</resource>' % resource)
 			
 			while len(ver) > 0:
-				fo.write("""<version> Version: %s </version>""" % ver[0])
+				fo.write(	'<version>Version: %s</version>' % ver[0] + '\n') 
 				ver.pop(1)
 				ver.pop(0)
+			
+			
+			
 			
 			if len(plug) == 0:
 				pass
 			else:
+				fo.write(	'<subtitle>Plugins</subtitle>' + '\n')
 				while len(plug) > 0:
 					na = plug[0]
 					pa = plug[1]
@@ -1106,71 +1109,86 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul): #Reporte
 						ve =  plug[2]
 					else:
 						ve = 'Version not found'
-					
-					fo.write("""<plugin>
-									<name>%s</name>
-									<path> %s </path>
-									<version>%s</version>
-								</plugin>""" % (na,pa,ve))
+					fo.write(	'<plugin>')
+					fo.write(		'<name>%s</name>' % (na))
+					fo.write(		'<path>%s</path>' % (pa))
+					fo.write(		'<pversion>%s</pversion>' % (ve))
+					fo.write(	'</plugin>')
 					plug.pop(2)
 					plug.pop(1)
 					plug.pop(0)
 			
+					
+			
+			
 			if len(readm) == 0:
 				pass
 			else:
+				fo.write(	'<subtitle>Readme Files</subtitle>' + '\n')
 				while len(readm) > 0:
-					fo.write("""<readme>%s </readme>""" % (readm[0]))
+					fo.write(	'<readme>')
+					fo.write(		'<rpath>%s</rpath>' % (readm[0]))	
+					fo.write(	'</readme>')
 					readm.pop(0)
 						
 			
 			if len(change) == 0:
 				pass
 			else:
+				fo.write(	'<subtitle>ChangeLog Files</subtitle>' + '\n')
 				while len(change) > 0:
-					fo.write("""<changeLog> %s </changeLog>""" % (change[0]))
+					fo.write(	'<changeLog>')
+					fo.write(		'<cpath>%s</cpath>' % (change[0]))	
+					fo.write(	'</changeLog>')
 					change.pop(0)
 				
 			if len(rob) == 0:
 				pass
 			else:
+				fo.write(	'<subtitle>Robots Files</subtitle>' + '\n')
 				while len(rob) > 0:
-					fo.write("""<robots> %s </robots>""" % (rob[0]))
+					fo.write(	'<robots>')
+					fo.write(		'<ropath>%s</ropath>' % (rob[0]))	
+					fo.write(	'</robots>')
 					rob.pop(0)
 			
 			
-			if len(them) == 0:
-				pass
-			else:
-				while len(them) > 0:
-					fo.write("""<theme>
-									<name>%s</name>
-									<path>%s</path>""" % (them[0],them[1]))
-					them.pop(1)
-					them.pop(0)
-					
-			if len(vul) == 0:
-				pass
-			else:
-				while len(vul) > 0:
-					fo.write("""
-							<vulnerability>
-								<name>%s</name>
-								<link>%s</link>
-								<description>%s</description>
-								<recomendation> %s </recomendation>
-								<cvss>%s</cvss>
-							</vulnerability>""" % (vul[0],vul[1],vul[2],vul[3],vul[4]))
-					
-					vul.pop(4)
-					vul.pop(3)
-					vul.pop(2)
-					vul.pop(1)
-					vul.pop(0)
-				
-				
-			fo.write("""</ojsScan> """)
+			
+			fo.write('</ojsScan>')
 			fo.close()
+			
+			#if len(them) == 0:
+		#		pass
+		#	else:
+		#		while len(them) > 0:
+		#			fo.write("""<theme>
+		#							<name>%s</name>
+		#							<path>%s</path>""" % (them[0],them[1]))
+		#			them.pop(1)
+		#			them.pop(0)
+					
+		#	if len(vul) == 0:
+		#		pass
+		#	else:
+		#		while len(vul) > 0:
+		#			fo.write("""
+		#					<vulnerability>
+		#						<name>%s</name>
+		#						<link>%s</link>
+		#						<description>%s</description>
+		#						<recomendation> %s </recomendation>
+		#						<cvss>%s</cvss>
+		#					</vulnerability>""" % (vul[0],vul[1],vul[2],vul[3],vul[4]))
+					
+		
+		##			vul.pop(4)
+			#		vul.pop(3)
+			#		vul.pop(2)
+			#		vul.pop(1)
+			#		vul.pop(0)
+				
+				
+			
 		else:
 			pass
 
