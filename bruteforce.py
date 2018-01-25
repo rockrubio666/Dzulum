@@ -781,10 +781,6 @@ def rep(list1,list2,url,userField,passField): #Reporte
 		elif 'xml'.upper() in value or 'xml' in value:	#XML
 			fo = open(('BruteForceReport_' + t + '_'+ h + '.xml'), 'wb')
 			
-			header = """<?xml version="1.0" encoding="UTF-8"?>
-			<?xml-stylesheet type"text/css" href=bforce.css?>
-			<people>	
-			"""
 			fo.write('<?xml version="1.0" encoding="UTF-8"?>' + '\n')
 			fo.write('<?xml-stylesheet type="text/css" href="bforce.css"?>' + '\n')
 			fo.write('<bruteforce>' + '\n')
