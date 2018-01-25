@@ -64,7 +64,7 @@ def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
 	else:
 		headers = {'user-agent': agent}
 	
-	print colored("Beginning Crawling", 'blue')
+	print colored("\nBeginning Crawling", 'blue')
 	print 'Querying the site: ' + colored(arg, 'green')
 	if 'http://' in arg or 'https://' in arg: # Valida si tiene http(s)
 		# Lista para encontrar elementos
@@ -261,27 +261,25 @@ def rep(rep,sites,js,arg): #Reporte
 		elif 'xml'.upper() in value or 'xml' in value:	#XML
 			fo = open(('CrawlerReport_' + t + '_'+ h + '.xml'), 'wb')
 			
-			header = """<?xml version="1.0" encoding="UTF-8"?>
-			<crawling>
-				
-			"""
-			fo.write( header)
-			fo.write(""" <time>%s</time>""" % execution)
-			fo.write(""" <resource>%s</resource>""" % resource)
-			fo.write("""<total>%s</total>""" % f)
-			
+			fo.write('<?xml version="1.0" encoding="UTF-8"?>' + '\n')
+			fo.write('<?xml-stylesheet type="text/css" href="crawler.css"?>' + '\n')
+			fo.write('<crawling>' + '\n')
+			fo.write('	<title>***Crawling Results***</title><br />' + '\n')
+			fo.write(' 	<time>%s</time>' % execution)
+			fo.write('	<resource>%s</resource>' % resource)
+			fo.write('	<total>%s</total>' % f)
 			if len(js) == 0:
 				pass
 			else:
 				for element in js: 	
-					fo.write("""<js> %s </js>""" % (element))
+					fo.write('	<js>JavaScript: %s </js>' % (element))
 			if len(sites) == 0:
 				pass
 			else:
 				for element in sites:
-					fo.write("""<link> %s </link>""" % (element))
-			fo.write("""</crawling> """)
-			fo.close()
+					fo.write('	<link>Link: %s </link>' % (element))
+			fo.write('</crawling>')
+			fo.close()			
 		else:
 			pass
 
