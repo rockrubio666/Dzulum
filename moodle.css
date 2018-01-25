@@ -80,24 +80,11 @@ codeOk,forbidden,tname,tpath {
 }
 
 
-
-vulnerability {
-	font-family: arial, sans-serif;
-	border-collapse: collapse;
-	margin-left: auto;
-	margin-right: auto;
-	width: 70%;
-	background-color: #f8f8ff;
-	display: block;
-	border: 3px solid #808080;
-	padding: 8px;
-	text-align: center;
-}
-
-vname,vlink,description,recomendation,cvss{
+vul{
 	font-weight: bold;
 	display: block;	
 	color: darkgoldenrod;
+	background-color: #f8f8ff;
 		
 }
 

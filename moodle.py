@@ -1345,7 +1345,72 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 					them.pop(1)
 					them.pop(0)
 						
+			if len(vul) == 0:
+				pass
+			else:
+				fo.write(	'<subtitle>Vulnerabilities found</subtitle>' + '\n')
+				for element in vul:
+					if len(element) < 7:
+						fo.write(	'<vul>%s</vul>' % element)
+						fo.write(	'<vul>-----------------------------------------</vul>')
+					else:
+						fo.write(	'<vul>%s</vul>' % element)
 			
+			
+			if len(rec) == 0:
+				pass
+			else:
+				while len(rec) > 0:
+					
+					if 'dos' in rec[0]:	
+						if '&'	in rec[1]:
+							t = rec[1].replace('&',"&amp;")
+						else:
+							t = rec[1]
+						fo.write(	'<exploit>')
+						fo.write(		'<epath>%s</epath>' % t)
+						fo.write(		'<description>You could exploit this vulnerability by requesting the same resource multiple times</description>')
+						fo.write(	'</exploit>')
+						rec.pop(1)
+						rec.pop(0)
+						
+					elif 'list' in rec[0]:
+						if '&'	in rec[1]:
+							t = rec[1].replace('&',"&amp;")
+						else:
+							t = rec[1]
+						fo.write("""<exploit>""")
+						fo.write("""<path>"%s"</path>""" % t)
+						fo.write("""<description>With this vulnerability you could listing information about users, courses and information contain in the database by changing the number in the ID parameter</description>""")
+						fo.write("""</exploit>""")
+						rec.pop(1)
+						rec.pop(0)
+						
+					elif 'up' in rec[0]:
+						if '&'	in rec[1]:
+							t = rec[1].replace('&',"&amp;")
+						else:
+							t = rec[1]
+						fo.write("""<exploit>""")
+						fo.write("""<path>"%s"</path>""" % t)
+						fo.write("""<description>It's possible to upload files with this vulnerability</description>""")
+						fo.write("""</exploit>""")
+						rec.pop(1)
+						rec.pop(0)
+							
+					elif 'os' in rec[0]:
+						if '&'	in rec[1]:
+							t = rec[1].replace('&',"&amp;")
+						else:
+							t = rec[1]
+						fo.write("""<exploit>""")
+						fo.write("""<path>"%s"</path>""" % t)
+						fo.write("""<description>You could get the installation path in the response of the resourse</description>""")
+						fo.write("""</exploit>""")
+						rec.pop(1)
+						rec.pop(0)
+
+
 						
 			fo.write('</moodleScan>')
 			fo.close()
