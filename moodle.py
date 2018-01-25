@@ -1260,25 +1260,23 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 
 		elif 'xml'.upper() in value or 'xml' in value:	#XML
 			fo = open(('MoodleReport_' + t + '_'+ h + '.xml'), 'wb')
+
+			fo.write('<?xml version="1.0" encoding="UTF-8"?>' + '\n')
+			fo.write('<?xml-stylesheet type="text/css" href="moodle.css"?>' + '\n')
+			fo.write('<moodleScan>' + '\n')
+			fo.write('	<title>***Results of Moodle Scanner***</title><br />' + '\n')
+			fo.write(' 	<time>%s</time>' % execution)
+			fo.write('	<resource>%s</resource>' % resource)
 			
-			header = """<?xml version="1.0" encoding="UTF-8"?>
-			<moodleScan>
-				
-			"""
-			
-			fo.write( header)
-			fo.write("""<time> %s </time>""" % execution)
-			fo.write("""<resource> %s </resource>""" % (resource))
-			
-			
-			while len(version) > 0:
-				fo.write("""<version> Version: %s </version>""" % version[0])
-				version.pop(1)
-				version.pop(0)
+			while len(ver) > 0:
+				fo.write(	'<version>Version: %s</version>' % ver[0] + '\n') 
+				ver.pop(1)
+				ver.pop(0)
 			
 			if len(pl) == 0:
 				pass
 			else:
+				fo.write(	'<subtitle>Plugins</subtitle>' + '\n')
 				while len(pl) > 0:
 					na = pl[0]
 					pa = pl[1]
@@ -1287,129 +1285,83 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 						ve =  pl[2]
 					else:
 						ve = 'Version not found'
-					
-					fo.write("""<plugin>
-									<name>%s</name>
-									<path> %s </path>
-									<version>%s</version>
-								</plugin>""" % (na,pa,ve))
+					fo.write(	'<plugin>')
+					fo.write(		'<name>%s</name>' % (na))
+					fo.write(		'<path>%s</path>' % (pa))
+					fo.write(		'<pversion>%s</pversion>' % (ve))
+					fo.write(	'</plugin>')
 					pl.pop(2)
 					pl.pop(1)
 					pl.pop(0)
-					
 			
-			if len(readme) == 0:
+							
+			if len(readm) == 0:
 				pass
 			else:
-				fo.write("""<readme>""")
-				while len(readme) > 0:
-					if int(readme[0]) == 2:
-						fo.write("""<codeOk>%s</codeOk>""" % (readme[1]))
-						readme.pop(1)
-						readme.pop(0)
-					elif int(readme[0]) == 4:
-						fo.write("""<forbidden>%s</forbidden>""" % (readme[1]))
-						readme.pop(1)
-						readme.pop(0)
-				fo.write("""</readme>""")
+				fo.write(	'<subtitle>Readme Files</subtitle>' + '\n')
+				while len(readm) > 0:
+					fo.write(	'<readme>')
+					fo.write(		'<rpath>%s</rpath>' % (readm[0]))	
+					fo.write(	'</readme>')
+					readm.pop(0)
+						
 			
 			if len(change) == 0:
 				pass
 			else:
-				fo.write("""<changeLog>""")
+				fo.write(	'<subtitle>ChangeLog Files</subtitle>' + '\n')
 				while len(change) > 0:
-					if int(change[0]) == 2:
-						fo.write("""<codeOk>%s</codeOk>""" % (change[1]))
-						change.pop(1)
-						change.pop(0)
-						
-					elif int(change[0]) == 4:
-						fo.write("""<forbidden>%s</forbidden>""" % (change[1]))
-						change.pop(1)
-						change.pop(0)
-				fo.write("""</changeLog>""")
-					
+					fo.write(	'<changeLog>')
+					fo.write(		'<cpath>%s</cpath>' % (change[0]))	
+					fo.write(	'</changeLog>')
+					change.pop(0)
+				
+			if len(rob) == 0:
+				pass
+			else:
+				fo.write(	'<subtitle>Robots Files</subtitle>' + '\n')
+				while len(rob) > 0:
+					fo.write(	'<robots>')
+					fo.write(		'<ropath>%s</ropath>' % (rob[0]))	
+					fo.write(	'</robots>')
+					rob.pop(0)
+			
 			if len(them) == 0:
 				pass
 			else:
+				fo.write(	'<subtitle>Theme</subtitle>' + '\n')
 				while len(them) > 0:
-					fo.write("""<theme>
-									<name>%s</name>
-									<path>%s</path>
-								</theme>""" % (them[0],them[1]))
+					fo.write(	'<theme>')
+					fo.write(		'<tname>%s</tname>' % (them[0]))
+					fo.write(		'<tpath>%s</tpath>' % (them[1]))
+					fo.write(	'</theme>')
 					them.pop(1)
 					them.pop(0)
-			
+		
 			if len(vul) == 0:
 				pass
-			else:	
+			else:
+				fo.write(	'<subtitle>Vulnerabilities found</subtitle>' + '\n')
 				while len(vul) > 0:
-					fo.write("""<vulnerability>""")
-					fo.write("""<name>%s</name>""" % (vul[0]))
-					fo.write("""</vulnerability>""")
+					fo.write(	'<vulnerability>')
+					fo.write(		'<vname>%s</vname>' % vul[0])
+					fo.write(		'<vlink>%s</vlink>' % vul[1])
+					fo.write(		'<description>%s</description>' % vul[2])
+					fo.write(		'<recomendation>%s</recomendation>' % vul[3])
+					fo.write(		'<cvss>%s</cvss>' % vul[4])
+					fo.write(	'</vulnerability>')
 					vul.pop(4)
 					vul.pop(3)
 					vul.pop(2)
 					vul.pop(1)
 					vul.pop(0)
-					
-			if len(rec) == 0:
-				pass
-			else:
-				while len(rec) > 0:
-					
-					if 'dos' in rec[0]:	
-						if '&'	in rec[1]:
-							t = rec[1].replace('&',"&amp;")
-						else:
-							t = rec[1]
-						fo.write("""<exploit>""")
-						fo.write("""<path>"%s"</path>""" % t)
-						fo.write("""<description>You could exploit this vulnerability by requesting the same resource multiple times</description>""")
-						fo.write("""</exploit>""")
-						rec.pop(1)
-						rec.pop(0)
-						
-					elif 'list' in rec[0]:
-						if '&'	in rec[1]:
-							t = rec[1].replace('&',"&amp;")
-						else:
-							t = rec[1]
-						fo.write("""<exploit>""")
-						fo.write("""<path>"%s"</path>""" % t)
-						fo.write("""<description>With this vulnerability you could listing information about users, courses and information contain in the database by changing the number in the ID parameter</description>""")
-						fo.write("""</exploit>""")
-						rec.pop(1)
-						rec.pop(0)
-						
-					elif 'up' in rec[0]:
-						if '&'	in rec[1]:
-							t = rec[1].replace('&',"&amp;")
-						else:
-							t = rec[1]
-						fo.write("""<exploit>""")
-						fo.write("""<path>"%s"</path>""" % t)
-						fo.write("""<description>It's possible to upload files with this vulnerability</description>""")
-						fo.write("""</exploit>""")
-						rec.pop(1)
-						rec.pop(0)
-							
-					elif 'os' in rec[0]:
-						if '&'	in rec[1]:
-							t = rec[1].replace('&',"&amp;")
-						else:
-							t = rec[1]
-						fo.write("""<exploit>""")
-						fo.write("""<path>"%s"</path>""" % t)
-						fo.write("""<description>You could get the installation path in the response of the resourse</description>""")
-						fo.write("""</exploit>""")
-						rec.pop(1)
-						rec.pop(0)
-										
-			
-			fo.write("""</moodleScan>""")
+		
+			fo.write('</moodleScan>')
 			fo.close()
-		else:
+
+
+			
+					else:
 			pass
 
 				
