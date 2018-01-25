@@ -758,9 +758,9 @@ def vuln(version,verbose,report,ver,arg,readm,change,pl,them,cookies,headers,pro
 		try:
 			if 'Moodle' in row[0] and row[1] in version:
 				if int(verbose) == 1:
-					print "Vulnerability Link: " + colored(row[3],'green')
+					print colored("Vulnerability Link: ",'yellow') + colored(row[3],'green')
 				elif int(verbose) == 2 or int(verbose) == 3:
-					print "Vulnerability Name: " + row[2] + ' ,Vulnerability Link: ' + row[3]
+					print colored("Vulnerability Name: ",'yellow') + colored(row[2],'green') + colored(' ,Vulnerability Link: ','yellow') + colored(row[3],'green')
 				vul.append(row[2]) #Utilizado para el reporte
 				vul.append(row[3])
 				vul.append(row[4])
@@ -1360,6 +1360,7 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 			if len(rec) == 0:
 				pass
 			else:
+				fo.write(	'<subtitle>Exploits found</subtitle>' + '\n')
 				while len(rec) > 0:
 					
 					if 'dos' in rec[0]:	
@@ -1379,10 +1380,10 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 							t = rec[1].replace('&',"&amp;")
 						else:
 							t = rec[1]
-						fo.write("""<exploit>""")
-						fo.write("""<path>"%s"</path>""" % t)
-						fo.write("""<description>With this vulnerability you could listing information about users, courses and information contain in the database by changing the number in the ID parameter</description>""")
-						fo.write("""</exploit>""")
+						fo.write(	'<exploit>')
+						fo.write(		'<epath>%s</epath>' % t)
+						fo.write(		'<description>With this vulnerability you could listing information about users, courses and information contain in the database by changing the number in the ID parameter</description>')
+						fo.write(	'</exploit>')
 						rec.pop(1)
 						rec.pop(0)
 						
@@ -1391,10 +1392,10 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 							t = rec[1].replace('&',"&amp;")
 						else:
 							t = rec[1]
-						fo.write("""<exploit>""")
-						fo.write("""<path>"%s"</path>""" % t)
-						fo.write("""<description>It's possible to upload files with this vulnerability</description>""")
-						fo.write("""</exploit>""")
+						fo.write(	'<exploit>')
+						fo.write(		'<epath>%s</epath>' % t)
+						fo.write(		'<description>It\'s possible to upload files with this vulnerability</description>')
+						fo.write(	'</exploit>')
 						rec.pop(1)
 						rec.pop(0)
 							
@@ -1403,10 +1404,10 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 							t = rec[1].replace('&',"&amp;")
 						else:
 							t = rec[1]
-						fo.write("""<exploit>""")
-						fo.write("""<path>"%s"</path>""" % t)
-						fo.write("""<description>You could get the installation path in the response of the resourse</description>""")
-						fo.write("""</exploit>""")
+						fo.write(	'<exploit>')
+						fo.write(		'<epath>%s</epath>' % t)
+						fo.write(		'<description>You could get the installation path in the response of the resourse</description>')
+						fo.write(	'</exploit>')
 						rec.pop(1)
 						rec.pop(0)
 
