@@ -268,16 +268,19 @@ def rep(rep,sites,js,arg): #Reporte
 			fo.write(' 	<time>%s</time>' % execution)
 			fo.write('	<resource>%s</resource>' % resource)
 			fo.write('	<total>%s</total>' % f)
+			fo.write('	<subtitle>Links found</subtitle>')
+			fo.write('	<results>')
 			if len(js) == 0:
 				pass
 			else:
 				for element in js: 	
-					fo.write('	<js>JavaScript: %s </js>' % (element))
+					fo.write('		<js>JavaScript: %s </js>' % (element))
 			if len(sites) == 0:
 				pass
 			else:
 				for element in sites:
-					fo.write('	<link>Link: %s </link>' % (element))
+					fo.write('		<link>Link: %s </link>' % (element))
+			fo.write('	</results>')		
 			fo.write('</crawling>')
 			fo.close()			
 		else:

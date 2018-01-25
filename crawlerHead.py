@@ -511,31 +511,46 @@ def rep(rep,dos,index,url): #Reporte
 		elif 'xml'.upper() in value or 'xml' in value:	#XML
 			fo = open(('CrawlerReport_' + t + '_'+ h + '.xml'), 'wb')
 			
-			header = """<?xml version="1.0" encoding="UTF-8"?>
-			<crawling>
-				
-			"""
-			fo.write( header)
-			fo.write(""" <time>%s</time>""" % execution)
-			fo.write(""" <resource>%s</resource>""" % resource)
-			
+			fo.write('<?xml version="1.0" encoding="UTF-8"?>' + '\n')
+			fo.write('<?xml-stylesheet type="text/css" href="craw.css"?>' + '\n')
+			fo.write('<crawling>' + '\n')
+			fo.write('	<title>***Crawling Results***</title><br />' + '\n')
+			fo.write(' 	<time>%s</time>' % execution)
+			fo.write('	<resource>%s</resource>' % resource)
 			if len(dos) == 0:
 				pass
 			else:
+				fo.write('	<subtitle>Paths found with status code 200</subtitle>')
+				fo.write('	<results>')
 				while len(dos) > 0:
-					fo.write("""<codeOk>%s</codeOk>""" % (dos[0]))
+					
+					fo.write('		<codeOk>%s</codeOk>' % (dos[0]))
 					dos.pop(1)
 					dos.pop(0)
+				fo.write('	</results>')
 				
 			if len(index) == 0:
 				pass
 			else:
+				fo.write('	<subtitle>Paths found with Index of</subtitle>')
+				fo.write('	<results>')
 				while len(index) > 0:
-					fo.write("""<indexof>%s </indexof>""" % (index[0]))
+					fo.write('		<indexof>%s </indexof>' % (index[0]))
 					index.pop(1)
 					index.pop(0)
+				fo.write('	</results>')
+			
+			fo.write('</crawling>')
+			fo.close()			
+			
+			
+			
+			
+			
+			
+				
+			
 
-			fo.write("""</crawling>""")
-			fo.close()
+			
 		else:
 			pass
