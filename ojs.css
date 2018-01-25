@@ -59,7 +59,7 @@ name,path,pversion{
 }
 
 
-readme,changeLog,robots {
+readme,changeLog,robots,theme {
 	font-family: arial, sans-serif;
 	border-collapse: collapse;
 	margin-left: auto;
@@ -72,7 +72,29 @@ readme,changeLog,robots {
 	text-align: center;
 }
 
-rpath,cpath,ropath{
+rpath,cpath,ropath,tname,tpath{
+	font-weight: bold;
+	display: block;	
+	color: darkgoldenrod;
+		
+}
+
+
+
+vulnerability {
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	margin-left: auto;
+	margin-right: auto;
+	width: 70%;
+	background-color: #f8f8ff;
+	display: block;
+	border: 3px solid #808080;
+	padding: 8px;
+	text-align: center;
+}
+
+vname,vlink,description,recomendation,cvss{
 	font-weight: bold;
 	display: block;	
 	color: darkgoldenrod;

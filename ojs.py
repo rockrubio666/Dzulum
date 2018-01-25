@@ -1152,40 +1152,39 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul): #Reporte
 					fo.write(	'</robots>')
 					rob.pop(0)
 			
-			
-			
+			if len(them) == 0:
+				pass
+			else:
+				fo.write(	'<subtitle>Theme</subtitle>' + '\n')
+				while len(them) > 0:
+					fo.write(	'<theme>')
+					fo.write(		'<tname>%s</tname>' % (them[0]))
+					fo.write(		'<tpath>%s</tpath>' % (them[1]))
+					fo.write(	'</theme>')
+					them.pop(1)
+					them.pop(0)
+		
+			if len(vul) == 0:
+				pass
+			else:
+				fo.write(	'<subtitle>Vulnerabilities found</subtitle>' + '\n')
+				while len(vul) > 0:
+					fo.write(	'<vulnerability>')
+					fo.write(		'<vname>%s</vname>' % vul[0])
+					fo.write(		'<vlink>%s</vlink>' % vul[1])
+					fo.write(		'<description>%s</description>' % vul[2])
+					fo.write(		'<recomendation>%s</recomendation>' % vul[3])
+					fo.write(		'<cvss>%s</cvss>' % vul[4])
+					fo.write(	'</vulnerability>')
+					vul.pop(4)
+					vul.pop(3)
+					vul.pop(2)
+					vul.pop(1)
+					vul.pop(0)
+		
 			fo.write('</ojsScan>')
 			fo.close()
-			
-			#if len(them) == 0:
-		#		pass
-		#	else:
-		#		while len(them) > 0:
-		#			fo.write("""<theme>
-		#							<name>%s</name>
-		#							<path>%s</path>""" % (them[0],them[1]))
-		#			them.pop(1)
-		#			them.pop(0)
 					
-		#	if len(vul) == 0:
-		#		pass
-		#	else:
-		#		while len(vul) > 0:
-		#			fo.write("""
-		#					<vulnerability>
-		#						<name>%s</name>
-		#						<link>%s</link>
-		#						<description>%s</description>
-		#						<recomendation> %s </recomendation>
-		#						<cvss>%s</cvss>
-		#					</vulnerability>""" % (vul[0],vul[1],vul[2],vul[3],vul[4]))
-					
-		
-		##			vul.pop(4)
-			#		vul.pop(3)
-			#		vul.pop(2)
-			#		vul.pop(1)
-			#		vul.pop(0)
 				
 				
 			
