@@ -1268,10 +1268,12 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 			fo.write(' 	<time>%s</time>' % execution)
 			fo.write('	<resource>%s</resource>' % resource)
 			
-			while len(ver) > 0:
-				fo.write(	'<version>Version: %s</version>' % ver[0] + '\n') 
-				ver.pop(1)
-				ver.pop(0)
+			
+			
+			while len(version) > 0:
+				fo.write(	'<version>Version: %s</version>' % version[0] + '\n') 
+				version.pop(1)
+				version.pop(0)
 			
 			if len(pl) == 0:
 				pass
@@ -1295,36 +1297,41 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 					pl.pop(0)
 			
 							
-			if len(readm) == 0:
+			if len(readme) == 0:
 				pass
 			else:
 				fo.write(	'<subtitle>Readme Files</subtitle>' + '\n')
-				while len(readm) > 0:
-					fo.write(	'<readme>')
-					fo.write(		'<rpath>%s</rpath>' % (readm[0]))	
-					fo.write(	'</readme>')
-					readm.pop(0)
-						
+				while len(readme) > 0:
+					if int(readme[0]) == 2:
+						fo.write(	'<readme>')
+						fo.write(		'<codeOk>%s</codeOk>' % (readme[1]))
+						fo.write(	'</readme>')
+						readme.pop(1)
+						readme.pop(0)
+					elif int(readme[0]) == 4:
+						fo.write(	'<readme>')
+						fo.write(		'<forbidden>%s</forbidden>' % (readme[1]))
+						fo.write(	'</readme>')
+						readme.pop(1)
+						readme.pop(0)
 			
 			if len(change) == 0:
 				pass
 			else:
 				fo.write(	'<subtitle>ChangeLog Files</subtitle>' + '\n')
 				while len(change) > 0:
-					fo.write(	'<changeLog>')
-					fo.write(		'<cpath>%s</cpath>' % (change[0]))	
-					fo.write(	'</changeLog>')
-					change.pop(0)
-				
-			if len(rob) == 0:
-				pass
-			else:
-				fo.write(	'<subtitle>Robots Files</subtitle>' + '\n')
-				while len(rob) > 0:
-					fo.write(	'<robots>')
-					fo.write(		'<ropath>%s</ropath>' % (rob[0]))	
-					fo.write(	'</robots>')
-					rob.pop(0)
+					if int(change[0]) == 2:
+						fo.write(	'<changeLog>')
+						fo.write(		'<codeOk>%s</codeOk>' % (change[1]))
+						fo.write(	'</changeLog>')
+						change.pop(1)
+						change.pop(0)
+					elif int(change[0]) == 4:
+						fo.write(	'<changeLog>')
+						fo.write(		'<forbidden>%s</forbidden>' % (change[1]))
+						fo.write(	'</changeLog>')
+						change.pop(1)
+						change.pop(0)
 			
 			if len(them) == 0:
 				pass
@@ -1337,31 +1344,13 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 					fo.write(	'</theme>')
 					them.pop(1)
 					them.pop(0)
-		
-			if len(vul) == 0:
-				pass
-			else:
-				fo.write(	'<subtitle>Vulnerabilities found</subtitle>' + '\n')
-				while len(vul) > 0:
-					fo.write(	'<vulnerability>')
-					fo.write(		'<vname>%s</vname>' % vul[0])
-					fo.write(		'<vlink>%s</vlink>' % vul[1])
-					fo.write(		'<description>%s</description>' % vul[2])
-					fo.write(		'<recomendation>%s</recomendation>' % vul[3])
-					fo.write(		'<cvss>%s</cvss>' % vul[4])
-					fo.write(	'</vulnerability>')
-					vul.pop(4)
-					vul.pop(3)
-					vul.pop(2)
-					vul.pop(1)
-					vul.pop(0)
-		
+						
+			
+						
 			fo.write('</moodleScan>')
 			fo.close()
-
-
 			
-					else:
+		else:
 			pass
 
 				
