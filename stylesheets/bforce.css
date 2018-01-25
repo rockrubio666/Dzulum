@@ -1,0 +1,67 @@
+bruteforce {
+	background-color: darkblue;
+	display: block;
+	padding: 10px;
+	font-family: sans-serif;
+}
+
+title {
+	font-weight: bold;
+	color: darkgoldenrod;
+	text-align: center;
+	display: block;
+}
+
+time {
+	font-weight: bold;
+	color: darkgoldenrod;
+	display: block;
+}
+
+resource {
+	font-weight: bold;
+	color: darkgoldenrod;
+	display: block;
+}
+
+
+
+tries {
+	font-weight: bold;
+	color: darkgoldenrod;
+	display: block;
+}
+
+passwordField {
+	font-weight: bold;
+	color: darkgoldenrod;
+	display: block;
+}
+
+userField {
+	font-weight: bold;
+	color: darkgoldenrod;
+	display: block;
+}
+
+
+credentials {
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	margin-left: auto;
+	margin-right: auto;
+	width: 30%;
+	background-color: #f8f8ff;
+	display: block;
+	border: 3px solid #808080;
+	padding: 8px;
+	text-align: center;
+}
+
+user, pass ,result{
+	font-weight: bold;
+	display: block;	
+	color: darkgoldenrod;
+		
+}
+

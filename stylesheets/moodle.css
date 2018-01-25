@@ -1,0 +1,110 @@
+moodleScan {
+	background-color: darkblue;
+	display: block;
+	padding: 10px;
+	font-family: sans-serif;
+}
+
+title {
+	font-weight: bold;
+	color: darkgoldenrod;
+	text-align: center;
+	display: block;
+}
+
+time {
+	font-weight: bold;
+	color: darkgoldenrod;
+	display: block;
+}
+
+resource {
+	font-weight: bold;
+	color: darkgoldenrod;
+	display: block;
+}
+
+version {
+	font-weight: bold;
+	color: darkgoldenrod;
+	display: block;
+}
+
+subtitle {
+	font-weight: bold;
+	color: darkgoldenrod;
+	text-align: center;
+	display: block;
+}
+
+
+plugin {
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	margin-left: auto;
+	margin-right: auto;
+	width: 70%;
+	background-color: #f8f8ff;
+	display: block;
+	border: 3px solid #808080;
+	padding: 8px;
+	text-align: center;
+}
+
+name,path,pversion{
+	font-weight: bold;
+	display: block;	
+	color: darkgoldenrod;
+		
+}
+
+
+readme,changeLog,theme {
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	margin-left: auto;
+	margin-right: auto;
+	width: 70%;
+	background-color: #f8f8ff;
+	display: block;
+	border: 3px solid #808080;
+	padding: 8px;
+	text-align: center;
+}
+
+codeOk,forbidden,tname,tpath {
+	font-weight: bold;
+	display: block;	
+	color: darkgoldenrod;
+		
+}
+
+
+vul{
+	font-weight: bold;
+	display: block;	
+	color: darkgoldenrod;
+	background-color: #f8f8ff;
+		
+}
+
+
+exploit {
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	margin-left: auto;
+	margin-right: auto;
+	width: 70%;
+	background-color: #f8f8ff;
+	display: block;
+	border: 3px solid #808080;
+	padding: 8px;
+	text-align: center;
+}
+
+epath,description{
+	font-weight: bold;
+	display: block;	
+	color: darkgoldenrod;
+		
+}
