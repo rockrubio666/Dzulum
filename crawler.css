@@ -18,6 +18,13 @@ time {
 	display: block;
 }
 
+subtitle {
+	font-weight: bold;
+	color: darkgoldenrod;
+	text-align: center;
+	display: block;
+}
+
 resource {
 	font-weight: bold;
 	color: darkgoldenrod;

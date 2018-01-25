@@ -18,7 +18,7 @@ import time
 
 start_time = time.time() #Tiempo de ejecucion del programa
 def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
-	print colored("Beginning OJS scanner",'yellow')
+	print colored("\nBeginning OJS scanner",'yellow')
 	if 'http' in arg:
 		pass
 		if 'index.php' in arg: #Validacion de la pagina principal del sitio
