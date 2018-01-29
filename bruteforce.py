@@ -9,16 +9,9 @@ import socket # Tor
 import socks # Tor
 import random
 import time
-#import threading
-#from threading import Thread
  
 start_time = time.time() #tiempo de ejecucion del programa
-def check(url, userField, passField, user, pwd, message,verbose,cookie,agent,proxip,proxport,tor,report,th):
-	
-	#threads = []
-	#for value in range(int(th)):
-	#	thr = threading.Thread(target=check,args=(url, userField, passField, user, pwd, message,verbose,cookie,agent,proxip,proxport,tor,report,th))
-	#	thr.start()
+def check(url, userField, passField, user, pwd, message,verbose,cookie,agent,proxip,proxport,tor,report):
 		
 	print colored("\nBeginning BruteForce", 'yellow')
 	warning = raw_input('Please check that the arguments you gave to the tool are correct, Do you continue? [Y/n]') or 'Y'
@@ -139,8 +132,6 @@ Advices to check the arguments:
 				try:
 					
 					r = requests.post(url,payload,cookies = cookies, headers = headers,verify=False)
-					#thr = threading.Thread(target= requests.post(url,payload,cookies = cookies, headers = headers,verify=False))
-					#thr.start()
 				except requests.exceptions.ConnectionError:
 					print colored('It can\'t contact with the login page','green')
 					sys.exit(2)
@@ -156,8 +147,6 @@ Advices to check the arguments:
 			else: #Manejo de errores peticion normal
 				try:
 					r = requests.post(url, payload,cookies = cookies, headers = headers, verify=False)
-					#thr = threading.Thread(target= requests.post(url, payload,cookies = cookies, headers = headers, verify=False))
-					#thr.start()
 				except requests.exceptions.ConnectionError:
 					print colored('It can\'t contact with the login page','green')
 					sys.exit(2)
@@ -173,9 +162,7 @@ Advices to check the arguments:
 		else: #Manejo de errores del proxy
 			try:
 				r = requests.post(url,payload,cookies = cookies, headers = headers,proxies = proxies,verify=False)
-				#thr = threading.Thread(target= requests.post(url,payload,cookies = cookies, headers = headers,proxies = proxies,verify=False))
 				
-				#thr.start()
 			except requests.exceptions.ConnectionError:
 				print colored('It can\'t contact with the login page','green')
 				sys.exit(2)

@@ -11,7 +11,7 @@ import random
 import time	
 
 start_time = time.time() #Tiempo de ejecucion del programa
-def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report,th):
+def crawlerHead(url,f,verbose,cookie,agent, proxip,proxport,tor,report):
 	proxy = proxip  + ':' + proxport
 	proxies = {'http' : proxy, 'https' : proxy,}
 		

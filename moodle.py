@@ -18,7 +18,7 @@ import time
 
 plugins = ['']
 start_time = time.time() #Tiempo de ejecucion del programa
-def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report,th): # Version
+def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 	print colored("\nBeginning moodle scanner", 'yellow')
 	requests.packages.urllib3.disable_warnings()
 	

@@ -17,7 +17,7 @@ import random
 import time
 
 start_time = time.time() #Tiempo de ejecucion del programa
-def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
+def ojs(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 	print colored("\nBeginning OJS scanner",'yellow')
 	if 'http' in arg:
 		pass

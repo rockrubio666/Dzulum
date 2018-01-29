@@ -15,7 +15,7 @@ visited = []
 toVisit = []
 
 start_time = time.time() #Tiempo de ejecucion del programa
-def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report,th):
+def crawler(arg,verbose,cookie,agent,proxip,proxport,tor,report):
 	proxy = proxip  + ':' + proxport
 	proxies = {'http' : proxy, 'https' : proxy,}
 	

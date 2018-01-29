@@ -10,7 +10,7 @@ import random
 import time
 
 start_time = time.time() #Tiempo de ejecucion del programa
-def checkFile(reqFile,user,pwd,message,verbose,cookie,agent,proxip,proxport,tor,report,valUrl,th):
+def checkFile(reqFile,user,pwd,message,verbose,cookie,agent,proxip,proxport,tor,report,valUrl):
 	
 	b = ['','1','12']
 	a = []
