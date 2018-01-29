@@ -986,28 +986,9 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 					them.pop(1)
 					them.pop(0)
 			
-			if len(vul) == 0:
-				pass
-			else:
-				fo.write('Vulnerabilities found'.center(100) + '\n')
-				fo.write('' + '\n')
-				while len(vul) > 0:
-					fo.write('-----------------------------------------------------------------------------------\n')
-					fo.write('Vulnerability Name: ' + vul[0] + '\n')
-					fo.write('Vulnerability Link: ' + vul[1] + '\n')
-					fo.write('Description: ' + vul[2] + '\n')
-					fo.write('Recomendation: ' + vul[3] + '\n')
-					fo.write('CVSS: ' + vul[4] + '\n')
-					fo.write('' + '\n')
-					vul.pop(4)
-					vul.pop(3)
-					vul.pop(2)
-					vul.pop(1)
-					vul.pop(0)
-			
 			if len(rec) == 0:
 				pass
-			else:
+			elif len(rec) > 0:
 				fo.write('Exploits'.center(100) + '\n')
 				fo.write('' + '\n')
 				while len(rec) > 0:		
@@ -1033,6 +1014,29 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 						fo.write('' + '\n')
 						rec.pop(1)
 						rec.pop(0)
+			
+			
+			
+			
+			if len(vul) == 0:
+				pass
+			else:
+				fo.write('Vulnerabilities found'.center(100) + '\n')
+				fo.write('' + '\n')
+				while len(vul) > 0:
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write('Vulnerability Name: ' + vul[0] + '\n')
+					fo.write('Vulnerability Link: ' + vul[1] + '\n')
+					fo.write('Description: ' + vul[2] + '\n')
+					fo.write('Recomendation: ' + vul[3] + '\n')
+					fo.write('CVSS: ' + vul[4] + '\n')
+					fo.write('' + '\n')
+					vul.pop(4)
+					vul.pop(3)
+					vul.pop(2)
+					vul.pop(1)
+					vul.pop(0)
+			
 			fo.close()
 		elif 'html'.upper() in value or 'html' in value: #HTML
 			fo = open(('MoodleReport_' + t + '_'+ h + '.html'), 'wb')
@@ -1350,19 +1354,19 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 			else:
 				fo.write(	'<subtitle>Vulnerabilities found</subtitle>' + '\n')
 				for element in vul:
-					if len(element) < 7:
-						fo.write(	'<vul>%s</vul>' % element)
-						fo.write(	'<vul>-----------------------------------------</vul>')
-					else:
-						fo.write(	'<vul>%s</vul>' % element)
-			
+					if '&' in element:
+						a = element.replace('&',"&amp;")
+						if len(a) < 7:
+							fo.write(	'<vul>%s</vul>' % a)
+							fo.write(	'<vul>-----------------------------------------</vul>')
+						else:
+							fo.write(	'<vul>%s</vul>' % a)
 			
 			if len(rec) == 0:
 				pass
 			else:
 				fo.write(	'<subtitle>Exploits found</subtitle>' + '\n')
-				while len(rec) > 0:
-					
+				while len(rec) > 0:	
 					if 'dos' in rec[0]:	
 						if '&'	in rec[1]:
 							t = rec[1].replace('&',"&amp;")
