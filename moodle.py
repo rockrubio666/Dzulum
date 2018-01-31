@@ -847,25 +847,28 @@ def exploit(report,ver,url,readm,change,pl,them,vul,cookies,headers,proxy,proxie
 		if len(succs) > 0:
 			for element in succs: #Recomendaciones para realizar la explotacion
 				if 'iplookup' in element or 'cron' in element:
-					print colored('They were found the following vulnerabilities in the site, related with a DoS attack','green')
-					print colored(element,'yellow')
+					print colored('They were found the following vulnerabilities in the site, related with a DoS attack (Please verify them manually)','green')
+					print colored(element + '\n','yellow')
+					print colored('Reference: https://www.cvedetails.com/cve/CVE-2014-7847/\n', 'yellow')
 					print '\n'
 					rec.append('dos')
 					rec.append(element)
 				elif 'rsslib' in element or 'bootstrap' in element:
 					print colored('They were found the following vulnerabilities in the site, related with OS path','green')
 					print colored(element,'yellow')
+					print colored('Reference: https://www.cvedetails.com/cve/CVE-2012-6104/\n','yellow')
 					print '\n'
 					rec.append('os')
 					rec.append(element)
 				elif 'ajax' in element or 'usersroles' in element:
-					print colored('They were found the following vulnerabilities in the site, related with Obtain Information about users and courses in the site','green')
+					print colored('They were found the following vulnerabilities in the site, related with Obtain Information about users and courses in the site (Please verify them manually)','green')
 					print colored(element,'yellow')
+					print colored('Reference: https://www.cvedetails.com/cve/CVE-2016-2158/\n','yellow')
 					print '\n'
 					rec.append('list')
 					rec.append(element)
 				elif '.html' in element:
-					print colored('They were found the following vulnerabilities in the site, related with upload files','green')
+					print colored('They were found the following vulnerabilities in the site, related with upload files (Please verify them manually)','green')
 					print colored(element,'yellow')
 					print '\n'
 					rec.append('up')
