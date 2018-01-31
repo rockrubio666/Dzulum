@@ -111,16 +111,27 @@ def getParams(arg):
 	if options.report in sys.argv: #Envio de los reportes por correo
 		mail = raw_input('Do you want to send reports to your mail?[Y/n]') or 'Y'
 		if 'Y' in mail or 'y' in mail:
-			to = raw_input("Introduce your email: ")
+			fo = open('mail.conf','r')
+			for line in fo:
+				if '@' in line and len(line) > 100:
+					pass
+				else:
+					test = line
+					if '96h69k5JayTY@gmail.com:BvR%s4v28X#?' in line:
+						print colored('Please modify the default values in mail.conf and try to send the reports again', 'yellow')
+						sys.exit(2)
+					else:
+						t = test.split(':')
+						mail = t[0]
+						pas = t[1]
+						to = raw_input("Introduce your email: ")
 		else:
-			to = ''
-
-		for element in options.report.split(','):
-			rvalues.append(element)
-	else:
-		to = ''
-		pass
+			to = ""	
+			pass
 		
+		for element in options.report.split(','):
+				rvalues.append(element)
+			
 			
 	if options.directoryBforce in sys.argv and options.ojs in sys.argv: # Se manda a llamar la funcion del archivo
 		directoryBforce(options.ojs,options.directoryBforce,options.verbose,options.Cookie,options.Agent,pvalues[0],pvalues[1],options.tor,rvalues)
@@ -162,7 +173,7 @@ def getParams(arg):
 	if len(to) == 0: #Envio de correos
 		pass
 	else:
-		fromaddr = ""
+		fromaddr = mail
 		toaddr = to
 		msg = MIMEMultipart()
 
@@ -196,13 +207,13 @@ def getParams(arg):
 		try:
 			server = smtplib.SMTP('smtp.gmail.com',587)
 			server.starttls()
-			server.login(fromaddr,'')
+			server.login(fromaddr, pas)
 			text = msg.as_string()
 			server.sendmail(fromaddr,toaddr,text)
 			server.quit()
 			print 'Mail sent successful!'
 		except:	
-			print 'Something went wrong, please check your mail and try again'
+			print 'Something went wrong, please check the configuration in mail.conf or the mail gave at the beginning of the execution and try again'
 			sys.exit(2)
 
 
