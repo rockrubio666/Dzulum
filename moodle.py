@@ -851,27 +851,23 @@ def exploit(report,ver,url,readm,change,pl,them,vul,cookies,headers,proxy,proxie
 					print colored('They were found the following vulnerabilities in the site, related with a DoS attack (Please verify them manually)','green')
 					print colored(element + '\n','yellow')
 					print colored('Reference: https://www.cvedetails.com/cve/CVE-2014-7847/\n', 'yellow')
-					print '\n'
 					rec.append('dos')
 					rec.append(element)
 				elif 'rsslib' in element or 'bootstrap' in element:
 					print colored('They were found the following vulnerabilities in the site, related with OS path','green')
 					print colored(element,'yellow')
 					print colored('Reference: https://www.cvedetails.com/cve/CVE-2012-6104/\n','yellow')
-					print '\n'
 					rec.append('os')
 					rec.append(element)
 				elif 'ajax' in element or 'usersroles' in element:
 					print colored('They were found the following vulnerabilities in the site, related with Obtain Information about users and courses in the site (Please verify them manually)','green')
 					print colored(element,'yellow')
 					print colored('Reference: https://www.cvedetails.com/cve/CVE-2016-2158/\n','yellow')
-					print '\n'
 					rec.append('list')
 					rec.append(element)
 				elif '.html' in element:
 					print colored('They were found the following vulnerabilities in the site, related with upload files (Please verify them manually)','green')
-					print colored(element,'yellow')
-					print '\n'
+					print colored(element + '\n','yellow')
 					rec.append('up')
 					rec.append(element)
 			rep(report,ver,url,readm,change,pl,them,vul,rec)	
@@ -990,6 +986,27 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 					them.pop(1)
 					them.pop(0)
 			
+			
+			
+			if len(vul) == 0:
+				pass
+			else:
+				fo.write('Vulnerabilities found'.center(100) + '\n')
+				fo.write('' + '\n')
+				while len(vul) > 0:
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write('Vulnerability Name: ' + vul[0] + '\n')
+					fo.write('Vulnerability Link: ' + vul[1] + '\n')
+					fo.write('Description: ' + vul[2] + '\n')
+					fo.write('Recomendation: ' + vul[3] + '\n')
+					fo.write('CVSS: ' + vul[4] + '\n')
+					fo.write('' + '\n')
+					vul.pop(4)
+					vul.pop(3)
+					vul.pop(2)
+					vul.pop(1)
+					vul.pop(0)
+			
 			if len(rec) == 0:
 				pass
 			elif len(rec) > 0:
@@ -1015,27 +1032,6 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 						rec.pop(1)
 						rec.pop(0)
 			
-			
-			
-			
-			if len(vul) == 0:
-				pass
-			else:
-				fo.write('Vulnerabilities found'.center(100) + '\n')
-				fo.write('' + '\n')
-				while len(vul) > 0:
-					fo.write('-----------------------------------------------------------------------------------\n')
-					fo.write('Vulnerability Name: ' + vul[0] + '\n')
-					fo.write('Vulnerability Link: ' + vul[1] + '\n')
-					fo.write('Description: ' + vul[2] + '\n')
-					fo.write('Recomendation: ' + vul[3] + '\n')
-					fo.write('CVSS: ' + vul[4] + '\n')
-					fo.write('' + '\n')
-					vul.pop(4)
-					vul.pop(3)
-					vul.pop(2)
-					vul.pop(1)
-					vul.pop(0)
 			
 			fo.close()
 		elif 'html'.upper() in value or 'html' in value: #HTML
@@ -1353,14 +1349,17 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 				pass
 			else:
 				fo.write(	'<subtitle>Vulnerabilities found</subtitle>' + '\n')
+				
 				for element in vul:
-					if '&' in element:
-						a = element.replace('&',"&amp;")
-						if len(a) < 7:
+					if len(element) < 7:
+						fo.write(	'<vul>%s</vul>' % element)
+						fo.write(	'<vul>-----------------------------------------</vul>')
+					else:
+						if '&' in element:
+							a = element.replace('&',"&amp;")
 							fo.write(	'<vul>%s</vul>' % a)
-							fo.write(	'<vul>-----------------------------------------</vul>')
 						else:
-							fo.write(	'<vul>%s</vul>' % a)
+							fo.write(	'<vul>%s</vul>' % element)
 			
 			if len(rec) == 0:
 				pass
