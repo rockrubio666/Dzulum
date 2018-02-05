@@ -131,6 +131,8 @@ def getParams(arg):
 		
 		for element in options.report.split(','):
 				rvalues.append(element)
+	else:
+		to = ''
 			
 			
 	if options.directoryBforce in sys.argv and options.ojs in sys.argv: # Se manda a llamar la funcion del archivo

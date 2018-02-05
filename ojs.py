@@ -776,9 +776,10 @@ def files(arg,verbose,version,cookies,headers,proxy,proxies,tor,report,ver): #Ob
 			sys.exit
 			readm = []
 	
-	vuln(version,verbose,report,arg,ver,plug,readm,change,rob,them)
+	vuln(version,verbose,report,arg,ver,plug,readm,change,rob,them,cookies,headers,proxy,proxies,tor)
 
-def vuln(version,verbose,report,arg,ver,plug,readm,change,rob,them): # A partir de la version, se listan las posibles vulnerabilidades
+
+def vuln(version,verbose,report,arg,ver,plug,readm,change,rob,them,cookies,headers,proxy,proxies,tor): # A partir de la version, se listan las posibles vulnerabilidades
 	f = open('vuln','rb')
 	reader = csv.reader(f,delimiter=',')
 	
@@ -801,7 +802,87 @@ def vuln(version,verbose,report,arg,ver,plug,readm,change,rob,them): # A partir 
 		except IndexError:
 			pass
 	f.close()
-	rep(report,arg,ver,plug,readm,change,rob,them,vul)
+	#rep(report,arg,ver,plug,readm,change,rob,them,vul)
+	exploit(report,arg,ver,plug,readm,change,rob,them,vul,cookies,headers,proxy,proxies,tor)
+
+
+def exploit(report,url,ver,plug,readm,change,rob,them,vul,cookies,headers,proxy,proxies,tor):
+	rec = [] 
+	ask = raw_input("There are some exploits in our DB that could be used in thi site, Do you want to try them? [Y/n]") or 'Y'
+	if 'Y' in ask or 'y' in ask:
+		ex = ['/classes/site/SiteDAO.inc.php','/classes/journal/JournalSettingsDAO.inc.php','/classes/scheduledTask/ScheduledTaskDAO.inc.php']
+		succs = []
+		for element in ex:
+			t = url + element
+			
+			if len(proxy) == 1:
+				if tor == True: #Manejo de errores de tor
+					socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5,'127.0.0.1',9050)
+					socket.socket = socks.socksocket
+					error = """
+				We are in trouble for some of the following reasons, please check them and try again :D
+					- Something in the URL could be wrong.
+					- The site is down.
+					- It seems that we have problems using Tor :(
+					"""
+					try:
+						r = requests.get(t,cookies = cookies, headers = headers,verify=False,timeout=10)
+					except requests.RequestException:			
+						print colored(error,'green')
+						sys.exit(2)
+					except:
+						print colored(error,'green')
+						sys.exit(2)
+					
+				else: #Manejo de errores peticion normal
+					error = """
+					We are in trouble for some of the following reasons, please check them and try again :D
+						- Something in te URL could be wrong.
+						- The site is down or doesn\'t exist.
+					"""
+					try:
+						r = requests.get(t, cookies = cookies, headers = headers, verify=False,timeout=10)			
+					except requests.RequestException:			
+						print colored(error,'green')
+						sys.exit(2)
+					except:
+						print colored(error,'green')
+						sys.exit(2)
+			else: #Manejo de errores del proxy
+				error = """
+				We are in trouble for some of the following reasons, please check them and try again :D
+					- Something in te URL could be wrong.
+					- The site is down or doesn\'t exist.
+					- There\'s a problem with the proxy connection
+				"""
+				try:
+					r = requests.get(t,cookies = cookies, headers = headers,proxies = proxies,verify=False,timeout=10)		
+				except requests.RequestException:		
+					print colored(error,'green')
+					sys.exit(2)
+				except:
+					print colored(error,'green')
+					sys.exit(2)
+			
+			if int(r.status_code) == 200 and element in r.url: #Acceso al archivo
+				succs.append(t)
+			else:
+				pass
+		
+		if len(succs) > 0:
+			print colored('They were found the following vulnerabilities in the site, related with OS path','green')
+			print colored(element,'yellow')
+			print '\n'
+			rec.append(element)
+			#rep(report,ver,url,readm,change,pl,them,vul,rec)	
+		else:
+			print colored('Sorry there aren\'t any exploit available in the database','yellow')
+			#rep(report,ver,url,readm,change,pl,them,vul,rec)	
+	
+	else:
+		#rep(report,ver,url,readm,change,pl,them,vul,rec)
+		sys.exit(2)
+
 	
 
 def rep(rep,url,ver,plug,readm,change,rob,them,vul): #Reporte
