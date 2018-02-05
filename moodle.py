@@ -128,7 +128,7 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 
 	m = hashlib.md5()
 	
-	if 'yui_combo' in req.text: #Validacion del moodle
+	if 'yui_combo' in req.text or 'yui' in req.text or 'moodle' in req.text: #Validacion del moodle
 		pass
 	else:
 		print colored('The site: ','green') + colored(arg,'yellow') + colored(' isn\'t a moodle','green')
@@ -206,7 +206,8 @@ def moodle(arg, verbose,cookie,agent,proxip,proxport,tor,report): # Version
 				
 					
 		except:
-			exit(2)
+			files(arg,verbose,match.group(1),cookies,headers,proxy,proxies,tor,report,ver) # Si existe el archivo se obtienen los plugins y el tema
+			
 		
 	else: #Si no lo tiene
 		version(arg,verbose,cookies,headers,proxy,proxies,tor,report,ver) # Si no se obtiene la version a partir del archivo, se obtiene a partir de los archivos por defecto
@@ -999,22 +1000,18 @@ def rep(rep,version,url,readme,change,pl,them,vul,rec): #reporte
 					fo.write('Path to exploit: ' + rec[1] + '\n')
 					if 'dos' in rec[0]:			
 						fo.write('You could exploit this vulnerability by requesting the same resource multiple times \n')
-						fo.write('' + '\n')
 						rec.pop(1)
 						rec.pop(0)
 					elif 'list' in rec[0]:
 						fo.write('With this vulnerability you could listing information about users, courses and information contain in the database by changing the number in the ID parameter \n')
-						fo.write('' + '\n')
 						rec.pop(1)
 						rec.pop(0)
 					elif 'up' in rec[0]:
 						fo.write('It\'s possible to upload files with this vulnerability \n')
-						fo.write('' + '\n')
 						rec.pop(1)
 						rec.pop(0)
 					elif 'os' in rec[0]:
 						fo.write('You could get the installation path in the response of the resourse\n')
-						fo.write('' + '\n')
 						rec.pop(1)
 						rec.pop(0)
 			
