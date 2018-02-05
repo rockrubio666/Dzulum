@@ -802,7 +802,6 @@ def vuln(version,verbose,report,arg,ver,plug,readm,change,rob,them,cookies,heade
 		except IndexError:
 			pass
 	f.close()
-	#rep(report,arg,ver,plug,readm,change,rob,them,vul)
 	exploit(report,arg,ver,plug,readm,change,rob,them,vul,cookies,headers,proxy,proxies,tor)
 
 
@@ -872,20 +871,19 @@ def exploit(report,url,ver,plug,readm,change,rob,them,vul,cookies,headers,proxy,
 		if len(succs) > 0:
 			print colored('They were found the following vulnerabilities in the site, related with OS path','green')
 			print colored(element,'yellow')
-			print '\n'
 			rec.append(element)
-			#rep(report,ver,url,readm,change,pl,them,vul,rec)	
+			rep(report,url,ver,plug,readm,change,rob,them,vul,rec)
 		else:
 			print colored('Sorry there aren\'t any exploit available in the database','yellow')
-			#rep(report,ver,url,readm,change,pl,them,vul,rec)	
+			rep(report,url,ver,plug,readm,change,rob,them,vul,rec)
 	
 	else:
-		#rep(report,ver,url,readm,change,pl,them,vul,rec)
+		rep(report,url,ver,plug,readm,change,rob,them,vul,rec)
 		sys.exit(2)
 
 	
 
-def rep(rep,url,ver,plug,readm,change,rob,them,vul): #Reporte
+def rep(rep,url,ver,plug,readm,change,rob,them,vul,rec): #Reporte
 
 	title = ' *** Results of OJS Scanner***'
 	execution =  ('Execution time was: %s seconds' % (time.time() - start_time))
@@ -996,6 +994,17 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul): #Reporte
 					vul.pop(2)
 					vul.pop(1)
 					vul.pop(0)
+					
+			if len(rec) == 0:
+				pass
+			else:
+				fo.write('Exploits'.center(100) + '\n')
+				fo.write('' + '\n')
+				while len(rec) > 0:
+					fo.write('-----------------------------------------------------------------------------------\n')
+					fo.write('Exploit: ' + rec[0] + '\n')
+					fo.write('' + '\n')
+					rec.pop(0)
 			
 			fo.close()
 		elif 'html'.upper() in value or 'html' in value: #HTML
@@ -1155,6 +1164,19 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul): #Reporte
 					vul.pop(1)
 					vul.pop(0)
 				fo.write("""</table><br>""")
+				
+			if len(rec) == 0:
+				pass
+			else:
+				fo.write("""<h1 align="center"> Exploits </h1><br>""")
+				while len(rec) > 0:
+					fo.write("""<table>
+								<tr>
+									<th><a href='%s'> %s </a></th>
+								</tr>""" % (rec[0],rec[0]))
+					
+					rec.pop(0)
+				fo.write("""</table><br>""")
 			fo.write("""
 			</body>
 			</html>""")
@@ -1263,6 +1285,14 @@ def rep(rep,url,ver,plug,readm,change,rob,them,vul): #Reporte
 					vul.pop(1)
 					vul.pop(0)
 		
+			if len(rec) == 0:
+				pass
+			else:
+				fo.write(	'<subtitle>Exploits</subtitle>' + '\n')
+				fo.write(	'<vulnerability>')
+				fo.write(		'<vname>%s</vname>' % rec[0])
+				fo.write(	'</vulnerability>')
+				rec.pop(0)
 			fo.write('</ojsScan>')
 			fo.close()
 					
